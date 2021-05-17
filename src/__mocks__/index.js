@@ -1,0 +1,12 @@
+import './blog';
+import './calendar';
+import './chat';
+import './customers';
+import './authentication';
+import './invoices';
+import './kanban';
+import './mail';
+import './orders';
+import './products';
+import './project';
+import './social';
