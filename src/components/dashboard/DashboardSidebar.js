@@ -13,7 +13,7 @@ import ChartPieIcon from '../../icons/ChartPie';
 // import FolderOpenIcon from '../../icons/FolderOpen';
 // import MailIcon from '../../icons/Mail';
 // import ShareIcon from '../../icons/Share';
-import ShoppingBagIcon from '../../icons/ShoppingBag';
+// import ShoppingBagIcon from '../../icons/ShoppingBag';
 // import ShoppingCartIcon from '../../icons/ShoppingCart';
 import UserIcon from '../../icons/User';
 // import UsersIcon from '../../icons/Users';
@@ -40,11 +40,11 @@ const sections = [
         path: '/dashboard/analytics',
         icon: <ChartPieIcon fontSize="small" />
       },
-      {
-        title: 'Finance',
-        path: '/dashboard/finance',
-        icon: <ShoppingBagIcon fontSize="small" />
-      },
+      // {
+      //   title: 'Finance',
+      //   path: '/dashboard/finance',
+      //   icon: <ShoppingBagIcon fontSize="small" />
+      // },
       {
         title: 'Account',
         path: '/dashboard/account',
@@ -100,22 +100,66 @@ const sections = [
         icon: <Archive fontSize="small" />
       }
     ]
+  },
+  {
+    title: 'VALIDATE Analytics',
+    icon: <Plus fontSize="small" />,
+    path: '/dashboard/orders',
+    items: [
+      {
+        title: 'Add Test',
+        path: '/dashboard/test-create',
+        icon: <Plus fontSize="small" />
+      },
+      {
+        title: 'Test Collection',
+        path: '/dashboard/test-list',
+        icon: <Archive fontSize="small" />
+      }
+    ]
+  },
+  {
+    items: [
+      {
+        title: 'VALIDATE TESTS',
+        // icon: <Plus fontSize="small" />,
+        path: '/dashboard/orders',
+        children: [
+          {
+            title: 'Add Test',
+            path: '/dashboard/test-create',
+            icon: <Plus fontSize="small" />
+          },
+          {
+            title: 'Test Collection',
+            path: '/dashboard/test-list',
+            icon: <Archive fontSize="small" />
+          }
+        ]
+      }
+    ]
+  },
+  {
+    items: [
+      {
+        title: 'VALIDATE ANALYTICS',
+        // icon: <Plus fontSize="small" />,
+        path: '/dashboard/orders',
+        children: [
+          {
+            title: 'Add Test',
+            path: '/dashboard/test-create',
+            icon: <Plus fontSize="small" />
+          },
+          {
+            title: 'Test Collection',
+            path: '/dashboard/test-list',
+            icon: <Archive fontSize="small" />
+          }
+        ]
+      }
+    ]
   }
-  //     {
-  //       title: 'Orders',
-  //       icon: <FolderOpenIcon fontSize="small" />,
-  //       path: '/dashboard/orders',
-  //       children: [
-  //         {
-  //           title: 'List',
-  //           path: '/dashboard/orders'
-  //         },
-  //         {
-  //           title: 'Details',
-  //           path: '/dashboard/orders/1'
-  //         }
-  //       ]
-  //     },
   //     {
   //       title: 'Invoices',
   //       path: '/dashboard/invoices',

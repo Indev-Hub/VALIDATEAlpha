@@ -68,6 +68,7 @@ const LogoTestForm = (props) => {
         productSku: '',
         salePrice: '',
         logos: '',
+        caption: '',
         submit: null
       }}
       validationSchema={Yup
@@ -83,7 +84,8 @@ const LogoTestForm = (props) => {
           productCode: Yup.string().max(255),
           productSku: Yup.string().max(255),
           salePrice: Yup.number().min(0),
-          logos: Yup.string().min(0)
+          logos: Yup.string().min(0),
+          caption: Yup.string().min(0)
         })}
       onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
         try {
@@ -132,66 +134,6 @@ const LogoTestForm = (props) => {
             >
               <Card>
                 <CardContent>
-                  <FieldArray name="logos">
-                    {({ insert, remove, push }) => (
-                      <Box>
-                        {values.logos.length > 0 &&
-                          values.logos.map((friend, index) => (
-                            <Grid key={index} display="flex">
-                              <Box width="100%">
-                                <Grid sx={{ m:1 }}>
-                                  <TextField
-                                    error={Boolean(touched.name && errors.name)}
-                                    fullWidth
-                                    helperText={touched.name && errors.name}
-                                    label="Caption"
-                                    name={`friends.${index}.name`}
-                                    onBlur={handleBlur}
-                                    onChange={handleChange}
-                                    value={values.name}
-                                    variant="outlined"
-                                    placeholder="Jane Doe"
-                                    type="text"
-                                  />
-                                  <ErrorMessage
-                                    name={`friends.${index}.name`}
-                                    component="div"
-                                    className="field-error"
-                                  />
-                                </Grid>
-                                <Grid sx={{ m:1 }}>
-                                  <FileDropzone
-                                    accept="image/*"
-                                    files={files}
-                                    onDrop={handleDrop}
-                                    onRemove={handleRemove}
-                                    onRemoveAll={handleRemoveAll}
-                                  />
-                                </Grid>
-                              </Box>
-                              <Grid xs={2}>
-                                <Button
-                                  type="button"
-                                  className="secondary"
-                                  onClick={() => remove(index)}
-                                >
-                                  X
-                                </Button>
-                              </Grid>
-                            </Grid>
-                          ))}
-                        <Button 
-                          sx={{ m:1 }}
-                          onClick={() => push({ name: '', email: '' })}
-                          style={{
-                            backgroundColor:"red"
-                          }}
-                        >
-                          <Plus /> Add Friend
-                        </Button>
-                      </Box>
-                    )}
-                  </FieldArray>
                   <TextField
                     error={Boolean(touched.name && errors.name)}
                     fullWidth
@@ -230,15 +172,71 @@ const LogoTestForm = (props) => {
               </Card>
               <Box sx={{ mt: 3 }}>
                 <Card>
-                  <CardHeader title="Upload Images" />
+                  <CardHeader title="Upload Logos" />
                   <CardContent>
-                    <FileDropzone
-                      accept="image/*"
-                      files={files}
-                      onDrop={handleDrop}
-                      onRemove={handleRemove}
-                      onRemoveAll={handleRemoveAll}
-                    />
+                  <FieldArray name="logos">
+                    {({ insert, remove, push }) => (
+                      <Box>
+                        {values.logos.length > 0 &&
+                          values.logos.map((friend, index) => (
+                            <Grid key={index} display="flex">
+                              <Box width="100%">
+                                <Grid sx={{ m:1 }}>
+                                  <TextField
+                                    error={Boolean(touched.caption && errors.caption)}
+                                    fullWidth
+                                    helperText={touched.caption && errors.caption}
+                                    label="Caption"
+                                    name={`friends.${index}.name`}
+                                    onBlur={handleBlur}
+                                    onChange={handleChange}
+                                    value={values.caption}
+                                    variant="outlined"
+                                    placeholder={`Logo #${index}`}
+                                    type="text"
+                                  />
+                                  <ErrorMessage
+                                    name={`friends.${index}.name`}
+                                    component="div"
+                                    className="field-error"
+                                  />
+                                </Grid>
+                                <Grid sx={{ m:1 }}>
+                                  <FileDropzone
+                                    accept="image/*"
+                                    files={files}
+                                    onDrop={handleDrop}
+                                    onRemove={handleRemove}
+                                    onRemoveAll={handleRemoveAll}
+                                  />
+                                </Grid>
+                              </Box>
+                              <Grid xs={2}>
+                                <Button
+                                  type="button"
+                                  onClick={() => remove(index)}
+                                >
+                                  X
+                                </Button>
+                              </Grid>
+                            </Grid>
+                          ))}
+                        <Button
+                          // style={{
+                          //   backgroundColor: 'purple',
+                          //   color: 'white'
+                          // }}
+                          onClick={() => push({ name: '', email: '' })}
+                          variant="contained"
+                          color="secondary"
+                          sx={{ m:1, pr:3 }}
+                          startIcon={<Plus />}
+                        >
+                          Add Logo
+                        </Button>
+                      </Box>
+                    )}
+                  </FieldArray>
                   </CardContent>
                 </Card>
               </Box>
