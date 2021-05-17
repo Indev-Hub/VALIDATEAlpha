@@ -148,7 +148,7 @@ const applyFilters = (products, query, filters) => products
 const applyPagination = (products, page, limit) => products
   .slice(page * limit, page * limit + limit);
 
-const TestsListTable = (props) => {
+const FormsListTable = (props) => {
   const { products, ...other } = props;
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [page, setPage] = useState(0);
@@ -579,8 +579,8 @@ const TestsListTable = (props) => {
   );
 };
 
-TestsListTable.propTypes = {
+FormsListTable.propTypes = {
   products: PropTypes.array.isRequired
 };
 
-export default TestsListTable;
+export default FormsListTable;
