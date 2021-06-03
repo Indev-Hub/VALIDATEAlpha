@@ -2,7 +2,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { AppBar, Hidden, IconButton, Toolbar } from '@material-ui/core';
 import MenuIcon from '../../icons/Menu';
-import Logo from '../Logo';
+import Logo from '../../images/VALIDATE Black.png';
 
 const DocsNavbar = ({ onSidebarMobileOpen }) => (
   <AppBar
@@ -25,11 +25,16 @@ const DocsNavbar = ({ onSidebarMobileOpen }) => (
       </Hidden>
       <Hidden lgDown>
         <RouterLink to="/">
-          <Logo
+          {/* <Logo
             sx={{
               height: 40,
               width: 40
             }}
+          /> */}
+          <img
+            src={Logo}
+            alt="Logo"
+            height="25px"
           />
         </RouterLink>
       </Hidden>

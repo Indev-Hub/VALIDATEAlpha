@@ -7,7 +7,7 @@ import AccountPopover from './AccountPopover';
 import ContactsPopover from './ContactsPopover';
 import ContentSearch from './ContentSearch';
 import LanguagePopover from './LanguagePopover';
-import Logo from '../Logo';
+import Logo from '../../images/IconBlack.png';
 import NotificationsPopover from './NotificationsPopover';
 
 const DashboardNavbarRoot = experimentalStyled(AppBar)(({ theme }) => ({
@@ -40,11 +40,16 @@ const DashboardNavbar = (props) => {
         </Hidden>
         <Hidden lgDown>
           <RouterLink to="/">
-            <Logo
+            {/* <Logo
               sx={{
                 height: 40,
                 width: 40
               }}
+            /> */}
+            <img
+              src={Logo}
+              alt="Logo"
+              width="50px"
             />
           </RouterLink>
         </Hidden>
