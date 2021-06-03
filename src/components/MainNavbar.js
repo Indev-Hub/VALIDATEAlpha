@@ -3,7 +3,6 @@ import { Link as RouterLink } from 'react-router-dom';
 import {
   AppBar,
   Box,
-  Button,
   Chip,
   Divider,
   Hidden,
@@ -12,7 +11,7 @@ import {
   Toolbar
 } from '@material-ui/core';
 import MenuIcon from '../icons/Menu';
-import Logo from './Logo';
+import Logo from '../images/IconBlack.png';
 
 const MainNavbar = (props) => {
   const { onSidebarMobileOpen } = props;
@@ -36,11 +35,16 @@ const MainNavbar = (props) => {
         </Hidden>
         <Hidden lgDown>
           <RouterLink to="/">
-            <Logo
+            {/* <Logo
               sx={{
                 height: 40,
                 width: 40
               }}
+            /> */}
+            <img
+              src={Logo}
+              alt="Logo"
+              width="50px"
             />
           </RouterLink>
         </Hidden>
@@ -74,23 +78,6 @@ const MainNavbar = (props) => {
           >
             Documentation
           </Link>
-          <Divider
-            orientation="vertical"
-            sx={{
-              height: 32,
-              mx: 2
-            }}
-          />
-          <Button
-            color="primary"
-            component="a"
-            href="https://material-ui.com/store/items/devias-kit-pro"
-            size="small"
-            target="_blank"
-            variant="contained"
-          >
-            Get the kit
-          </Button>
         </Hidden>
       </Toolbar>
       <Divider />

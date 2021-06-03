@@ -1,12 +1,20 @@
 import { useEffect } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { Avatar, Box, Button, Divider, Drawer, Hidden, Link, Typography } from '@material-ui/core';
+import {
+  Avatar,
+  Box,
+  // Button,
+  Divider,
+  Drawer,
+  Hidden,
+  Link,
+  Typography } from '@material-ui/core';
 import useAuth from '../../hooks/useAuth';
 // import ReceiptIcon from '@material-ui/icons/Receipt';
 // import BriefcaseIcon from '../../icons/Briefcase';
 // import CalendarIcon from '../../icons/Calendar';
-import ChartPieIcon from '../../icons/ChartPie';
+// import ChartPieIcon from '../../icons/ChartPie';
 // import ChartSquareBarIcon from '../../icons/ChartSquareBar';
 // import ChatAltIcon from '../../icons/ChatAlt';
 // import ClipboardListIcon from '../../icons/ClipboardList';
@@ -19,6 +27,8 @@ import UserIcon from '../../icons/User';
 // import UsersIcon from '../../icons/Users';
 import {
   Archive,
+  Clipboard,
+  ClipboardList,
   IndevLogo1,
   Plus
 } from '../../icons';
@@ -35,11 +45,11 @@ const sections = [
         path: '/dashboard',
         icon: <IndevLogo1 fontSize="small" />
       },
-      {
-        title: 'Analytics',
-        path: '/dashboard/analytics',
-        icon: <ChartPieIcon fontSize="small" />
-      },
+      // {
+      //   title: 'Analytics',
+      //   path: '/dashboard/analytics',
+      //   icon: <ChartPieIcon fontSize="small" />
+      // },
       // {
       //   title: 'Finance',
       //   path: '/dashboard/finance',
@@ -52,77 +62,77 @@ const sections = [
       }
     ]
   },
+  // {
+  //   title: 'VALIDATE Tests',
+  //   items: [
+  //     {
+  //       title: 'Customers',
+  //       path: '/dashboard/customers',
+  //       icon: <UsersIcon fontSize="small" />,
+  //       children: [
+  //         {
+  //           title: 'List',
+  //           path: '/dashboard/customers'
+  //         },
+  //         {
+  //           title: 'Details',
+  //           path: '/dashboard/customers/1'
+  //         },
+  //         {
+  //           title: 'Edit',
+  //           path: '/dashboard/customers/1/edit'
+  //         }
+  //       ]
+  //     },
+  //     {
+  //       title: 'Products',
+  //       path: '/dashboard/products',
+  //       icon: <ShoppingCartIcon fontSize="small" />,
+  //       children: [
+  //         {
+  //           title: 'List',
+  //           path: '/dashboard/products'
+  //         },
+  //         {
+  //           title: 'Create',
+  //           path: '/dashboard/products/new'
+  //         }
+  //       ]
+  //     },
+  //     {
+  //       title: 'Add Test',
+  //       path: '/dashboard/test-create',
+  //       icon: <Plus fontSize="small" />
+  //     },
+  //     {
+  //       title: 'Test Collection',
+  //       path: '/dashboard/test-list',
+  //       icon: <Archive fontSize="small" />
+  //     }
+  //   ]
+  // },
+  // {
+  //   title: 'VALIDATE Analytics',
+  //   icon: <Plus fontSize="small" />,
+  //   path: '/dashboard/orders',
+  //   items: [
+  //     {
+  //       title: 'Add Test',
+  //       path: '/dashboard/test-create',
+  //       icon: <Plus fontSize="small" />
+  //     },
+  //     {
+  //       title: 'Test Collection',
+  //       path: '/dashboard/test-list',
+  //       icon: <Archive fontSize="small" />
+  //     }
+  //   ]
+  // },
   {
-    title: 'VALIDATE Tests',
-    items: [
-      // {
-      //   title: 'Customers',
-      //   path: '/dashboard/customers',
-      //   icon: <UsersIcon fontSize="small" />,
-      //   children: [
-      //     {
-      //       title: 'List',
-      //       path: '/dashboard/customers'
-      //     },
-      //     {
-      //       title: 'Details',
-      //       path: '/dashboard/customers/1'
-      //     },
-      //     {
-      //       title: 'Edit',
-      //       path: '/dashboard/customers/1/edit'
-      //     }
-      //   ]
-      // },
-      // {
-      //   title: 'Products',
-      //   path: '/dashboard/products',
-      //   icon: <ShoppingCartIcon fontSize="small" />,
-      //   children: [
-      //     {
-      //       title: 'List',
-      //       path: '/dashboard/products'
-      //     },
-      //     {
-      //       title: 'Create',
-      //       path: '/dashboard/products/new'
-      //     }
-      //   ]
-      // },
-      {
-        title: 'Add Test',
-        path: '/dashboard/test-create',
-        icon: <Plus fontSize="small" />
-      },
-      {
-        title: 'Test Collection',
-        path: '/dashboard/test-list',
-        icon: <Archive fontSize="small" />
-      }
-    ]
-  },
-  {
-    title: 'VALIDATE Analytics',
-    icon: <Plus fontSize="small" />,
-    path: '/dashboard/orders',
     items: [
       {
-        title: 'Add Test',
-        path: '/dashboard/test-create',
-        icon: <Plus fontSize="small" />
-      },
-      {
-        title: 'Test Collection',
-        path: '/dashboard/test-list',
-        icon: <Archive fontSize="small" />
-      }
-    ]
-  },
-  {
-    items: [
-      {
-        title: 'VALIDATE TESTS',
-        // icon: <Plus fontSize="small" />,
+        title: 'TESTS',
+        icon: <Clipboard fontSize="small" />,
         path: '/dashboard/orders',
         children: [
           {
@@ -142,21 +152,9 @@ const sections = [
   {
     items: [
       {
-        title: 'VALIDATE ANALYTICS',
-        // icon: <Plus fontSize="small" />,
-        path: '/dashboard/orders',
-        children: [
-          {
-            title: 'Add Test',
-            path: '/dashboard/test-create',
-            icon: <Plus fontSize="small" />
-          },
-          {
-            title: 'Test Collection',
-            path: '/dashboard/test-list',
-            icon: <Archive fontSize="small" />
-          }
-        ]
+        title: 'ANALYTICS',
+        icon: <ClipboardList fontSize="small" />,
+        path: '/dashboard/validation'
       }
     ]
   }
@@ -342,7 +340,7 @@ const DashboardSidebar = (props) => {
           ))}
         </Box>
         <Divider />
-        <Box sx={{ p: 2 }}>
+        {/* <Box sx={{ p: 2 }}>
           <Typography
             color="textPrimary"
             variant="subtitle2"
@@ -365,7 +363,7 @@ const DashboardSidebar = (props) => {
           >
             Documentation
           </Button>
-        </Box>
+        </Box> */}
       </Scrollbar>
     </Box>
   );

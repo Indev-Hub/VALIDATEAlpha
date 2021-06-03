@@ -55,8 +55,6 @@ const CustomerDetails = Loadable(lazy(() => import('./pages/dashboard/CustomerDe
 const CustomerEdit = Loadable(lazy(() => import('./pages/dashboard/CustomerEdit')));
 const CustomerList = Loadable(lazy(() => import('./pages/dashboard/CustomerList')));
 const Finance = Loadable(lazy(() => import('./pages/dashboard/Finance')));
-const TestList = Loadable(lazy(() => import('./pages/dashboard/TestList')));
-const TestCreate = Loadable(lazy(() => import('./pages/dashboard/TestCreate')));
 const InvoiceDetails = Loadable(lazy(() => import('./pages/dashboard/InvoiceDetails')));
 const InvoiceList = Loadable(lazy(() => import('./pages/dashboard/InvoiceList')));
 const Kanban = Loadable(lazy(() => import('./pages/dashboard/Kanban')));
@@ -66,6 +64,11 @@ const OrderList = Loadable(lazy(() => import('./pages/dashboard/OrderList')));
 const Overview = Loadable(lazy(() => import('./pages/dashboard/Overview')));
 const ProductCreate = Loadable(lazy(() => import('./pages/dashboard/ProductCreate')));
 const ProductList = Loadable(lazy(() => import('./pages/dashboard/ProductList')));
+const TestList = Loadable(lazy(() => import('./pages/dashboard/TestList')));
+const TestCreate = Loadable(lazy(() => import('./pages/dashboard/TestCreate')));
+// const Tests = Loadable(lazy(() => import('./pages/dashboard/Tests')));
+// const TestsAnalytics = Loadable(lazy(() => import('./pages/dashboard/TestsAnalytics')));
+const Validation = Loadable(lazy(() => import('./pages/dashboard/Validation')));
 
 // Docs pages
 
@@ -178,6 +181,18 @@ const routes = [
       {
         path: 'analytics',
         element: <Analytics />
+      },
+      {
+        path: 'test-create',
+        element: <TestCreate />
+      },
+      {
+        path: 'test-list',
+        element: <TestList />
+      },
+      {
+        path: 'validation',
+        element: <Validation />
       },
       {
         path: 'test-create',
