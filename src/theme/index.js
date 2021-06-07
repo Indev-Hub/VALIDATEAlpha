@@ -100,7 +100,8 @@ const themesOptions = {
       },
       background: {
         default: '#f4f5f7',
-        paper: '#ffffff'
+        paper: '#ffffff',
+        black: '#000000'
       },
       error: {
         contrastText: '#ffffff',
@@ -117,7 +118,9 @@ const themesOptions = {
       },
       text: {
         primary: '#172b4d',
-        secondary: '#6b778c'
+        secondary: '#6b778c',
+        dark: '#000000',
+        light: '#ffffff'
       },
       warning: {
         contrastText: '#ffffff',
