@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-validatealpha-dev-222457-authRole",
+      "UnauthRoleArn": "arn:aws:iam::207069825571:role/amplify-validatealpha-dev-222457-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::207069825571:role/amplify-validatealpha-dev-222457-authRole",
+      "Region": "us-west-2",
+      "DeploymentBucketName": "amplify-validatealpha-dev-222457-deployment",
+      "UnauthRoleName": "amplify-validatealpha-dev-222457-unauthRole",
+      "StackName": "amplify-validatealpha-dev-222457",
+      "StackId": "arn:aws:cloudformation:us-west-2:207069825571:stack/amplify-validatealpha-dev-222457/b51d75d0-c750-11eb-a624-06a35f9061a9",
+      "AmplifyAppId": "d3by158fbom7n6"
+    },
+    "categories": {
+      "auth": {
+        "validatealpha7c3ce124": {}
+      }
+    }
+  }
+}
