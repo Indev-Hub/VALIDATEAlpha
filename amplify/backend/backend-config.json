@@ -1,0 +1,10 @@
+{
+  "auth": {
+    "validatealpha7c3ce124": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false
+    }
+  }
+}
