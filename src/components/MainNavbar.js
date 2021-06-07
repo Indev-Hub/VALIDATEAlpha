@@ -10,8 +10,16 @@ import {
   Link,
   Toolbar
 } from '@material-ui/core';
+import Amplify from 'aws-amplify';
+import {
+  AmplifySignOut,
+  withAuthenticator
+} from '@aws-amplify/ui-react';
+import awsconfig from '../aws-exports';
 import MenuIcon from '../icons/Menu';
 import Logo from '../images/IconBlack.png';
+
+Amplify.configure(awsconfig);
 
 const MainNavbar = (props) => {
   const { onSidebarMobileOpen } = props;
@@ -78,6 +86,7 @@ const MainNavbar = (props) => {
           >
             Documentation
           </Link>
+          <AmplifySignOut />
         </Hidden>
       </Toolbar>
       <Divider />
@@ -89,4 +98,4 @@ MainNavbar.propTypes = {
   onSidebarMobileOpen: PropTypes.func
 };
 
-export default MainNavbar;
+export default withAuthenticator(MainNavbar);

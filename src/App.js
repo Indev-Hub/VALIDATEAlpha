@@ -2,6 +2,12 @@ import { useEffect } from 'react';
 import { useRoutes } from 'react-router-dom';
 import { SnackbarProvider } from 'notistack';
 import { ThemeProvider } from '@material-ui/core';
+import Amplify from 'aws-amplify';
+import {
+  // AmplifySignOut,
+  withAuthenticator
+} from '@aws-amplify/ui-react';
+import awsconfig from './aws-exports';
 import './i18n';
 import GlobalStyles from './components/GlobalStyles';
 import RTL from './components/RTL';
@@ -14,6 +20,8 @@ import useSettings from './hooks/useSettings';
 import gtm from './lib/gtm';
 import routes from './routes';
 import { createTheme } from './theme';
+
+Amplify.configure(awsconfig);
 
 const App = () => {
   const content = useRoutes(routes);
@@ -48,4 +56,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default withAuthenticator(App);
