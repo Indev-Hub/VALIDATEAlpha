@@ -1,0 +1,6 @@
+{
+  "authSelections": "identityPoolAndUserPool",
+  "resourceName": "validatealpha86ba4b66",
+  "serviceType": "imported",
+  "region": "us-west-2"
+}

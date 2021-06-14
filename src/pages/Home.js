@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import {
-  HomeClients,
-  HomeHero,
-  HomeOverview,
-  HomeRoles,
-  HomeFeatures,
-  HomeTestimonials
+  // HomeClients,
+  HomeHero
+  // HomeOverview,
+  // HomeRoles,
+  // HomeFeatures,
+  // HomeTestimonials
 } from '../components/home';
 import gtm from '../lib/gtm';
 
@@ -22,11 +22,11 @@ const Home = () => {
       </Helmet>
       <div>
         <HomeHero />
-        <HomeOverview />
+        {/* <HomeOverview />
         <HomeRoles />
         <HomeTestimonials />
         <HomeFeatures />
-        <HomeClients />
+        <HomeClients /> */}
       </div>
     </>
   );
