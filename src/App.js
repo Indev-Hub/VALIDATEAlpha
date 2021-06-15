@@ -3,10 +3,11 @@ import { useRoutes } from 'react-router-dom';
 import { SnackbarProvider } from 'notistack';
 import { ThemeProvider } from '@material-ui/core';
 import Amplify from 'aws-amplify';
-import {
-  // AmplifySignOut,
-  withAuthenticator
-} from '@aws-amplify/ui-react';
+// import {
+//   AmplifySignOut,
+//   withAuthenticator
+// } from '@aws-amplify/ui-react';
+import { withAuthenticator } from '@aws-amplify/ui-react';
 import awsconfig from './aws-exports';
 import './i18n';
 import GlobalStyles from './components/GlobalStyles';

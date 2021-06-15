@@ -1,0 +1,11 @@
+{
+  "AppSyncApiName": "validateAlphaAPI",
+  "DynamoDBBillingMode": "PAY_PER_REQUEST",
+  "DynamoDBEnableServerSideEncryption": false,
+  "AuthCognitoUserPoolId": {
+    "Fn::GetAtt": [
+      "authvalidatealpha86ba4b66",
+      "Outputs.UserPoolId"
+    ]
+  }
+}
