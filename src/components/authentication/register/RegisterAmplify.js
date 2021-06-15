@@ -12,6 +12,7 @@ import {
 } from '@material-ui/core';
 import useAuth from '../../../hooks/useAuth';
 import useIsMountedRef from '../../../hooks/useIsMountedRef';
+import { Auth } from 'aws-amplify';
 
 const RegisterAmplify = (props) => {
   const isMountedRef = useIsMountedRef();
@@ -22,6 +23,9 @@ const RegisterAmplify = (props) => {
     <>
       <Formik
         initialValues={{
+          username: '',
+          name: '',
+          family_name: '',
           email: '',
           password: '',
           policy: true,
@@ -30,14 +34,29 @@ const RegisterAmplify = (props) => {
         validationSchema={Yup
           .object()
           .shape({
-            email: Yup
+            username: Yup
+              .string()
+              .min(3)
+              .max(255)
+              .required('Username is required'),			  
+            name: Yup
+              .string()
+              .min(2)
+              .max(255)
+              .required('First Name is required'),
+			family_name: Yup
+              .string()
+              .min(2)
+              .max(255)
+              .required('Last Name is required'),			  
+			email: Yup
               .string()
               .email('Must be a valid email')
               .max(255)
-              .required('Email is required'),
+              .required('Email is required'),			  
             password: Yup
               .string()
-              .min(7)
+              .min(1)
               .max(255)
               .required('Password is required'),
             policy: Yup
@@ -46,11 +65,21 @@ const RegisterAmplify = (props) => {
           })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
-            await register(values.email, values.password);
+            Auth.signUp({
+              'username': values.username,
+              'password': values.password,
+              'attributes': {
+                'name': values.name,
+                'family_name': values.family_name,
+                'email': values.email,
+              }
+            })
+            // console.log('user', user);
+            // await register(values.username, values.name, values.family_name, values.email, values.password);
 
-            navigate('/authentication/verify-code', {
+            navigate('/authentication/login', {
               state: {
-                username: values.email
+                username: values.username
               }
             });
           } catch (err) {
@@ -69,6 +98,45 @@ const RegisterAmplify = (props) => {
             onSubmit={handleSubmit}
             {...props}
           >
+            <TextField
+              error={Boolean(touched.username && errors.username)}
+              fullWidth
+              helperText={touched.username && errors.username}
+              label="Display Name"
+              margin="normal"
+              name="username"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              type="text"
+              value={values.username}
+              variant="outlined"
+            />
+            <TextField
+              error={Boolean(touched.name && errors.name)}
+              fullWidth
+              helperText={touched.name && errors.name}
+              label="First Name"
+              margin="normal"
+              name="name"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              type="text"
+              value={values.name}
+              variant="outlined"
+            />
+            <TextField
+              error={Boolean(touched.family_name && errors.family_name)}
+              fullWidth
+              helperText={touched.family_name && errors.family_name}
+              label="Last Name"
+              margin="normal"
+              name="family_name"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              type="text"
+              value={values.family_name}
+              variant="outlined"
+            />
             <TextField
               error={Boolean(touched.email && errors.email)}
               fullWidth

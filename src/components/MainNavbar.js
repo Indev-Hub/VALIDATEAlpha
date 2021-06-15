@@ -10,7 +10,7 @@ import {
   Link,
   Toolbar
 } from '@material-ui/core';
-import Amplify from 'aws-amplify';
+import Amplify, { Auth } from 'aws-amplify';
 import {
   // AmplifySignIn,
   AmplifySignInButton,
@@ -20,11 +20,29 @@ import {
 import awsconfig from '../aws-exports';
 import MenuIcon from '../icons/Menu';
 import Logo from '../images/IconBlack.png';
+import { Button } from '@material-ui/core';
+import { useEffect, useState } from 'react';
 
 Amplify.configure(awsconfig);
 
 const MainNavbar = (props) => {
   const { onSidebarMobileOpen } = props;
+
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+	  LoggedInState()
+  }, [])
+
+  const LoggedInState = () => {
+	  Auth.currentAuthenticatedUser()
+		  .then(() => {
+			  setLoggedIn(true);
+		  })
+		  .catch(() => {
+			  setLoggedIn(false);
+		  })
+  }
 
   return (
     <AppBar
@@ -88,8 +106,20 @@ const MainNavbar = (props) => {
           >
             Documentation
           </Link>
-          <AmplifySignOut />
-          <AmplifySignInButton />
+			{loggedIn ? (
+				<Button variant="contained" onClick={AmplifySignOut}>
+					Sign Out
+				</Button>
+			) : (
+				<Link
+					component={RouterLink}
+					to="/authentication/login"
+				>
+					<Button variant = "contained" >
+						Sign In
+					</Button>
+				</Link>	
+			)}
         </Hidden>
       </Toolbar>
       <Divider />

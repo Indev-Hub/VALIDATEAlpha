@@ -8,5 +8,11 @@
     "amplify/backend/amplify-meta.json": true,
     "amplify/backend/awscloudformation": true
   },
-  "files.eol": "\n"
+  "files.eol": "\n",
+  "workbench.colorCustomizations": {
+	"tab.activeBorder": "#ff0000",
+	"tab.unfocusedActiveBorder": "#fff",
+	"editorIndentGuide.activeBackground": "#AAEE77",
+	"editorIndentGuide.background": "#e6a8e677"
+  }
 }

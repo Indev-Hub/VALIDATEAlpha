@@ -121,14 +121,6 @@ const HomeHero = (props) => {
         }}
       >
         <CreateFormDesign width="760px" />
-        <Box>
-          { forms.map(form => {
-            return <Box>
-              <Box>{form.id}</Box>
-              <Box>{form.title}</Box>
-            </Box>
-          })}
-        </Box>
       </Container>
     </Box>
   );
