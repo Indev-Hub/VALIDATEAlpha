@@ -92,7 +92,8 @@ export const createCompany = /* GraphQL */ `
         items {
           id
           companyID
-          content
+          question01
+          answer01
           createdAt
           updatedAt
         }
@@ -125,7 +126,8 @@ export const updateCompany = /* GraphQL */ `
         items {
           id
           companyID
-          content
+          question01
+          answer01
           createdAt
           updatedAt
         }
@@ -158,7 +160,8 @@ export const deleteCompany = /* GraphQL */ `
         items {
           id
           companyID
-          content
+          question01
+          answer01
           createdAt
           updatedAt
         }
@@ -193,7 +196,8 @@ export const createForm = /* GraphQL */ `
         createdAt
         updatedAt
       }
-      content
+      question01
+      answer01
       createdAt
       updatedAt
     }
@@ -223,7 +227,8 @@ export const updateForm = /* GraphQL */ `
         createdAt
         updatedAt
       }
-      content
+      question01
+      answer01
       createdAt
       updatedAt
     }
@@ -253,7 +258,8 @@ export const deleteForm = /* GraphQL */ `
         createdAt
         updatedAt
       }
-      content
+      question01
+      answer01
       createdAt
       updatedAt
     }

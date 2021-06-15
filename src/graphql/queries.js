@@ -60,7 +60,8 @@ export const getCompany = /* GraphQL */ `
         items {
           id
           companyID
-          content
+          question01
+          answer01
           createdAt
           updatedAt
         }
@@ -119,7 +120,8 @@ export const getForm = /* GraphQL */ `
         createdAt
         updatedAt
       }
-      content
+      question01
+      answer01
       createdAt
       updatedAt
     }
@@ -142,7 +144,8 @@ export const listForms = /* GraphQL */ `
           createdAt
           updatedAt
         }
-        content
+        question01
+        answer01
         createdAt
         updatedAt
       }
