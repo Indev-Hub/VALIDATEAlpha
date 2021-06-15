@@ -9,7 +9,7 @@ import {
   LoginFirebase,
   LoginJWT
 } from '../../components/authentication/login';
-import Logo from '../../components/Logo';
+import Logo from '../../images/VALIDATE Black.png';
 import useAuth from '../../hooks/useAuth';
 import gtm from '../../lib/gtm';
 
@@ -53,12 +53,10 @@ const Login = () => {
             }}
           >
             <RouterLink to="/">
-              <Logo
-                sx={{
-                  height: 40,
-                  width: 40
-                }}
-              />
+              <img
+			  	src={Logo}
+                width="400px"
+			  />
             </RouterLink>
           </Box>
           <Card>
@@ -92,20 +90,6 @@ const Login = () => {
                     Log in on the internal platform
                   </Typography>
                 </div>
-                <Box
-                  sx={{
-                    height: 32,
-                    '& > img': {
-                      maxHeight: '100%',
-                      width: 'auto'
-                    }
-                  }}
-                >
-                  <img
-                    alt="Auth platform"
-                    src={platformIcons[platform]}
-                  />
-                </Box>
               </Box>
               <Box
                 sx={{

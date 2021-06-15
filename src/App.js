@@ -1,13 +1,14 @@
-import { useEffect } from 'react';
+/* eslint-disable */
+import { useEffect, useState } from 'react';
 import { useRoutes } from 'react-router-dom';
 import { SnackbarProvider } from 'notistack';
 import { ThemeProvider } from '@material-ui/core';
-import Amplify from 'aws-amplify';
+import Amplify, { Auth } from 'aws-amplify';
 // import {
 //   AmplifySignOut,
 //   withAuthenticator
 // } from '@aws-amplify/ui-react';
-import { withAuthenticator } from '@aws-amplify/ui-react';
+// import { withAuthenticator } from '@aws-amplify/ui-react';
 import awsconfig from './aws-exports';
 import './i18n';
 import GlobalStyles from './components/GlobalStyles';
@@ -25,6 +26,22 @@ import { createTheme } from './theme';
 Amplify.configure(awsconfig);
 
 const App = () => {
+	// const [loggedIn, setLoggedIn] = useState(false);
+
+	// useEffect(() => {
+	// 	LoggedInState()
+	// }, [])
+
+	// const LoggedInState = () => {
+	// 	Auth.currentAuthenticatedUser()
+	// 		.then(() => {
+	// 			setLoggedIn(true);
+	// 		})
+	// 		.catch(() => {
+	// 			setLoggedIn(false);
+	// 		})
+	// }
+
   const content = useRoutes(routes);
   const { settings } = useSettings();
   const auth = useAuth();
@@ -57,4 +74,4 @@ const App = () => {
   );
 };
 
-export default withAuthenticator(App);
+export default App;
