@@ -27,7 +27,7 @@ const FormCreate = () => {
     });
 
     // Validation questions part of form
-    const blankInput = {};
+    const blankInput = {question: '', type: '', option: ''};
     const [inputState, setInputState] = useState([
         { ...blankInput },
     ]);
@@ -76,13 +76,13 @@ const FormCreate = () => {
 		const createFormInput = {
 			id: `form-${formID}`,
 			companyID: 'company-2',
-			name: name,
-            description: description,
-			validations: JSON.stringify(formArray)
+			name: ownerState.name,
+            // description: description,
+			validations: JSON.stringify(inputState)
 		};
 
-		await API.graphql(graphqlOperation(createForm, { input: createFormInput }));
 		console.log('formData', createFormInput);
+		await API.graphql(graphqlOperation(createForm, { input: createFormInput }));
 	};
 
     console.log(inputState)
@@ -204,7 +204,7 @@ const FormCreate = () => {
                     sx={{ mt: 3, padding: 2 }}
                     fullWidth
                     color="primary"
-                    type="submit"
+                    type="button"
                     variant="contained"
                     onClick={uploadForm}
                 >
