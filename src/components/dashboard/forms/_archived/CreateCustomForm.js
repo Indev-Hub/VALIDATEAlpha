@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { ErrorMessage, FieldArray, Formik } from 'formik';
@@ -51,32 +51,45 @@ const CreateCustomForm = (props) => {
     const userName = signInUserSession.accessToken.payload.username;
     const userId = signInUserSession.accessToken.payload.sub
     const formID = uniqueId();
+    
+    useEffect(() => {
 
-    if (validSubmit === false) {
-      
-    }
-    else if (validSubmit === true) {
-      console.log('user name', userName);
-      console.log('user id', userId);
-  
-      //Upload the video
-      console.log('unique id', formID)
-      console.log('formData', formData);
-      const { title, description, showcase, order, ownerName, ownerId } = formData;
-      // const { key } = await Storage.put(`${userId}/${title}_${formID}.mp4`, formatData, { contentType: 'video/*' });
-  
-      const createFormInput = {
+      //Upload the form
+			console.log('unique id', formID)
+			console.log('formData', formData);
+
+      const { name, companyName } = formData;
+			// const { key } = await Storage.put(`${userId}/${title}_${formId}.mp4`, formatData, { contentType: 'form/*' });
+
+      const formArray = [
+        {
+          "type": "int",
+          "question": "How old are you?",
+          "options": "/[int]/",
+        },
+        {
+          "type": "text",
+          "question": "Where were you born?",
+          "options": "/String/",
+        },
+        {
+          "type": "img",
+          "question": "Which image is your favorite?",
+          "options": "[img]",
+        }
+      ]
+      console.log('submit:', validSubmit)
+			const createFormInput = {
         id: `form-${formID}`,
-        companyID: '',
-        company: '',
-        ownerId: userId,
-        ownerName: userName
-      };
-      // await API.graphql(graphqlOperation(createForm, { input: createFormInput }));
-      console.log('Form Input', createFormInput)
-      setValidSubmit(false);
+        companyID: 'company-2',
+        name: name,
+        companyName: companyName,
+        validations: JSON.stringify(formArray)
+			};
+			API.graphql(graphqlOperation(createForm, { input: createFormInput }));
+      console.log('valid submit:', validSubmit)
       // onUpload();
-    }
+    }, [validSubmit])
   };
 
   return (
@@ -173,29 +186,6 @@ const CreateCustomForm = (props) => {
                     value={values.company}
                     variant="outlined"
                   />
-                  {/* <Typography
-                    color="textSecondary"
-                    sx={{
-                      mb: 2,
-                      mt: 3
-                    }}
-                    variant="subtitle2"
-                  >
-                    Description
-                  </Typography>
-                  <QuillEditor
-                    onChange={(value) => setFieldValue('description', value)}
-                    placeholder="Write something"
-                    sx={{ height: 400 }}
-                    value={values.description}
-                  />
-                  {(touched.description && errors.description) && (
-                    <Box sx={{ mt: 2 }}>
-                      <FormHelperText error>
-                        {errors.description}
-                      </FormHelperText>
-                    </Box>
-                  )} */}
                 </CardContent>
               </Card>
               <Box sx={{ mt: 3 }}>
@@ -281,56 +271,7 @@ const CreateCustomForm = (props) => {
               md={6}
               xs={12}
             >
-              {/* <Card>
-                <CardHeader title="Organize" />
-                <CardContent>
-                  <TextField
-                    fullWidth
-                    label="Category"
-                    name="category"
-                    onChange={handleChange}
-                    select
-                    SelectProps={{ native: true }}
-                    value={values.category}
-                    variant="outlined"
-                  >
-                    {categoryOptions.map((category) => (
-                      <option
-                        key={category.value}
-                        value={category.value}
-                      >
-                        {category.label}
-                      </option>
-                    ))}
-                  </TextField>
-                  <Box sx={{ mt: 2 }}>
-                    <TextField
-                      error={Boolean(touched.productCode && errors.productCode)}
-                      fullWidth
-                      helperText={touched.productCode && errors.productCode}
-                      label="Product Code"
-                      name="productCode"
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      value={values.productCode}
-                      variant="outlined"
-                    />
-                  </Box>
-                  <Box sx={{ mt: 2 }}>
-                    <TextField
-                      error={Boolean(touched.productSku && errors.productSku)}
-                      fullWidth
-                      helperText={touched.productSku && errors.productSku}
-                      label="Product Sku"
-                      name="productSku"
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      value={values.productSku}
-                      variant="outlined"
-                    />
-                  </Box>
-                </CardContent>
-              </Card> */}
+            
               {errors.submit && (
                 <Box sx={{ mt: 3 }}>
                   <FormHelperText error>
@@ -350,8 +291,9 @@ const CreateCustomForm = (props) => {
                   disabled={isSubmitting}
                   type="submit"
                   variant="contained"
-                  onClick={submitForm()}
+                  onClick={setValidSubmit(true)}
                 >
+                  {console.log('submit:', validSubmit)}
                   Create Form
                 </Button>
               </Box>

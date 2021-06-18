@@ -80,8 +80,8 @@ export const onCreateCompany = /* GraphQL */ `
         items {
           id
           companyID
-          question01
-          answer01
+          name
+          validations
           createdAt
           updatedAt
         }
@@ -111,8 +111,8 @@ export const onUpdateCompany = /* GraphQL */ `
         items {
           id
           companyID
-          question01
-          answer01
+          name
+          validations
           createdAt
           updatedAt
         }
@@ -142,8 +142,8 @@ export const onDeleteCompany = /* GraphQL */ `
         items {
           id
           companyID
-          question01
-          answer01
+          name
+          validations
           createdAt
           updatedAt
         }
@@ -159,6 +159,7 @@ export const onCreateForm = /* GraphQL */ `
     onCreateForm {
       id
       companyID
+      name
       company {
         id
         title
@@ -175,8 +176,7 @@ export const onCreateForm = /* GraphQL */ `
         createdAt
         updatedAt
       }
-      question01
-      answer01
+      validations
       createdAt
       updatedAt
     }
@@ -187,6 +187,7 @@ export const onUpdateForm = /* GraphQL */ `
     onUpdateForm {
       id
       companyID
+      name
       company {
         id
         title
@@ -203,8 +204,7 @@ export const onUpdateForm = /* GraphQL */ `
         createdAt
         updatedAt
       }
-      question01
-      answer01
+      validations
       createdAt
       updatedAt
     }
@@ -215,6 +215,7 @@ export const onDeleteForm = /* GraphQL */ `
     onDeleteForm {
       id
       companyID
+      name
       company {
         id
         title
@@ -231,8 +232,7 @@ export const onDeleteForm = /* GraphQL */ `
         createdAt
         updatedAt
       }
-      question01
-      answer01
+      validations
       createdAt
       updatedAt
     }

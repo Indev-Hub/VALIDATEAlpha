@@ -84,6 +84,7 @@ const HomeHero = (props) => {
             src={Logo}
             alt="Logo"
             width="100%"
+            border="20"
           />
         </Box>
         <Box

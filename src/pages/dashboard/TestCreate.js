@@ -7,7 +7,7 @@ import useSettings from '../../hooks/useSettings';
 import ArrowLeftIcon from '../../icons/ArrowLeft';
 import ChevronRightIcon from '../../icons/ChevronRight';
 import gtm from '../../lib/gtm';
-import VideoAdd from 'src/components/dashboard/forms/VideoAdd';
+import FormCreate from '../../components/dashboard/forms/FormCreate';
 
 const TestCreate = () => {
   const { settings } = useSettings();
@@ -86,8 +86,7 @@ const TestCreate = () => {
             </Grid>
           </Grid>
           <Box sx={{ mt: 3 }}>
-            {/* <CreateCustomForm /> */}
-            <VideoAdd />
+            <FormCreate />
           </Box>
         </Container>
       </Box>

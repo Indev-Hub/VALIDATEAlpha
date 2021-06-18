@@ -2,20 +2,47 @@
 import React, { useEffect, useState } from 'react';
 import { createCompany, createForm } from '../../../graphql/mutations';
 // import { v4 as uuid } from 'uuid';
+import * as Yup from 'yup';
 import Amplify, { API, Auth, graphqlOperation, Storage } from 'aws-amplify';
 import {
-
+	Button,
+	Box,
+	Card,
+	CardHeader,
+	CardContent,
+	Grid,
 	IconButton,
+	MenuItem,
 	TextField,
-	Box
+	Select
 } from '@material-ui/core';
 import { uniqueId } from 'lodash';
 import { Publish } from '@material-ui/icons';
+import { ErrorMessage, FieldArray, Formik } from 'formik';
+import { Plus } from 'src/icons';
+import FileDropzone from 'src/components/FileDropzone';
 
 const VideoAdd = ({ onUpload }) => {
-	const [videoData, setVideoData] = useState({});
+	// Form dependencies
+	const [formData, setFormData] = useState({});
 	const [formatData, setformatData] = useState();
+	console.log('formData', formData)
 
+	// FileDropzone dependencies
+	const [files, setFiles] = useState([]);
+  const handleDrop = (newFiles) => {
+    setFiles((prevFiles) => [...prevFiles, ...newFiles]);
+  };
+
+  const handleRemove = (file) => {
+    setFiles((prevFiles) => prevFiles.filter((_file) => _file.path
+      !== file.path));
+  };
+
+  const handleRemoveAll = () => {
+    setFiles([]);
+  };
+	
 	const [error, setError] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const [userId, setUserId] = useState('');
@@ -44,16 +71,19 @@ const VideoAdd = ({ onUpload }) => {
 	}, []);
 
 
-  const uploadVideo = async () => {
+  const uploadForm = async () => {
 		//Get user attributes
 		const { signInUserSession } = await Auth.currentAuthenticatedUser();
 		const userName = signInUserSession.accessToken.payload.username;
 		const userId = signInUserSession.accessToken.payload.sub
 
-		console.log('user name', userName);
-		console.log('user id', userId);
+		// Destructure formData properties
+		const { name, elements, description, showcase, order, ownerName, ownerId } = formData;
 
-		//Upload the video
+		// console.log('user name', userName);
+		// console.log('user id', userId);
+
+		//Upload the form
 		const formID = uniqueId();
 
 		const formArray = [
@@ -74,72 +104,117 @@ const VideoAdd = ({ onUpload }) => {
 			}
 		]
 
-		console.log('unique id', formID)
-		console.log('videoData', videoData);
-		const { title, description, showcase, order, ownerName, ownerId } = videoData;
-		// const { key } = await Storage.put(`${userId}/${title}_${videoId}.mp4`, formatData, { contentType: 'video/*' });
+		// const { key } = await Storage.put(`${userId}/${title}_${formId}.mp4`, formatData, { contentType: 'form/*' });
 
-		const createCompanyInput = {
-			id: `company-${formID}`,
-			title: 'Company Name',
-			userID: '56-55-54'
-		};
-
+		// the input data to be sent in our createForm request 
 		const createFormInput = {
 			id: `form-${formID}`,
 			companyID: 'company-2',
-			question01: 'What is your favorite day?',
-			answer01: JSON.stringify(formArray)
+			name: name,
+			validations: JSON.stringify(formArray)
 		};
 
-		// await API.graphql(graphqlOperation(createCompany, { input: createCompanyInput }));
 		await API.graphql(graphqlOperation(createForm, { input: createFormInput }));
-		console.log('videoData', videoData);
+		console.log('formData', formData);
 
-		// onUpload();
+		onUpload();
 	};
 
-    return (
+	return (
 		<Box>
-            <TextField
-                label="Company"
-                value={videoData.company}
-                onChange={e => setVideoData({ ...videoData, company: e.target.value })}
-            />
-            <TextField
-                label="Description"
-                value={videoData.description}
-                onChange={e => setVideoData({ ...videoData, description: e.target.value })}
-            />
-            {/* <TextField
-                label="User ID"
-                value={videoData.ownerId}
-				placeholder={userId}
-                onChange={e => setVideoData({ ...videoData, ownerId: userId })}
-            />
-            <TextField
-                label="User Name"
-                value={videoData.ownerName}
-				placeholder={userName}
-                onChange={e => setVideoData({ ...videoData, ownerName: userName })}
-            /> */}
-			{/* <Box>
-				<FileDropzone
-				accept="video/*"
-				files={files}
-				onDrop={handleDrop}
-				onRemove={handleRemove}
-				onRemoveAll={handleRemoveAll}
-				onChange={e => setformatData(e.target.files[0])}
-				/>
+			<TextField
+				label="Form Name"
+				value={formData.name}
+				fullWidth
+				onChange={e => setFormData({ ...formData, name: e.target.value })}
+			/>
+			<TextField
+				label="Company"
+				value={formData.company}
+				fullWidth
+				onChange={e => setFormData({ ...formData, company: e.target.value })}
+				sx={{mt:2}}
+			/>
+
+			{/* <Box sx={{ mt: 3 }}>
+				<Card>
+					<CardHeader title="Upload Elements" />
+					<CardContent>
+					<FieldArray name="elements">
+						{({ insert, remove, push }) => (
+							<Box>
+								{formData.elements.length > 0 &&
+									{formData.map((element, index) => (
+										<Grid key={index} display="flex">
+											<Box width="100%">
+												<Grid sx={{ m:1 }}>
+												<TextField
+													label="Question Type"
+													name={`element.${index}.type`}
+													value={`formData.element.${index}.type`}
+													fullWidth
+													onChange={e => setFormData({ ...formData.elements, name: e.target.value })}
+												/>
+												<TextField
+													label="Company"
+													value={formData.elements.company}
+													fullWidth
+													onChange={e => setFormData({ ...formData.elements, company: e.target.value })}
+													sx={{mt:2}}
+												/>
+												</Grid>
+												<Grid sx={{ m:1 }}>
+													<FileDropzone
+														accept="image/*"
+														files={files}
+														onDrop={handleDrop}
+														onRemove={handleRemove}
+														onRemoveAll={handleRemoveAll}
+													/>
+												</Grid>
+											</Box>
+											<Grid item xs={2}>
+												<Button
+													type="button"
+													onClick={() => remove(index)}
+												>
+													X
+												</Button>
+											</Grid>
+										</Grid>
+									))}
+								<Button
+									onClick={() => push({ name: '', email: '' })}
+									variant="contained"
+									color="secondary"
+									sx={{ m:1, pr:3 }}
+									startIcon={<Plus />}
+								>
+									Add Logo
+								</Button>
+							</Box>
+						)}
+					</FieldArray>
+					</CardContent>
+				</Card>
 			</Box> */}
-            <input type="file" accept="video/*" onChange={e => setformatData(e.target.files)} /> {/* Removed [0] from e.target.files[0] */}
-			{/* {console.log('user', {userName, userId})} */}
-            <IconButton onClick={uploadVideo}>
-                <Publish />
-            </IconButton>
-        </Box>
-    );
+
+
+			<Button
+				sx={{ mt: 3, padding: 2 }}
+				fullWidth
+				color="primary"
+				type="submit"
+				variant="contained"
+				onClick={uploadForm()}
+			>
+				CREATE FORM
+			</Button>
+			{/* <IconButton fullWidth onClick={uploadForm}>
+				Create Form <Publish />
+			</IconButton> */}
+		</Box>
+	);
 };
 
 export default VideoAdd;
