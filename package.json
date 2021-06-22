@@ -56,7 +56,7 @@
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/user-event": "^13.0.1",
     "apexcharts": "^3.23.1",
-    "aws-amplify": "^3.0.20",
+    "aws-amplify": "^3.4.3",
     "axios": "^0.21.1",
     "axios-mock-adapter": "^1.19.0",
     "date-fns": "^2.16.1",
