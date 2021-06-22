@@ -8,6 +8,7 @@ import ArrowLeftIcon from '../../icons/ArrowLeft';
 import ChevronRightIcon from '../../icons/ChevronRight';
 import gtm from '../../lib/gtm';
 import FormCreate from '../../components/dashboard/forms/FormCreate';
+import FormList from 'src/components/dashboard/forms/FormList';
 
 const TestCreate = () => {
   const { settings } = useSettings();
@@ -87,6 +88,7 @@ const TestCreate = () => {
           </Grid>
           <Box sx={{ mt: 3 }}>
             <FormCreate />
+            {/* <FormList /> */}
           </Box>
         </Container>
       </Box>

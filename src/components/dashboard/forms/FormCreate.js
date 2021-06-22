@@ -64,13 +64,6 @@ const FormCreate = () => {
         const { name, description } = ownerState; 
 		const { type, question, option  } = inputState;
         const formID = uniqueId();
-        const formArray = [
-            {
-                "question": question,
-                "type": type,
-                "options": option
-            }
-        ];
 
 		// the input data to be sent in our createForm request 
 		const createFormInput = {
