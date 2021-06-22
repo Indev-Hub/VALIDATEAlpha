@@ -60,7 +60,6 @@ export const getCompany = /* GraphQL */ `
         items {
           id
           companyID
-          name
           validations
           createdAt
           updatedAt
@@ -104,7 +103,6 @@ export const getForm = /* GraphQL */ `
     getForm(id: $id) {
       id
       companyID
-      name
       company {
         id
         title
@@ -137,7 +135,6 @@ export const listForms = /* GraphQL */ `
       items {
         id
         companyID
-        name
         company {
           id
           title

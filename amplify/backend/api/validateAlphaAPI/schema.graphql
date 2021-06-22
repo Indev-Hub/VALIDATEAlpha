@@ -15,7 +15,6 @@ type Company @model @key(name: "byUser", fields: ["userID"]) {
 type Form @model @key(name: "byCompany", fields: ["companyID"]) {
   id: ID!
   companyID: ID!
-  name: String
   company: Company @connection(fields: ["companyID"])
   validations: AWSJSON
 }

@@ -1,6 +1,6 @@
 {
   "auth": {
-    "validatealpha729c1487": {
+    "validatealphae8bdc556": {
       "service": "Cognito",
       "serviceType": "imported",
       "providerPlugin": "awscloudformation",
@@ -17,7 +17,7 @@
           "defaultAuthentication": {
             "authenticationType": "AMAZON_COGNITO_USER_POOLS",
             "userPoolConfig": {
-              "userPoolId": "authvalidatealpha729c1487"
+              "userPoolId": "authvalidatealphae8bdc556"
             }
           },
           "additionalAuthenticationProviders": []

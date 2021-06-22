@@ -80,7 +80,6 @@ export const onCreateCompany = /* GraphQL */ `
         items {
           id
           companyID
-          name
           validations
           createdAt
           updatedAt
@@ -111,7 +110,6 @@ export const onUpdateCompany = /* GraphQL */ `
         items {
           id
           companyID
-          name
           validations
           createdAt
           updatedAt
@@ -142,7 +140,6 @@ export const onDeleteCompany = /* GraphQL */ `
         items {
           id
           companyID
-          name
           validations
           createdAt
           updatedAt
@@ -159,7 +156,6 @@ export const onCreateForm = /* GraphQL */ `
     onCreateForm {
       id
       companyID
-      name
       company {
         id
         title
@@ -187,7 +183,6 @@ export const onUpdateForm = /* GraphQL */ `
     onUpdateForm {
       id
       companyID
-      name
       company {
         id
         title
@@ -215,7 +210,6 @@ export const onDeleteForm = /* GraphQL */ `
     onDeleteForm {
       id
       companyID
-      name
       company {
         id
         title
