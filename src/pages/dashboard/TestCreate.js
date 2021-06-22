@@ -2,11 +2,13 @@ import { useEffect } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { Box, Breadcrumbs, Button, Container, Grid, Link, Typography } from '@material-ui/core';
-import { LogoTestForm } from '../../components/dashboard/forms';
+// import { CreateCustomForm } from '../../components/dashboard/forms';
 import useSettings from '../../hooks/useSettings';
 import ArrowLeftIcon from '../../icons/ArrowLeft';
 import ChevronRightIcon from '../../icons/ChevronRight';
 import gtm from '../../lib/gtm';
+import FormCreate from '../../components/dashboard/forms/FormCreate';
+import FormList from 'src/components/dashboard/forms/FormList';
 
 const TestCreate = () => {
   const { settings } = useSettings();
@@ -38,7 +40,7 @@ const TestCreate = () => {
                 color="textPrimary"
                 variant="h5"
               >
-                Create a new product
+                Create a new validation
               </Typography>
               <Breadcrumbs
                 aria-label="breadcrumb"
@@ -85,7 +87,8 @@ const TestCreate = () => {
             </Grid>
           </Grid>
           <Box sx={{ mt: 3 }}>
-            <LogoTestForm />
+            <FormCreate />
+            {/* <FormList /> */}
           </Box>
         </Container>
       </Box>
