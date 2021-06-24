@@ -1,0 +1,20 @@
+type User @model {
+  id: ID!
+  name: String!
+  companies: [Company] @connection(keyName: "byUser", fields: ["id"])
+}
+
+type Company @model @key(name: "byUser", fields: ["userID"]) {
+  id: ID!
+  title: String! 
+  userID: ID!
+  user: User @connection(fields: ["userID"])
+  forms: [Form] @connection(keyName: "byCompany", fields: ["id"])
+}
+
+type Form @model @key(name: "byCompany", fields: ["companyID"]) {
+  id: ID!
+  companyID: ID!
+  company: Company @connection(fields: ["companyID"])
+  validations: AWSJSON
+}
