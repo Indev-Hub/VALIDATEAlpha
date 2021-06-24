@@ -1,0 +1,260 @@
+type User {
+  id: ID!
+  name: String!
+  companies(filter: ModelCompanyFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelCompanyConnection
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type Company {
+  id: ID!
+  title: String!
+  userID: ID!
+  user: User
+  forms(filter: ModelFormFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelFormConnection
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type Form {
+  id: ID!
+  companyID: ID!
+  company: Company
+  validations: AWSJSON
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+enum ModelSortDirection {
+  ASC
+  DESC
+}
+
+type ModelUserConnection {
+  items: [User]
+  nextToken: String
+}
+
+input ModelStringInput {
+  ne: String
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  contains: String
+  notContains: String
+  between: [String]
+  beginsWith: String
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  size: ModelSizeInput
+}
+
+input ModelIDInput {
+  ne: ID
+  eq: ID
+  le: ID
+  lt: ID
+  ge: ID
+  gt: ID
+  contains: ID
+  notContains: ID
+  between: [ID]
+  beginsWith: ID
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  size: ModelSizeInput
+}
+
+input ModelIntInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  between: [Int]
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelFloatInput {
+  ne: Float
+  eq: Float
+  le: Float
+  lt: Float
+  ge: Float
+  gt: Float
+  between: [Float]
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelBooleanInput {
+  ne: Boolean
+  eq: Boolean
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelSizeInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  between: [Int]
+}
+
+input ModelUserFilterInput {
+  id: ModelIDInput
+  name: ModelStringInput
+  and: [ModelUserFilterInput]
+  or: [ModelUserFilterInput]
+  not: ModelUserFilterInput
+}
+
+enum ModelAttributeTypes {
+  binary
+  binarySet
+  bool
+  list
+  map
+  number
+  numberSet
+  string
+  stringSet
+  _null
+}
+
+type Query {
+  getUser(id: ID!): User
+  listUsers(filter: ModelUserFilterInput, limit: Int, nextToken: String): ModelUserConnection
+  getCompany(id: ID!): Company
+  listCompanys(filter: ModelCompanyFilterInput, limit: Int, nextToken: String): ModelCompanyConnection
+  getForm(id: ID!): Form
+  listForms(filter: ModelFormFilterInput, limit: Int, nextToken: String): ModelFormConnection
+}
+
+input CreateUserInput {
+  id: ID
+  name: String!
+}
+
+input UpdateUserInput {
+  id: ID!
+  name: String
+}
+
+input DeleteUserInput {
+  id: ID!
+}
+
+type Mutation {
+  createUser(input: CreateUserInput!, condition: ModelUserConditionInput): User
+  updateUser(input: UpdateUserInput!, condition: ModelUserConditionInput): User
+  deleteUser(input: DeleteUserInput!, condition: ModelUserConditionInput): User
+  createCompany(input: CreateCompanyInput!, condition: ModelCompanyConditionInput): Company
+  updateCompany(input: UpdateCompanyInput!, condition: ModelCompanyConditionInput): Company
+  deleteCompany(input: DeleteCompanyInput!, condition: ModelCompanyConditionInput): Company
+  createForm(input: CreateFormInput!, condition: ModelFormConditionInput): Form
+  updateForm(input: UpdateFormInput!, condition: ModelFormConditionInput): Form
+  deleteForm(input: DeleteFormInput!, condition: ModelFormConditionInput): Form
+}
+
+input ModelUserConditionInput {
+  name: ModelStringInput
+  and: [ModelUserConditionInput]
+  or: [ModelUserConditionInput]
+  not: ModelUserConditionInput
+}
+
+type Subscription {
+  onCreateUser: User @aws_subscribe(mutations: ["createUser"])
+  onUpdateUser: User @aws_subscribe(mutations: ["updateUser"])
+  onDeleteUser: User @aws_subscribe(mutations: ["deleteUser"])
+  onCreateCompany: Company @aws_subscribe(mutations: ["createCompany"])
+  onUpdateCompany: Company @aws_subscribe(mutations: ["updateCompany"])
+  onDeleteCompany: Company @aws_subscribe(mutations: ["deleteCompany"])
+  onCreateForm: Form @aws_subscribe(mutations: ["createForm"])
+  onUpdateForm: Form @aws_subscribe(mutations: ["updateForm"])
+  onDeleteForm: Form @aws_subscribe(mutations: ["deleteForm"])
+}
+
+type ModelCompanyConnection {
+  items: [Company]
+  nextToken: String
+}
+
+input ModelCompanyFilterInput {
+  id: ModelIDInput
+  title: ModelStringInput
+  userID: ModelIDInput
+  and: [ModelCompanyFilterInput]
+  or: [ModelCompanyFilterInput]
+  not: ModelCompanyFilterInput
+}
+
+input CreateCompanyInput {
+  id: ID
+  title: String!
+  userID: ID!
+}
+
+input UpdateCompanyInput {
+  id: ID!
+  title: String
+  userID: ID
+}
+
+input DeleteCompanyInput {
+  id: ID!
+}
+
+input ModelCompanyConditionInput {
+  title: ModelStringInput
+  userID: ModelIDInput
+  and: [ModelCompanyConditionInput]
+  or: [ModelCompanyConditionInput]
+  not: ModelCompanyConditionInput
+}
+
+type ModelFormConnection {
+  items: [Form]
+  nextToken: String
+}
+
+input ModelFormFilterInput {
+  id: ModelIDInput
+  companyID: ModelIDInput
+  validations: ModelStringInput
+  and: [ModelFormFilterInput]
+  or: [ModelFormFilterInput]
+  not: ModelFormFilterInput
+}
+
+input CreateFormInput {
+  id: ID
+  companyID: ID!
+  validations: AWSJSON
+}
+
+input UpdateFormInput {
+  id: ID!
+  companyID: ID
+  validations: AWSJSON
+}
+
+input DeleteFormInput {
+  id: ID!
+}
+
+input ModelFormConditionInput {
+  companyID: ModelIDInput
+  validations: ModelStringInput
+  and: [ModelFormConditionInput]
+  or: [ModelFormConditionInput]
+  not: ModelFormConditionInput
+}

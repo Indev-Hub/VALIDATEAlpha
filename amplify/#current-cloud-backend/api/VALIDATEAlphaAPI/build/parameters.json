@@ -1,0 +1,14 @@
+{
+    "CreateAPIKey": 0,
+    "AppSyncApiName": "VALIDATEAlphaAPI",
+    "DynamoDBBillingMode": "PAY_PER_REQUEST",
+    "DynamoDBEnableServerSideEncryption": false,
+    "AuthCognitoUserPoolId": {
+        "Fn::GetAtt": [
+            "authvalidatealpha8eba8dfa",
+            "Outputs.UserPoolId"
+        ]
+    },
+    "S3DeploymentBucket": "amplify-validatealpha-feat-232805-deployment",
+    "S3DeploymentRootKey": "amplify-appsync-files/4d1a26d7b906ff750af3c7de99fbfffe7d6870ae"
+}

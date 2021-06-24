@@ -1,0 +1,61 @@
+{
+  "providers": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-validatealpha-feat-232805-authRole",
+      "UnauthRoleArn": "arn:aws:iam::207069825571:role/amplify-validatealpha-feat-232805-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::207069825571:role/amplify-validatealpha-feat-232805-authRole",
+      "Region": "us-west-2",
+      "DeploymentBucketName": "amplify-validatealpha-feat-232805-deployment",
+      "UnauthRoleName": "amplify-validatealpha-feat-232805-unauthRole",
+      "StackName": "amplify-validatealpha-feat-232805",
+      "StackId": "arn:aws:cloudformation:us-west-2:207069825571:stack/amplify-validatealpha-feat-232805/56f2bd90-d4b5-11eb-8c5b-0684a0147a6b",
+      "AmplifyAppId": "d2ohw6kxqo6cso",
+      "AuthTriggerTemplateURL": ""
+    }
+  },
+  "auth": {
+    "validatealpha8eba8dfa": {
+      "service": "Cognito",
+      "serviceType": "imported",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false,
+      "output": {
+        "UserPoolId": "us-west-2_3EBw6uUX2",
+        "UserPoolName": "ValidateUserPool",
+        "AppClientID": "1r16g9sfqip0c0i2u3rmj91s7r",
+        "AppClientSecret": "104codbfg6bhl46kq7n2h51b34lbc69r1sgao1gj6vh7g9v2h5t5",
+        "AppClientIDWeb": "6va9mhndec3rfsd4t9mv0g9rvq",
+        "HostedUIDomain": "validate-registration",
+        "IdentityPoolId": "us-west-2:df34f322-a2f9-4c34-9f0b-54cdcac02610",
+        "IdentityPoolName": "validateIdPool"
+      },
+      "lastPushTimeStamp": "2021-06-24T07:09:39.817Z"
+    }
+  },
+  "api": {
+    "VALIDATEAlphaAPI": {
+      "service": "AppSync",
+      "providerPlugin": "awscloudformation",
+      "output": {
+        "authConfig": {
+          "defaultAuthentication": {
+            "authenticationType": "AMAZON_COGNITO_USER_POOLS",
+            "userPoolConfig": {
+              "userPoolId": "authvalidatealpha8eba8dfa"
+            }
+          },
+          "additionalAuthenticationProviders": []
+        },
+        "GraphQLAPIIdOutput": "vlb7wtumnzecnntfnhw4227g5m",
+        "GraphQLAPIEndpointOutput": "https://b5toyoi4srgsnfdae4dqt2tapu.appsync-api.us-west-2.amazonaws.com/graphql"
+      },
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-validatealpha-feat-232805-deployment/amplify-cfn-templates/api/cloudformation-template.json",
+        "logicalId": "apiVALIDATEAlphaAPI"
+      },
+      "lastPushTimeStamp": "2021-06-24T07:09:39.725Z",
+      "lastPushDirHash": "F/gOAsDzFnTi9Gi9/7ceQMgHGVs="
+    }
+  }
+}
