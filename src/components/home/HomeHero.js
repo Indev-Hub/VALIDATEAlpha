@@ -16,6 +16,7 @@ import awsconfig from '../../aws-exports';
 import Logo from '../../images/VALIDATE PunchOut.png';
 // import CreateFormDesign from '../form/CreateFormDesign';
 import UserList from '../user/UserList';
+import SubmissionList from '../submissions/submissionList';
 
 Amplify.configure(awsconfig);
 
@@ -122,6 +123,7 @@ const HomeHero = (props) => {
         }}
       >
         <UserList />
+        <SubmissionList />
         {/* <CreateFormDesign width="760px" /> */}
       </Container>
     </Box>
