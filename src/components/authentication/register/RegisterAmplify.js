@@ -77,7 +77,7 @@ const RegisterAmplify = (props) => {
             // console.log('user', user);
             // await register(values.username, values.name, values.family_name, values.email, values.password);
 
-            navigate('/authentication/login', {
+            navigate('/authentication/verify-code', {
               state: {
                 username: values.username
               }

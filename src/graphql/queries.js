@@ -5,7 +5,8 @@ export const getUser = /* GraphQL */ `
   query GetUser($id: ID!) {
     getUser(id: $id) {
       id
-      name
+      username
+      email
       companies {
         items {
           id
@@ -30,7 +31,8 @@ export const listUsers = /* GraphQL */ `
     listUsers(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        name
+        username
+        email
         companies {
           nextToken
         }
@@ -49,7 +51,8 @@ export const getCompany = /* GraphQL */ `
       userID
       user {
         id
-        name
+        username
+        email
         companies {
           nextToken
         }
@@ -84,7 +87,8 @@ export const listCompanys = /* GraphQL */ `
         userID
         user {
           id
-          name
+          username
+          email
           createdAt
           updatedAt
         }
@@ -109,7 +113,8 @@ export const getForm = /* GraphQL */ `
         userID
         user {
           id
-          name
+          username
+          email
           createdAt
           updatedAt
         }
@@ -143,6 +148,56 @@ export const listForms = /* GraphQL */ `
           updatedAt
         }
         validations
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getFormSubmission = /* GraphQL */ `
+  query GetFormSubmission($id: ID!) {
+    getFormSubmission(id: $id) {
+      id
+      formID
+      form {
+        id
+        companyID
+        company {
+          id
+          title
+          userID
+          createdAt
+          updatedAt
+        }
+        validations
+        createdAt
+        updatedAt
+      }
+      answers
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listFormSubmissions = /* GraphQL */ `
+  query ListFormSubmissions(
+    $filter: ModelFormSubmissionFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listFormSubmissions(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        formID
+        form {
+          id
+          companyID
+          validations
+          createdAt
+          updatedAt
+        }
+        answers
         createdAt
         updatedAt
       }
