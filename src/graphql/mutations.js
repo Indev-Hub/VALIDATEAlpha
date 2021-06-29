@@ -8,7 +8,8 @@ export const createUser = /* GraphQL */ `
   ) {
     createUser(input: $input, condition: $condition) {
       id
-      name
+      username
+      email
       companies {
         items {
           id
@@ -31,7 +32,8 @@ export const updateUser = /* GraphQL */ `
   ) {
     updateUser(input: $input, condition: $condition) {
       id
-      name
+      username
+      email
       companies {
         items {
           id
@@ -54,7 +56,8 @@ export const deleteUser = /* GraphQL */ `
   ) {
     deleteUser(input: $input, condition: $condition) {
       id
-      name
+      username
+      email
       companies {
         items {
           id
@@ -81,7 +84,8 @@ export const createCompany = /* GraphQL */ `
       userID
       user {
         id
-        name
+        username
+        email
         companies {
           nextToken
         }
@@ -114,7 +118,8 @@ export const updateCompany = /* GraphQL */ `
       userID
       user {
         id
-        name
+        username
+        email
         companies {
           nextToken
         }
@@ -147,7 +152,8 @@ export const deleteCompany = /* GraphQL */ `
       userID
       user {
         id
-        name
+        username
+        email
         companies {
           nextToken
         }
@@ -183,7 +189,8 @@ export const createForm = /* GraphQL */ `
         userID
         user {
           id
-          name
+          username
+          email
           createdAt
           updatedAt
         }
@@ -213,7 +220,8 @@ export const updateForm = /* GraphQL */ `
         userID
         user {
           id
-          name
+          username
+          email
           createdAt
           updatedAt
         }
@@ -243,7 +251,8 @@ export const deleteForm = /* GraphQL */ `
         userID
         user {
           id
-          name
+          username
+          email
           createdAt
           updatedAt
         }
@@ -254,6 +263,90 @@ export const deleteForm = /* GraphQL */ `
         updatedAt
       }
       validations
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createFormSubmission = /* GraphQL */ `
+  mutation CreateFormSubmission(
+    $input: CreateFormSubmissionInput!
+    $condition: ModelFormSubmissionConditionInput
+  ) {
+    createFormSubmission(input: $input, condition: $condition) {
+      id
+      formID
+      form {
+        id
+        companyID
+        company {
+          id
+          title
+          userID
+          createdAt
+          updatedAt
+        }
+        validations
+        createdAt
+        updatedAt
+      }
+      answers
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateFormSubmission = /* GraphQL */ `
+  mutation UpdateFormSubmission(
+    $input: UpdateFormSubmissionInput!
+    $condition: ModelFormSubmissionConditionInput
+  ) {
+    updateFormSubmission(input: $input, condition: $condition) {
+      id
+      formID
+      form {
+        id
+        companyID
+        company {
+          id
+          title
+          userID
+          createdAt
+          updatedAt
+        }
+        validations
+        createdAt
+        updatedAt
+      }
+      answers
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteFormSubmission = /* GraphQL */ `
+  mutation DeleteFormSubmission(
+    $input: DeleteFormSubmissionInput!
+    $condition: ModelFormSubmissionConditionInput
+  ) {
+    deleteFormSubmission(input: $input, condition: $condition) {
+      id
+      formID
+      form {
+        id
+        companyID
+        company {
+          id
+          title
+          userID
+          createdAt
+          updatedAt
+        }
+        validations
+        createdAt
+        updatedAt
+      }
+      answers
       createdAt
       updatedAt
     }
