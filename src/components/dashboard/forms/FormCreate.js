@@ -26,7 +26,7 @@ import { Close } from '@material-ui/icons';
 const FormCreate = () => {
   // Company part of form
   const [ownerState, setOwnerState] = useState({
-    name: '',
+    title: '',
     description: '',
   });
 
@@ -68,19 +68,19 @@ const FormCreate = () => {
     // console.log('updated inputs:', updatedInputs)
   };
 
-    // Add question to form and add the new question to our inputState array
+    // Add answer option to form and add the new option to our optionState array
     const addOption = () => {
       setOptionState([...optionState, { ...blankOption }]);
     };
   
-    // Removes question from mapped array.
+    // Removes answer option from mapped array.
     const removeOption = (index) => {
       const array = [...optionState]; //make copy
       array.splice(index, 1);
       setOptionState([...array]);
     };
   
-    // Update question portion of form every time a field is modified
+    // Update answer portion of form every time a field is modified
     const handleOptionChange = (e) => {
       const updatedOptions = [...optionState];
       updatedOptions[e.target.dataset.idx][e.target.id] = e.target.value;
@@ -94,17 +94,24 @@ const FormCreate = () => {
     const userName = signInUserSession.accessToken.payload.username;
     const userId = signInUserSession.accessToken.payload.sub
 
+    // Create random number for ID (temp solution for unique ID — will add company name and form number later on)
+    function getRandomInt(min, max) {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+  
     // Destructure form properties
-    const { name, description } = ownerState;
+    const { title, description } = ownerState;
     const { type, question, option } = inputState;
-    const formID = uniqueId();
+    const formID = getRandomInt(1000, 9999);
 
     // the input data to be sent in our createForm request 
     const createFormInput = {
       id: `form-${formID}`,
-      companyID: 'company-2',
-      // name: name,
-      // description: description,
+      companyID: 'company-1',
+      title: title,
+      description: description,
       validations: JSON.stringify(inputState)
       // validations: inputState
     };
@@ -116,13 +123,13 @@ const FormCreate = () => {
   // Preview the form
   const previewForm = () => {
     // Destructure form properties
-    const { name, description } = ownerState;
+    const { title, description } = ownerState;
 
     // the input data to be sent in our createForm request 
     const previewFormInput = {
       id: 'form-0',
       companyID: 'company-0',
-      name: name,
+      name: title,
       description: description,
       validations: inputState,
     };
@@ -139,9 +146,9 @@ const FormCreate = () => {
           <TextField
             label="Form Name"
             type="text"
-            name="name"
-            id="name"
-            value={ownerState.name}
+            name="title"
+            id="title"
+            value={ownerState.title}
             onChange={handleOwnerChange}
             fullWidth
           />

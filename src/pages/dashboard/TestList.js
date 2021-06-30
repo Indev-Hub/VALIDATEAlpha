@@ -44,14 +44,14 @@ const TestList = () => {
 						display="flex"
 						className="formCard"
 						direction="column"
-						alignItems="center"
+						alignItems="left"
 						justify="center"
 					>
-						<Grid item xs={6}>
-							<Typography className="formTitle">{form.id}</Typography>
-						</Grid>
-						<Grid item>
-							<Typography className="formDescription">{form.validations}</Typography>
+						<Grid item xs={12}>
+							<Typography variant="h4" className="formTitle">{form.title}</Typography>
+							<Typography variant="h5" className="formTitle">{form.id}</Typography>
+							<Typography className="formTitle">{form.description}</Typography>
+              <Typography className="formDescription">{form.validations}</Typography>
 						</Grid>
 					</Grid>
 				</Paper>

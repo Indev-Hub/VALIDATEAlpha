@@ -13,7 +13,7 @@ export const createUser = /* GraphQL */ `
       companies {
         items {
           id
-          title
+          name
           userID
           createdAt
           updatedAt
@@ -37,7 +37,7 @@ export const updateUser = /* GraphQL */ `
       companies {
         items {
           id
-          title
+          name
           userID
           createdAt
           updatedAt
@@ -61,7 +61,7 @@ export const deleteUser = /* GraphQL */ `
       companies {
         items {
           id
-          title
+          name
           userID
           createdAt
           updatedAt
@@ -80,7 +80,7 @@ export const createCompany = /* GraphQL */ `
   ) {
     createCompany(input: $input, condition: $condition) {
       id
-      title
+      name
       userID
       user {
         id
@@ -96,6 +96,8 @@ export const createCompany = /* GraphQL */ `
         items {
           id
           companyID
+          title
+          description
           validations
           createdAt
           updatedAt
@@ -114,7 +116,7 @@ export const updateCompany = /* GraphQL */ `
   ) {
     updateCompany(input: $input, condition: $condition) {
       id
-      title
+      name
       userID
       user {
         id
@@ -130,6 +132,8 @@ export const updateCompany = /* GraphQL */ `
         items {
           id
           companyID
+          title
+          description
           validations
           createdAt
           updatedAt
@@ -148,7 +152,7 @@ export const deleteCompany = /* GraphQL */ `
   ) {
     deleteCompany(input: $input, condition: $condition) {
       id
-      title
+      name
       userID
       user {
         id
@@ -164,6 +168,8 @@ export const deleteCompany = /* GraphQL */ `
         items {
           id
           companyID
+          title
+          description
           validations
           createdAt
           updatedAt
@@ -183,9 +189,11 @@ export const createForm = /* GraphQL */ `
     createForm(input: $input, condition: $condition) {
       id
       companyID
+      title
+      description
       company {
         id
-        title
+        name
         userID
         user {
           id
@@ -214,9 +222,11 @@ export const updateForm = /* GraphQL */ `
     updateForm(input: $input, condition: $condition) {
       id
       companyID
+      title
+      description
       company {
         id
-        title
+        name
         userID
         user {
           id
@@ -245,9 +255,11 @@ export const deleteForm = /* GraphQL */ `
     deleteForm(input: $input, condition: $condition) {
       id
       companyID
+      title
+      description
       company {
         id
-        title
+        name
         userID
         user {
           id
@@ -279,9 +291,11 @@ export const createFormSubmission = /* GraphQL */ `
       form {
         id
         companyID
+        title
+        description
         company {
           id
-          title
+          name
           userID
           createdAt
           updatedAt
@@ -307,9 +321,11 @@ export const updateFormSubmission = /* GraphQL */ `
       form {
         id
         companyID
+        title
+        description
         company {
           id
-          title
+          name
           userID
           createdAt
           updatedAt
@@ -335,9 +351,11 @@ export const deleteFormSubmission = /* GraphQL */ `
       form {
         id
         companyID
+        title
+        description
         company {
           id
-          title
+          name
           userID
           createdAt
           updatedAt
