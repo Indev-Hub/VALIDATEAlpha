@@ -62,11 +62,11 @@ const FormSubmission = props => {
     }
   }
 
-  console.log('formDataStructured', formDataStructured)
+  // console.log('formDataStructured', formDataStructured)
 
   const [formDataState, setFormDataState] = useState(formDataStructured);
 
-  console.log('formDataStructured', formDataState)
+  // console.log('formDataStructured', formDataState)
 
   // Initialize form field values
   const formDataInitialValues = {};
