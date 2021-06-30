@@ -24,12 +24,5 @@
         }
       }
     }
-  },
-  "function": {
-    "validateAddCognitoUserToUserTable": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda"
-    }
   }
 }
