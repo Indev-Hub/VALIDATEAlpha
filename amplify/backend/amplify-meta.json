@@ -42,7 +42,7 @@
           "defaultAuthentication": {
             "authenticationType": "AMAZON_COGNITO_USER_POOLS",
             "userPoolConfig": {
-              "userPoolId": "us-west-2_3EBw6uUX2"
+              "userPoolId": "authvalidatealpha72ca26bb"
             }
           },
           "additionalAuthenticationProviders": []
@@ -54,27 +54,8 @@
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-validatealpha-feat-33808-deployment/amplify-cfn-templates/api/cloudformation-template.json",
         "logicalId": "apivalidateAlphaAPI"
       },
-      "lastPushTimeStamp": "2021-06-29T10:58:31.304Z",
+      "lastPushTimeStamp": "2021-06-29T23:38:44.788Z",
       "lastPushDirHash": "tAEFCTFif6aHrqeWuvNQD/IBceo="
-    }
-  },
-  "function": {
-    "validateAddCognitoUserToUserTable": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda",
-      "lastBuildTimeStamp": "2021-06-29T10:58:41.750Z",
-      "lastPackageTimeStamp": "2021-06-29T10:58:41.787Z",
-      "distZipFilename": "validateAddCognitoUserToUserTable-4e544e6a636555337244-build.zip",
-      "s3Bucket": {
-        "deploymentBucketName": "amplify-validatealpha-feat-33808-deployment",
-        "s3Key": "amplify-builds/validateAddCognitoUserToUserTable-4e544e6a636555337244-build.zip"
-      },
-      "providerMetadata": {
-        "s3TemplateURL": "https://s3.amazonaws.com/amplify-validatealpha-feat-33808-deployment/amplify-cfn-templates/function/validateAddCognitoUserToUserTable-cloudformation-template.json",
-        "logicalId": "functionvalidateAddCognitoUserToUserTable"
-      },
-      "lastPushTimeStamp": "2021-06-29T10:58:42.192Z"
     }
   }
 }
