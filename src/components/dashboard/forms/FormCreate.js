@@ -21,6 +21,7 @@ import { Close } from '@material-ui/icons';
 
 // EXISTING ISSUES
 // 1. Options are not unique to questions. The .map function displays the same options in each question.
+// 2. Question 1 options only display first option. The options array only contains the first item.
 
 const FormCreate = () => {
   // Company part of form
@@ -36,7 +37,7 @@ const FormCreate = () => {
   });
 
   // Validation answers part of form
-  const blankOption = { option: [] };
+  const blankOption = { };
   const [optionState, setOptionState] = useState([
     { ...blankOption },
   ]);
@@ -102,14 +103,14 @@ const FormCreate = () => {
     const createFormInput = {
       id: `form-${formID}`,
       companyID: 'company-2',
-      name: name,
-      description: description,
-      // validations: JSON.stringify(inputState)
-      validations: inputState
+      // name: name,
+      // description: description,
+      validations: JSON.stringify(inputState)
+      // validations: inputState
     };
 
     console.log('formData', createFormInput);
-    // await API.graphql(graphqlOperation(createForm, { input: createFormInput }));
+    await API.graphql(graphqlOperation(createForm, { input: createFormInput }));
   };
 
   // Preview the form
