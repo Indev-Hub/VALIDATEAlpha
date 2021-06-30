@@ -7,7 +7,7 @@ type User @model {
 
 type Company @model @key(name: "byUser", fields: ["userID"]) {
   id: ID!
-  title: String! 
+  name: String! 
   userID: ID!
   user: User @connection(fields: ["userID"])
   forms: [Form] @connection(keyName: "byCompany", fields: ["id"])
@@ -16,6 +16,8 @@ type Company @model @key(name: "byUser", fields: ["userID"]) {
 type Form @model @key(name: "byCompany", fields: ["companyID"]) {
   id: ID!
   companyID: ID!
+  title: String
+  description: String
   company: Company @connection(fields: ["companyID"])
   validations: AWSJSON
 }

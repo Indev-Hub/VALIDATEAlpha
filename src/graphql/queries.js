@@ -10,7 +10,7 @@ export const getUser = /* GraphQL */ `
       companies {
         items {
           id
-          title
+          name
           userID
           createdAt
           updatedAt
@@ -47,7 +47,7 @@ export const getCompany = /* GraphQL */ `
   query GetCompany($id: ID!) {
     getCompany(id: $id) {
       id
-      title
+      name
       userID
       user {
         id
@@ -63,6 +63,8 @@ export const getCompany = /* GraphQL */ `
         items {
           id
           companyID
+          title
+          description
           validations
           createdAt
           updatedAt
@@ -83,7 +85,7 @@ export const listCompanys = /* GraphQL */ `
     listCompanys(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        title
+        name
         userID
         user {
           id
@@ -107,9 +109,11 @@ export const getForm = /* GraphQL */ `
     getForm(id: $id) {
       id
       companyID
+      title
+      description
       company {
         id
-        title
+        name
         userID
         user {
           id
@@ -140,9 +144,11 @@ export const listForms = /* GraphQL */ `
       items {
         id
         companyID
+        title
+        description
         company {
           id
-          title
+          name
           userID
           createdAt
           updatedAt
@@ -163,9 +169,11 @@ export const getFormSubmission = /* GraphQL */ `
       form {
         id
         companyID
+        title
+        description
         company {
           id
-          title
+          name
           userID
           createdAt
           updatedAt
@@ -193,6 +201,8 @@ export const listFormSubmissions = /* GraphQL */ `
         form {
           id
           companyID
+          title
+          description
           validations
           createdAt
           updatedAt

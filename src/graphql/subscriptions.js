@@ -10,7 +10,7 @@ export const onCreateUser = /* GraphQL */ `
       companies {
         items {
           id
-          title
+          name
           userID
           createdAt
           updatedAt
@@ -31,7 +31,7 @@ export const onUpdateUser = /* GraphQL */ `
       companies {
         items {
           id
-          title
+          name
           userID
           createdAt
           updatedAt
@@ -52,7 +52,7 @@ export const onDeleteUser = /* GraphQL */ `
       companies {
         items {
           id
-          title
+          name
           userID
           createdAt
           updatedAt
@@ -68,7 +68,7 @@ export const onCreateCompany = /* GraphQL */ `
   subscription OnCreateCompany {
     onCreateCompany {
       id
-      title
+      name
       userID
       user {
         id
@@ -84,6 +84,8 @@ export const onCreateCompany = /* GraphQL */ `
         items {
           id
           companyID
+          title
+          description
           validations
           createdAt
           updatedAt
@@ -99,7 +101,7 @@ export const onUpdateCompany = /* GraphQL */ `
   subscription OnUpdateCompany {
     onUpdateCompany {
       id
-      title
+      name
       userID
       user {
         id
@@ -115,6 +117,8 @@ export const onUpdateCompany = /* GraphQL */ `
         items {
           id
           companyID
+          title
+          description
           validations
           createdAt
           updatedAt
@@ -130,7 +134,7 @@ export const onDeleteCompany = /* GraphQL */ `
   subscription OnDeleteCompany {
     onDeleteCompany {
       id
-      title
+      name
       userID
       user {
         id
@@ -146,6 +150,8 @@ export const onDeleteCompany = /* GraphQL */ `
         items {
           id
           companyID
+          title
+          description
           validations
           createdAt
           updatedAt
@@ -162,9 +168,11 @@ export const onCreateForm = /* GraphQL */ `
     onCreateForm {
       id
       companyID
+      title
+      description
       company {
         id
-        title
+        name
         userID
         user {
           id
@@ -190,9 +198,11 @@ export const onUpdateForm = /* GraphQL */ `
     onUpdateForm {
       id
       companyID
+      title
+      description
       company {
         id
-        title
+        name
         userID
         user {
           id
@@ -218,9 +228,11 @@ export const onDeleteForm = /* GraphQL */ `
     onDeleteForm {
       id
       companyID
+      title
+      description
       company {
         id
-        title
+        name
         userID
         user {
           id
@@ -249,9 +261,11 @@ export const onCreateFormSubmission = /* GraphQL */ `
       form {
         id
         companyID
+        title
+        description
         company {
           id
-          title
+          name
           userID
           createdAt
           updatedAt
@@ -274,9 +288,11 @@ export const onUpdateFormSubmission = /* GraphQL */ `
       form {
         id
         companyID
+        title
+        description
         company {
           id
-          title
+          name
           userID
           createdAt
           updatedAt
@@ -299,9 +315,11 @@ export const onDeleteFormSubmission = /* GraphQL */ `
       form {
         id
         companyID
+        title
+        description
         company {
           id
-          title
+          name
           userID
           createdAt
           updatedAt
