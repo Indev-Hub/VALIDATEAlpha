@@ -3,203 +3,166 @@ import { Grid } from '@material-ui/core';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import Controls from './controls/_controls';
-// import formData from './testing/tempFormData';
-
-// initialValues = {}
-// for (let i = 1; i <= formData.validations.length; i++) {
-//   initialValues[`q${i}`] = {question: "", answer: ""}  
-// }
-
-// setValues() {
-//  q1.question = validate.question
-//  q1.answer = values.q1
-//  }
-
-// // Initialize form field values
-// const formDataInitialValues = {};
-// const formDataValidation = {};
-
-// formData.validations.forEach((validation, index) => {
-//   // const name = `${formData.id}-q${index + 1}`
-//   const name = `${index + 1}. ${validation.question}`
-//   if (validation.type === 'Checkbox') {
-//     formDataInitialValues[name] = [];
-//   } else if (validation.type === 'Rating') {
-//     formDataInitialValues[name] = 0;
-//   } else {
-//     formDataInitialValues[name] = '';
-//   };
-// });
-
-// // Validate form response requirements
-// formData.validations.forEach((validation, index) => {
-//   // const name = `${formData.id}-q${index + 1}`
-//   const name = `${validation.question}`
-//   if (validation.type === 'Checkbox') {
-//     formDataValidation[name] = Yup.array()
-//       .min(1, 'Please select one or more items.');
-//   } else if (validation.type === 'Rating') {
-//     formDataValidation[name] = Yup.number()
-//       .moreThan(0, 'Please rate this item.')
-//   } else {
-//     formDataValidation[name] = Yup.string().required('Required');
-//   };
-// });
 
 // Generate a customized form from 'tempFormData'
 const FormSubmission = props => {
-  const { formData, displaySubmit = true } = props;
+  // Destructure props passed from pages rendering this component
+  const { formDesign, displaySubmitButton = true } = props;
 
-  const formDataStructured = {
-    formID: formData.id,
+  // Format form submission structure
+  const formSubmit = {
+    formID: formDesign.id,
     answers: {},
   };
 
-  for (let i = 1; i <= formData.validations.length; i++) {
-    formDataStructured.answers[`q${i}`] = {
+  for (let i = 1; i <= formDesign.validations.length; i++) {
+    formSubmit.answers[`q${i}`] = {
       question: '',
       answer: '',
     }
-  }
+  };
 
-  // console.log('formDataStructured', formDataStructured)
+  // // Set-up useState for form data
+  // const [formState, setFormState] = useState(formSubmit);
 
-  const [formDataState, setFormDataState] = useState(formDataStructured);
+  // // Change formState when component rendered 
+  // // ** This was removed from each control conditional in return() below **
+  // // ** because it appears to be causing an infinite loop. **
+  // setFormState({
+  //   ...formState,
+  //   answers: {
+  //     [`q${index + 1}`]: {
+  //       ...formState.answers[`q${index + 1}`],
+  //       question: input.question
+  //     }
+  //   }
+  // })
 
-  // console.log('formDataStructured', formDataState)
+  // // Merge input values with rest of form submission structure
+  // const formSubmitMergeInput = (values) => {
+  //   Object.keys(values).forEach(questionNum => {
+  //     setFormState({
+  //       ...formState,
+  //       answers: {
+  //         [questionNum]: {
+  //           ...formState.answers[questionNum],
+  //           answer: values[questionNum]
+  //         }
+  //       }
+  //     })
+  //   });
+  // };
 
-  // Initialize form field values
-  const formDataInitialValues = {};
-  const formDataValidation = {};
+  const formSubmitMergeInput = (values) => {
+    Object.keys(formSubmit.answers).forEach(questionNum => {
+      formSubmit.answers[questionNum]['answer'] = values[questionNum];
+    });
+  };
 
-  formData.validations.forEach((validation, index) => {
-    // const name = `${formData.id}-q${index + 1}`
-    const name = `${index + 1}. ${validation.question}`
-    if (validation.type === 'Checkbox') {
-      formDataInitialValues[name] = [];
-    } else if (validation.type === 'Rating') {
-      formDataInitialValues[name] = 0;
+  // Create Formik intial field values (answer types)
+  const initialValues = {};
+  formDesign.validations.forEach((input, index) => {
+    const name = `q${index + 1}`
+    if (input.type === 'Checkbox') {
+      initialValues[name] = [];
+    } else if (input.type === 'Rating') {
+      initialValues[name] = 0;
     } else {
-      formDataInitialValues[name] = '';
+      initialValues[name] = '';
     };
   });
 
-  // Validate form response requirements
-  formData.validations.forEach((validation, index) => {
-    // const name = `${formData.id}-q${index + 1}`
-    const name = `${validation.question}`
-    if (validation.type === 'Checkbox') {
-      formDataValidation[name] = Yup.array()
+  // Create Formik validation schema
+  const validationSchema = {};
+  formDesign.validations.forEach((input, index) => {
+    const name = `q${index + 1}`
+    if (input.type === 'Checkbox') {
+      validationSchema[name] = Yup.array()
         .min(1, 'Please select one or more items.');
-    } else if (validation.type === 'Rating') {
-      formDataValidation[name] = Yup.number()
+    } else if (input.type === 'Rating') {
+      validationSchema[name] = Yup.number()
         .moreThan(0, 'Please rate this item.')
     } else {
-      formDataValidation[name] = Yup.string().required('Required');
+      validationSchema[name] = Yup.string().required('Required');
     };
   });
 
   return (
     <>
-      <h2>{formData.name}</h2>
-      <h3>{formData.description}</h3>
+      <h2>{formDesign.name}</h2>
+      <h3>{formDesign.description}</h3>
 
       <Formik
         initialValues={{
-          ...formDataInitialValues
+          ...initialValues
         }}
         validationSchema={Yup.object({
-          ...formDataValidation
+          ...validationSchema
         })}
 
         onSubmit={(values, { setSubmitting }) => {
           setTimeout(() => {
-            const responseData = {
-              formID: formData.id,
-              answers: {
-                q1: {
-                  question: "How old are you?",
-                  answer: 24
-                },
-                q2: {
-                  question: "Where are you?",
-                  answer: "Here"
-                }
-              },
-            }
-            alert(JSON.stringify(responseData, null, 2));
+            console.log('values:', values);
+            formSubmitMergeInput(values);
+            alert(JSON.stringify(formSubmit, null, 2));
             setSubmitting(false);
           }, 400);
-          // onSubmit={async (values, { setSubmitting }) => {
-          //   setTimeout(() => {
-          //     const submissionData = {
-          //       formID: formData.id,
-          //       answers: JSON.stringify({ ...values }),
-          //     }
-          //     await API.graphql(graphqlOperation(createFormSubmission, { input: submissionData }));
-          //     setSubmitting(false);
-          //   }, 400);
         }}
       >
         <Form autoComplete="off">
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              {formData.validations.map((validation, index) => {
-                if (validation.type === "Checkbox") {
-                  // const questionNumber = `q${index + 1}`;
-                  // setFormDataState({
-                  //   ...formDataState, 
-                  //   [answers.questionNumber]: validation.question
-                  // })
+              {formDesign.validations.map((input, index) => {
+                if (input.type === "Checkbox") {
+                  formSubmit.answers[`q${index + 1}`]['question'] = input.question;
                   return (
                     <Controls.Checkbox
                       key={index}
-                      question={validation.question}
-                      // name={`${formData.id}-q${index + 1}`}
-                      name={`${validation.question}`}
-                      options={validation.option}
+                      question={input.question}
+                      name={`q${index + 1}`}
+                      options={input.option}
                     />
                   )
                 }
-                if (validation.type === "Radio Group") {
+                if (input.type === "Radio Group") {
+                  formSubmit.answers[`q${index + 1}`]['question'] = input.question;
                   return (
                     <Controls.RadioGroup
                       key={index}
-                      question={validation.question}
-                      // name={`${formData.id}-q${index + 1}`}
-                      name={`${validation.question}`}
-                      options={validation.option}
+                      question={input.question}
+                      name={`q${index + 1}`}
+                      options={input.option}
                     />
                   )
                 }
-                if (validation.type === "Rating") {
+                if (input.type === "Rating") {
+                  formSubmit.answers[`q${index + 1}`]['question'] = input.question;
                   return (
                     <Controls.Rating
                       key={index}
-                      question={validation.question}
-                      // name={`${formData.id}-q${index + 1}`}
-                      name={`${validation.question}`}
+                      question={input.question}
+                      name={`q${index + 1}`}
                     />
                   )
                 }
-                if (validation.type === "Dropdown") {
+                if (input.type === "Dropdown") {
+                  formSubmit.answers[`q${index + 1}`]['question'] = input.question;
                   return (
                     <Controls.Select
                       key={index}
-                      question={validation.question}
-                      // name={`${formData.id}-q${index + 1}`}
-                      name={`${validation.question}`}
-                      options={validation.option}
+                      question={input.question}
+                      name={`q${index + 1}`}
+                      options={input.option}
                     />
                   )
                 }
-                if (validation.type === "Text Input") {
+                if (input.type === "Text Input") {
+                  formSubmit.answers[`q${index + 1}`]['question'] = input.question;
                   return (
                     <Controls.TextField
                       key={index}
-                      question={validation.question}
-                      // name={`${formData.id}-q${index + 1}`}
-                      name={`${validation.question}`}
+                      question={input.question}
+                      name={`q${index + 1}`}
                       type="text"
                       placeholder="Type your answer"
                     />
@@ -207,7 +170,7 @@ const FormSubmission = props => {
                 }
               })
               }
-              {displaySubmit ? (
+              {displaySubmitButton ? (
                 <Controls.Button type="submit" text="Submit" />
               ) : null}
             </Grid>

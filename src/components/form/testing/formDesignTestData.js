@@ -1,16 +1,16 @@
-const formData = {
+const formDesign = {
   id: "form1",
   companyID: "company1",
   name: "Sample Form 1",
   description: "This is the description of sample form 1.",
   validations: [
     {
-      question: "Question 1",
+      question: "What is your name?",
       type: "Text Input",
       option: ""
     },
     {
-      question: "Question 2",
+      question: "What languages do you speak?",
       type: "Checkbox",
       option: [
         "Checkbox 1",
@@ -21,7 +21,7 @@ const formData = {
       ]
     },
     {
-      question: "Question 3",
+      question: "Which color is your favorite?",
       type: "Dropdown",
       option: [
         "Red",
@@ -34,7 +34,7 @@ const formData = {
       ]
     },
     {
-      question: "Question 4",
+      question: "Select your preference:",
       type: "Radio Group",
       option: [
         "Radio One",
@@ -43,14 +43,14 @@ const formData = {
       ]
     },
     {
-      question: "Question 5",
+      question: "How do you rate this?",
       type: "Rating",
       option: ""
     },
   ]
 };
 
-const formDataX = {
+const formDesignX = {
   id: "form2",
   companyID: "company1",
   name: "Sample Form 2",
@@ -119,4 +119,4 @@ const formDataX = {
   ]
 };
 
-export default formData;
+export default formDesign;

@@ -40,7 +40,10 @@ const Checkbox = ({
           return (
             <FormControlLabel
               key={key}
-              control={<MuiCheckbox {...config} />}
+              control={<MuiCheckbox
+                {...config}
+                // checked={field.value.includes(options.value)}
+              />}
               label={option}
             />
           )

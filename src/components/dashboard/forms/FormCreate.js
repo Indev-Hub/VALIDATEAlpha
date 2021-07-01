@@ -16,7 +16,7 @@ import { uniqueId } from 'lodash';
 import { createForm } from 'src/graphql/mutations';
 
 import FormSubmission from 'src/components/form/FormSubmission';
-import formData from 'src/components/form/testing/tempFormData';
+import formDesign from 'src/components/form/testing/formDesignTestData';
 import { Close } from '@material-ui/icons';
 
 // EXISTING ISSUES
@@ -69,7 +69,7 @@ const FormCreate = () => {
   };
 
     // Add answer option to form and add the new option to our optionState array
-    const addOption = () => {
+    const addOption = (e) => {
       setOptionState([...optionState, { ...blankOption }]);
     };
   
@@ -117,7 +117,7 @@ const FormCreate = () => {
     };
 
     console.log('formData', createFormInput);
-    await API.graphql(graphqlOperation(createForm, { input: createFormInput }));
+    // await API.graphql(graphqlOperation(createForm, { input: createFormInput }));
   };
 
   // Preview the form
@@ -329,7 +329,7 @@ const FormCreate = () => {
       <br />
       <Paper mt={4} elevation={3}>
         <Box p={4}>
-          <FormSubmission formData={formData} displaySubmit={false} />
+          <FormSubmission formDesign={formDesign} displaySubmitButton={true} />
         </Box>
       </Paper>
     </>
