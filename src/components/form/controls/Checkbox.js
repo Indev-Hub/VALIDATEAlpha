@@ -1,58 +1,41 @@
 import React from 'react';
 import {
   Checkbox as MuiCheckbox,
+  FormControl,
   FormControlLabel,
   FormGroup,
   FormHelperText,
   Typography
 } from '@material-ui/core';
-import { useField, useFormikContext } from 'formik';
+import { Field, useField } from 'formik';
 
-const Checkbox = ({
-  name,
-  options,
-  ...other
-}) => {
-  const { setFieldValue } = useFormikContext();
-  const [field, meta] = useField(name);
-
-  const handleChange = e => {
-    const { value } = e.target;
-    setFieldValue(name, value);
-  }
-
-  const config = {
-    ...field,
-    onChange: handleChange
-  }
-
-  if (meta && meta.touched && meta.error) {
-    config.error = true;
-    // config.helperText = meta.error;
-  }
-
+const Checkbox = (props) => {
+  const [_field, meta] = useField({ ...props, type: 'checkbox' });
+  const { label, options, name } = props;
   return (
     <div className="form-group">
-      <Typography>{other.label}</Typography>
-      <FormGroup row>
+      {/* <label id='my-checkbox-group'>{label}</label> */}
+      <Typography>{label}</Typography>
+      <div role='group' aria-labelledby='my-checkbox-group'>
         {options.map(option => {
-          const key = option.split(' ').join('-').toLowerCase();
+          const value = option.split(' ').join('-').toLowerCase();
           return (
-            <FormControlLabel
-              key={key}
-              control={<MuiCheckbox
-                {...config}
-                // checked={field.value.includes(options.value)}
-              />}
-              label={option}
-            />
+            <label key={value}>
+              <Field
+                type='checkbox'
+                name={name}
+                id={value}
+                value={value}
+              />
+              {option}
+            </label>
           )
         })}
-      </FormGroup>
+      </div>
       {meta.touched && meta.error ? (
         <FormHelperText error>{meta.error}</FormHelperText>
       ) : null}
-    </div >
+    </div>
   );
 };
 
