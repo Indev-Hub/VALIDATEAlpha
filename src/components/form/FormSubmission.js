@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { API, graphqlOperation } from 'aws-amplify';
+import { createFormSubmission } from 'src/graphql/mutations';
 import { Grid } from '@material-ui/core';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
@@ -50,7 +52,7 @@ const FormSubmission = props => {
   });
 
   return (
-    <>
+    <React.Fragment>
       <h2>{formDesign.name}</h2>
       <h3>{formDesign.description}</h3>
 
@@ -62,83 +64,92 @@ const FormSubmission = props => {
           ...validationSchema
         })}
 
-        onSubmit={(values, { setSubmitting }) => {
-          setTimeout(() => {
-            // Add user input values into Q&A submission structure
-            let formSubmission = { ...submitStructure };
-            Object.keys(formSubmission.answers).forEach(questionNum => {
-              formSubmission.answers[questionNum]['answer'] = values[questionNum];
-            });
-            // Stringify 'answers' collection for single DynamoDB field
-            formSubmission.answers = JSON.stringify(formSubmission.answers)
-            // Preview output
-            alert(JSON.stringify(formSubmission, null, 2));
+        onSubmit={async (values, { setSubmitting }) => {
+          // Add user input values into Q&A submission structure
+          let formSubmission = { ...submitStructure };
+          Object.keys(formSubmission.answers).forEach(questionNum => {
+            formSubmission.answers[questionNum]['answer'] = values[questionNum];
+          });
 
-            setSubmitting(false);
-          }, 400);
+          // Preview output via window alert and console
+          alert(JSON.stringify(formSubmission, null, 2));
+          console.log('formSubmission:', formSubmission)
+
+          // Stringify 'answers' collection for single DynamoDB field
+          formSubmission.answers = JSON.stringify(formSubmission.answers)
+
           // // POST to DynamoDB
           // await API.graphql(graphqlOperation(
           //   createFormSubmission,
           //   { input: formSubmission }
-          // ))
+          // ));
+
+          setSubmitting(false);
         }}
       >
         <Form autoComplete="off">
           <Grid container spacing={2}>
             <Grid item xs={12}>
               {formDesign.validations.map((question, index) => {
-                if (question.type === "Checkbox") {
-                  return (
-                    <Controls.Checkbox
-                      key={index}
-                      label={question.question}
-                      name={`q${index + 1}`}
-                      options={question.option}
-                    />
-                  )
+                switch (question.type) {
+                  case 'Checkbox':
+                    return (
+                      <Controls.Checkbox
+                        key={index}
+                        label={question.question}
+                        name={`q${index + 1}`}
+                        options={question.option}
+                      />
+                    );
+                    break;
+                  case 'Radio Group':
+                    return (
+                      <Controls.RadioGroup
+                        key={index}
+                        label={question.question}
+                        name={`q${index + 1}`}
+                        options={question.option}
+                      />
+                    );
+                    break;
+                  case 'Rating':
+                    return (
+                      <Controls.Rating
+                        key={index}
+                        label={question.question}
+                        name={`q${index + 1}`}
+                      />
+                    );
+                    break;
+                  case 'Dropdown':
+                    return (
+                      <Controls.Select
+                        key={index}
+                        label={question.question}
+                        name={`q${index + 1}`}
+                        options={question.option}
+                      />
+                    );
+                    break;
+                  case 'Text Input':
+                    return (
+                      <Controls.TextField
+                        key={index}
+                        label={question.question}
+                        name={`q${index + 1}`}
+                        type="text"
+                        placeholder="Type your answer"
+                      />
+                    );
+                    break;
+                  default:
+                    return (
+                      <div>
+                        <h3>Unable to match form type '{question.type}'.</h3>
+                      </div>
+                    );
                 }
-                if (question.type === "Radio Group") {
-                  return (
-                    <Controls.RadioGroup
-                      key={index}
-                      label={question.question}
-                      name={`q${index + 1}`}
-                      options={question.option}
-                    />
-                  )
-                }
-                if (question.type === "Rating") {
-                  return (
-                    <Controls.Rating
-                      key={index}
-                      label={question.question}
-                      name={`q${index + 1}`}
-                    />
-                  )
-                }
-                if (question.type === "Dropdown") {
-                  return (
-                    <Controls.Select
-                      key={index}
-                      label={question.question}
-                      name={`q${index + 1}`}
-                      options={question.option}
-                    />
-                  )
-                }
-                if (question.type === "Text Input") {
-                  return (
-                    <Controls.TextField
-                      key={index}
-                      label={question.question}
-                      name={`q${index + 1}`}
-                      type="text"
-                      placeholder="Type your answer"
-                    />
-                  )
-                }
-              })
-              }
+              })}
               {displaySubmitButton ? (
                 <Controls.Button type="submit" text="Submit" />
               ) : null}
@@ -146,7 +157,7 @@ const FormSubmission = props => {
           </Grid>
         </Form>
       </Formik>
-    </>
+    </React.Fragment>
   );
 };
 
