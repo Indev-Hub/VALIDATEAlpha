@@ -1,6 +1,9 @@
 import React from 'react';
-import { FormHelperText, Typography } from '@material-ui/core';
-import { Rating as MuiRating } from '@material-ui/lab';
+import {
+  FormHelperText,
+  Rating as MuiRating,
+  Typography
+} from '@material-ui/core';
 import { useField } from 'formik';
 
 const Rating = props => {
