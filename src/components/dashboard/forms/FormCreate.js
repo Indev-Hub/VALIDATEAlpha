@@ -14,16 +14,28 @@ import { Plus } from 'src/icons';
 import { API, Auth, graphqlOperation } from 'aws-amplify';
 import { uniqueId } from 'lodash';
 import { createForm } from 'src/graphql/mutations';
+import { Close } from '@material-ui/icons';
 
+import Controls from 'src/components/form/controls/_controls';
 import FormSubmission from 'src/components/form/FormSubmission';
 import formDesign from 'src/components/form/testing/formDesignTestData';
-import { Close } from '@material-ui/icons';
+import FormsList from 'src/components/form/testing/FormsList';
+import SubmissionsList from 'src/components/form/testing/SubmissionsList';
 
 // EXISTING ISSUES
 // 1. Options are not unique to questions. The .map function displays the same options in each question.
 // 2. Question 1 options only display first option. The options array only contains the first item.
 
 const FormCreate = () => {
+  const FORM_CONTROLS = [
+    'Button',
+    'Checkbox',
+    'Dropdown',
+    'Radio Group',
+    'Rating',
+    'Text Input',
+  ]
+
   // Company part of form
   const [ownerState, setOwnerState] = useState({
     title: '',
@@ -37,7 +49,7 @@ const FormCreate = () => {
   });
 
   // Validation answers part of form
-  const blankOption = { };
+  const blankOption = {};
   const [optionState, setOptionState] = useState([
     { ...blankOption },
   ]);
@@ -68,25 +80,25 @@ const FormCreate = () => {
     // console.log('updated inputs:', updatedInputs)
   };
 
-    // Add answer option to form and add the new option to our optionState array
-    const addOption = (e) => {
-      setOptionState([...optionState, { ...blankOption }]);
-    };
-  
-    // Removes answer option from mapped array.
-    const removeOption = (index) => {
-      const array = [...optionState]; //make copy
-      array.splice(index, 1);
-      setOptionState([...array]);
-    };
-  
-    // Update answer portion of form every time a field is modified
-    const handleOptionChange = (e) => {
-      const updatedOptions = [...optionState];
-      updatedOptions[e.target.dataset.idx][e.target.id] = e.target.value;
-      setOptionState(updatedOptions);
-      // console.log('updated options:', updatedInputs)
-    };
+  // Add answer option to form and add the new option to our optionState array
+  const addOption = (e) => {
+    setOptionState([...optionState, { ...blankOption }]);
+  };
+
+  // Removes answer option from mapped array.
+  const removeOption = (index) => {
+    const array = [...optionState]; //make copy
+    array.splice(index, 1);
+    setOptionState([...array]);
+  };
+
+  // Update answer portion of form every time a field is modified
+  const handleOptionChange = (e) => {
+    const updatedOptions = [...optionState];
+    updatedOptions[e.target.dataset.idx][e.target.id] = e.target.value;
+    setOptionState(updatedOptions);
+    // console.log('updated options:', updatedInputs)
+  };
 
   const uploadForm = async () => {
     //Get user attributes
@@ -100,7 +112,7 @@ const FormCreate = () => {
       max = Math.floor(max);
       return Math.floor(Math.random() * (max - min + 1)) + min;
     }
-  
+
     // Destructure form properties
     const { title, description } = ownerState;
     const { type, question, option } = inputState;
@@ -324,6 +336,7 @@ const FormCreate = () => {
           </Button>
         </form>
       </Formik>
+
       {/* <div id="previewForm"></div> */}
       <br />
       <br />
@@ -332,6 +345,9 @@ const FormCreate = () => {
           <FormSubmission formDesign={formDesign} displaySubmitButton={true} />
         </Box>
       </Paper>
+      <SubmissionsList />
+      <FormsList />
+
     </>
   );
 };
