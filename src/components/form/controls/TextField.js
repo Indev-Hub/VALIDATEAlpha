@@ -20,7 +20,7 @@ const TextField = props => {
 
   return (
     <div className="form-group">
-      <Typography>{props.question}</Typography>
+      <Typography>{props.label}</Typography>
       <MuiTextField {...config} />
     </div>
   );

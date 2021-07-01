@@ -4,62 +4,24 @@ import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import Controls from './controls/_controls';
 
-// Generate a customized form from 'tempFormData'
 const FormSubmission = props => {
-  // Destructure props passed from pages rendering this component
+  // Destructure formDesign (=FormCreate form object) and other props
   const { formDesign, displaySubmitButton = true } = props;
 
-  // Format form submission structure
-  const formSubmit = {
+  // Format structure for form submission
+  const submitStructure = {
     formID: formDesign.id,
     answers: {},
   };
 
-  for (let i = 1; i <= formDesign.validations.length; i++) {
-    formSubmit.answers[`q${i}`] = {
-      question: '',
+  for (let i = 0; i < formDesign.validations.length; i++) {
+    submitStructure.answers[`q${i + 1}`] = {
+      question: formDesign.validations[i].question,
       answer: '',
     }
   };
 
-  // // Set-up useState for form data
-  // const [formState, setFormState] = useState(formSubmit);
-
-  // // Change formState when component rendered 
-  // // ** This was removed from each control conditional in return() below **
-  // // ** because it appears to be causing an infinite loop. **
-  // setFormState({
-  //   ...formState,
-  //   answers: {
-  //     [`q${index + 1}`]: {
-  //       ...formState.answers[`q${index + 1}`],
-  //       question: input.question
-  //     }
-  //   }
-  // })
-
-  // // Merge input values with rest of form submission structure
-  // const formSubmitMergeInput = (values) => {
-  //   Object.keys(values).forEach(questionNum => {
-  //     setFormState({
-  //       ...formState,
-  //       answers: {
-  //         [questionNum]: {
-  //           ...formState.answers[questionNum],
-  //           answer: values[questionNum]
-  //         }
-  //       }
-  //     })
-  //   });
-  // };
-
-  const formSubmitMergeInput = (values) => {
-    Object.keys(formSubmit.answers).forEach(questionNum => {
-      formSubmit.answers[questionNum]['answer'] = values[questionNum];
-    });
-  };
-
-  // Create Formik intial field values (answer types)
+  // Create intial field values (answer types) for Formik
   const initialValues = {};
   formDesign.validations.forEach((input, index) => {
     const name = `q${index + 1}`
@@ -72,7 +34,7 @@ const FormSubmission = props => {
     };
   });
 
-  // Create Formik validation schema
+  // Create Formik/Yup validation schema
   const validationSchema = {};
   formDesign.validations.forEach((input, index) => {
     const name = `q${index + 1}`
@@ -102,66 +64,73 @@ const FormSubmission = props => {
 
         onSubmit={(values, { setSubmitting }) => {
           setTimeout(() => {
-            console.log('values:', values);
-            formSubmitMergeInput(values);
-            alert(JSON.stringify(formSubmit, null, 2));
+            // Add user input values into Q&A submission structure
+            let formSubmission = { ...submitStructure };
+            Object.keys(formSubmission.answers).forEach(questionNum => {
+              formSubmission.answers[questionNum]['answer'] = values[questionNum];
+            });
+            // Stringify 'answers' collection for single DynamoDB field
+            formSubmission.answers = JSON.stringify(formSubmission.answers)
+            // Preview output
+            alert(JSON.stringify(formSubmission, null, 2));
+
             setSubmitting(false);
           }, 400);
+          // // POST to DynamoDB
+          // await API.graphql(graphqlOperation(
+          //   createFormSubmission,
+          //   { input: formSubmission }
+          // ))
         }}
       >
         <Form autoComplete="off">
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              {formDesign.validations.map((input, index) => {
-                if (input.type === "Checkbox") {
-                  formSubmit.answers[`q${index + 1}`]['question'] = input.question;
+              {formDesign.validations.map((question, index) => {
+                if (question.type === "Checkbox") {
                   return (
                     <Controls.Checkbox
                       key={index}
-                      question={input.question}
+                      label={question.question}
                       name={`q${index + 1}`}
-                      options={input.option}
+                      options={question.option}
                     />
                   )
                 }
-                if (input.type === "Radio Group") {
-                  formSubmit.answers[`q${index + 1}`]['question'] = input.question;
+                if (question.type === "Radio Group") {
                   return (
                     <Controls.RadioGroup
                       key={index}
-                      question={input.question}
+                      label={question.question}
                       name={`q${index + 1}`}
-                      options={input.option}
+                      options={question.option}
                     />
                   )
                 }
-                if (input.type === "Rating") {
-                  formSubmit.answers[`q${index + 1}`]['question'] = input.question;
+                if (question.type === "Rating") {
                   return (
                     <Controls.Rating
                       key={index}
-                      question={input.question}
+                      label={question.question}
                       name={`q${index + 1}`}
                     />
                   )
                 }
-                if (input.type === "Dropdown") {
-                  formSubmit.answers[`q${index + 1}`]['question'] = input.question;
+                if (question.type === "Dropdown") {
                   return (
                     <Controls.Select
                       key={index}
-                      question={input.question}
+                      label={question.question}
                       name={`q${index + 1}`}
-                      options={input.option}
+                      options={question.option}
                     />
                   )
                 }
-                if (input.type === "Text Input") {
-                  formSubmit.answers[`q${index + 1}`]['question'] = input.question;
+                if (question.type === "Text Input") {
                   return (
                     <Controls.TextField
                       key={index}
-                      question={input.question}
+                      label={question.question}
                       name={`q${index + 1}`}
                       type="text"
                       placeholder="Type your answer"

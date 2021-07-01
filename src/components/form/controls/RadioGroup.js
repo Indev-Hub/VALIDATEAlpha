@@ -36,8 +36,8 @@ const RadioGroup = ({
   return (
     <div className="form-group">
       <FormControl component="fieldset">
-        {/* <FormLabel component="legend">{other.question}</FormLabel> */}
-        <Typography>{other.question}</Typography>
+        {/* <FormLabel component="legend">{other.label}</FormLabel> */}
+        <Typography>{other.label}</Typography>
         <MuiRadioGroup {...config}>
           {options.map(option => {
             const value = option.split(' ').join('-').toLowerCase();

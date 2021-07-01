@@ -33,7 +33,7 @@ const Checkbox = ({
 
   return (
     <div className="form-group">
-      <Typography>{other.question}</Typography>
+      <Typography>{other.label}</Typography>
       <FormGroup row>
         {options.map(option => {
           const key = option.split(' ').join('-').toLowerCase();
