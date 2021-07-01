@@ -1,4 +1,61 @@
 const formDesign = {
+  id: "2",
+  companyID: "company-000",
+  name: "Sample Form 6",
+  description: "This is the description of a sample form.",
+  validations: [
+    {
+      question: "What is your name?",
+      type: "Text Input",
+      option: ""
+    },
+    {
+      question: "How old are you?",
+      type: "Number",
+      option: ""
+    },
+    {
+      question: "What languages do you speak?",
+      type: "Checkbox",
+      option: [
+        "Checkbox 1",
+        "Checkbox 2",
+        "Checkbox 3",
+        "Checkbox 4",
+        "Checkbox 5",
+      ]
+    },
+    {
+      question: "Which color is your favorite?",
+      type: "Dropdown",
+      option: [
+        "Red",
+        "Orange",
+        "Yellow",
+        "Green",
+        "Blue",
+        "Indigo",
+        "Violet",
+      ]
+    },
+    {
+      question: "Select your preference:",
+      type: "Radio Group",
+      option: [
+        "Radio One",
+        "Radio Two",
+        "Radio Three",
+      ]
+    },
+    {
+      question: "How do you rate this?",
+      type: "Rating",
+      option: ""
+    },
+  ]
+};
+
+const formDesignX = {
   id: "form1",
   companyID: "company1",
   name: "Sample Form 1",
@@ -50,7 +107,7 @@ const formDesign = {
   ]
 };
 
-const formDesignX = {
+const formDesignY = {
   id: "form2",
   companyID: "company1",
   name: "Sample Form 2",
