@@ -48,14 +48,9 @@ const FormCreate = () => {
     [e.target.name]: e.target.value,
   });
 
-  // Validation answers part of form
-  const blankOption = {};
-  const [optionState, setOptionState] = useState([
-    { ...blankOption },
-  ]);
-
   // Validation questions part of form
-  const blankInput = { question: '', type: '', options: optionState };
+  // const blankOption = {};
+  const blankInput = { question: '', type: '', options: [{}] };
   const [inputState, setInputState] = useState([
     { ...blankInput },
   ]);
@@ -65,7 +60,7 @@ const FormCreate = () => {
     setInputState([...inputState, { ...blankInput }]);
   };
 
-  // Removes question from mapped array.
+  // Removes question from mapped array
   const removeInput = (index) => {
     const array = [...inputState]; //make copy
     array.splice(index, 1);
@@ -77,27 +72,27 @@ const FormCreate = () => {
     const updatedInputs = [...inputState];
     updatedInputs[e.target.dataset.idx][e.target.id] = e.target.value;
     setInputState(updatedInputs);
-    // console.log('updated inputs:', updatedInputs)
   };
 
-  // Add answer option to form and add the new option to our optionState array
-  const addOption = (e) => {
-    setOptionState([...optionState, { ...blankOption }]);
+  // Add answer option to form and add the new option to our inputState array
+  const addOption = (index) => {
+    const updatedState = [...inputState];
+    updatedState[index].options = [...updatedState[index].options, {}]
+    setInputState([...updatedState]);
   };
 
   // Removes answer option from mapped array.
-  const removeOption = (index) => {
-    const array = [...optionState]; //make copy
-    array.splice(index, 1);
-    setOptionState([...array]);
+  const removeOption = (inputIndex, optionIndex) => {
+    const array = [...inputState]; //make copy
+    array[inputIndex].options.splice(optionIndex, 1);
+    setInputState([...array]);
   };
 
-  // Update answer portion of form every time a field is modified
-  const handleOptionChange = (e) => {
-    const updatedOptions = [...optionState];
-    updatedOptions[e.target.dataset.idx][e.target.id] = e.target.value;
-    setOptionState(updatedOptions);
-    // console.log('updated options:', updatedInputs)
+  // Update answer option portion of form every time a field is modified
+  const handleOptionChange = (questionIdx, optionIdx, e) => {
+    const updatedOptions = [...inputState];
+    updatedOptions[questionIdx].options[optionIdx][e.target.name] = e.target.value;
+    setInputState(updatedOptions);
   };
 
   const uploadForm = async () => {
@@ -124,11 +119,11 @@ const FormCreate = () => {
       companyID: 'company-1',
       title: title,
       description: description,
-      validations: JSON.stringify(inputState)
-      // validations: inputState
+      // validations: JSON.stringify(inputState)
+      validations: inputState
     };
-
-    console.log('formData', createFormInput);
+    
+    console.log('formData;', JSON.stringify(createFormInput, null, 2));
     // await API.graphql(graphqlOperation(createForm, { input: createFormInput }));
   };
 
@@ -241,7 +236,7 @@ const FormCreate = () => {
                       <Box>
                         {/* Start mapping the validation answer options */}
                         {
-                          optionState.map((opt, optidx) => {
+                          inputState[idx].options.map((opt, optidx) => {
                             const optionId = `option-${optidx}`;
                             const deleteId = `delete-${optidx}`;
                             return (
@@ -256,19 +251,19 @@ const FormCreate = () => {
                                     </Box>
                                     <input
                                       type="text"
-                                      name={optionId}
+                                      name={`option-${optidx + 1}`}
                                       placeholder={`Option for Question #${idx + 1}`}
                                       data-idx={optidx}
-                                      id="option"
+                                      id={optidx}
                                       className="option"
-                                      value={optionState[optidx].option}
-                                      onChange={handleOptionChange}
+                                      value={opt.option}
+                                      onChange={(e) => handleOptionChange(idx, optidx, e)}
                                     />
                                   </Grid>
                                   <Grid item xs={2}>
                                     <IconButton
                                       type="button"
-                                      onClick={() => removeOption(optidx)}
+                                      onClick={() => removeOption(idx, optidx)}
                                       id={optidx}
                                     >
                                       <Close />
@@ -281,7 +276,7 @@ const FormCreate = () => {
                         }
                         <Button
                           type="button"
-                          onClick={addOption}
+                          onClick={() => addOption(idx)}
                           variant="contained"
                           color="secondary"
                           sx={{ m: 1, pr: 3 }}
