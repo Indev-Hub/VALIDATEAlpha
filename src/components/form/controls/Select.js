@@ -42,9 +42,10 @@ const Select = props => {
           {...config}
         >
           {props.options.map(option => {
-            const value = option.split(' ').join('-').toLowerCase();
+            const value = Object.values(option)[0];
+            const id = value.split(' ').join('-').toLowerCase();
             return (
-              <MenuItem key={value} value={value}>{option}</MenuItem>
+              <MenuItem key={id} value={id}>{value}</MenuItem>
             )
           })}
         </MuiSelect>

@@ -40,13 +40,14 @@ const RadioGroup = ({
         <Typography>{other.label}</Typography>
         <MuiRadioGroup {...config}>
           {options.map(option => {
-            const value = option.split(' ').join('-').toLowerCase();
+            const value = Object.values(option)[0];
+            const id = value.split(' ').join('-').toLowerCase();
             return (
               <FormControlLabel
-                key={value}
-                value={value}
+                key={id}
+                value={id}
                 control={<Radio />}
-                label={option}
+                label={value}
               />)
           })}
         </MuiRadioGroup>

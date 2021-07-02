@@ -18,16 +18,17 @@ const Checkbox = (props) => {
       <Typography>{label}</Typography>
       <div role='group' aria-labelledby='my-checkbox-group'>
         {options.map(option => {
-          const value = option.split(' ').join('-').toLowerCase();
+          const value = Object.values(option)[0];
+          const id = value.split(' ').join('-').toLowerCase();
           return (
-            <label key={value}>
+            <label key={id}>
               <Field
                 type='checkbox'
                 name={name}
-                id={value}
-                value={value}
+                id={id}
+                value={id}
               />
-              {option}
+              {value}
             </label>
           )
         })}

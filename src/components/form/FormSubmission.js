@@ -98,7 +98,7 @@ const FormSubmission = props => {
                         key={index}
                         label={question.question}
                         name={`q${index + 1}`}
-                        options={question.option}
+                        options={question.options}
                       />
                     );
                     break;
@@ -108,7 +108,7 @@ const FormSubmission = props => {
                         key={index}
                         label={question.question}
                         name={`q${index + 1}`}
-                        options={question.option}
+                        options={question.options}
                       />
                     );
                     break;
@@ -127,7 +127,7 @@ const FormSubmission = props => {
                         key={index}
                         label={question.question}
                         name={`q${index + 1}`}
-                        options={question.option}
+                        options={question.options}
                       />
                     );
                     break;
@@ -145,7 +145,7 @@ const FormSubmission = props => {
                   default:
                     return (
                       <div>
-                        <h3>Unable to match form type '{question.type}'.</h3>
+                        <h3>Unable to match answer type '{question.type}'.</h3>
                       </div>
                     );
                 }
