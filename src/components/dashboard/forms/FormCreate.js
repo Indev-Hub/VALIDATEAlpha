@@ -22,10 +22,6 @@ import formDesign from 'src/components/form/testing/formDesignTestData';
 import FormsList from 'src/components/form/testing/FormsList';
 import SubmissionsList from 'src/components/form/testing/SubmissionsList';
 
-// EXISTING ISSUES
-// 1. Options are not unique to questions. The .map function displays the same options in each question.
-// 2. Question 1 options only display first option. The options array only contains the first item.
-
 const FormCreate = () => {
   const FORM_CONTROLS = [
     'Button',
@@ -49,8 +45,8 @@ const FormCreate = () => {
   });
 
   // Validation questions part of form
-  // const blankOption = {};
-  const blankInput = { question: '', type: '', options: [{}] };
+  const blankOption = {};
+  const blankInput = { question: '', type: '', options: [{ ...blankOption }] };
   const [inputState, setInputState] = useState([
     { ...blankInput },
   ]);
@@ -95,12 +91,8 @@ const FormCreate = () => {
     setInputState(updatedOptions);
   };
 
-  const uploadForm = async () => {
-    //Get user attributes
-    const { signInUserSession } = await Auth.currentAuthenticatedUser();
-    const userName = signInUserSession.accessToken.payload.username;
-    const userId = signInUserSession.accessToken.payload.sub
-
+  // Create full data object to be used as output for DB and prop for form preview
+  const createFormDesignDataSet = () => {
     // Create random number for ID (temp solution for unique ID — will add company name and form number later on)
     function getRandomInt(min, max) {
       min = Math.ceil(min);
@@ -110,11 +102,11 @@ const FormCreate = () => {
 
     // Destructure form properties
     const { title, description } = ownerState;
-    const { type, question, option } = inputState;
+    const { question, type, options } = inputState;
     const formID = getRandomInt(1000, 9999);
 
     // the input data to be sent in our createForm request 
-    const createFormInput = {
+    const formDesignDataSet = {
       id: `form-${formID}`,
       companyID: 'company-1',
       title: title,
@@ -122,27 +114,29 @@ const FormCreate = () => {
       // validations: JSON.stringify(inputState)
       validations: inputState
     };
-    
-    console.log('formData;', JSON.stringify(createFormInput, null, 2));
-    // await API.graphql(graphqlOperation(createForm, { input: createFormInput }));
+
+    return formDesignDataSet;
   };
 
-  // Preview the form
-  const previewForm = () => {
-    // Destructure form properties
-    const { title, description } = ownerState;
+  // Form preview
+  const [formPreview, setFormPreview] = useState(null);
 
-    // the input data to be sent in our createForm request 
-    const previewFormInput = {
-      id: 'form-0',
-      companyID: 'company-0',
-      name: title,
-      description: description,
-      validations: inputState,
-    };
-    // document.querySelector("#previewForm").innerHTML = (
-    //   `${<FormSubmission formData={previewFormInput} displaySubmit={false} />}`
-    // );
+  const previewForm = () => {
+    // Get form data set
+    const formDesign = createFormDesignDataSet();
+    // Update formPreview state
+    setFormPreview(formDesign);
+  };
+
+  const uploadForm = async () => {
+    // Get user attributes
+    const { signInUserSession } = await Auth.currentAuthenticatedUser();
+    const userName = signInUserSession.accessToken.payload.username;
+    const userId = signInUserSession.accessToken.payload.sub
+
+    // Output form data set
+    console.log('formDesign = ', JSON.stringify(createFormDesignDataSet(), null, 2));
+    // await API.graphql(graphqlOperation(createForm, { input: createFormInput }));
   };
 
   return (
@@ -220,19 +214,6 @@ const FormCreate = () => {
                       </Box>
                     </Grid>
                     <Grid item xs>
-                      {/* <Box>
-                        <Typography>Options</Typography>
-                      </Box>
-                      <input
-                        type="text"
-                        name={optionId}
-                        placeholder={`Answers for Question #${idx + 1}`}
-                        data-idx={idx}
-                        id="option"
-                        className="option"
-                        value={inputState[idx].option}
-                        onChange={handleInputChange}
-                      /> */}
                       <Box>
                         {/* Start mapping the validation answer options */}
                         {
@@ -332,16 +313,17 @@ const FormCreate = () => {
         </form>
       </Formik>
 
-      {/* <div id="previewForm"></div> */}
-      <br />
-      <br />
-      <Paper mt={4} elevation={3}>
-        <Box p={4}>
-          <FormSubmission formDesign={formDesign} displaySubmitButton={true} />
-        </Box>
-      </Paper>
-      <SubmissionsList />
-      <FormsList />
+      {formPreview ? (
+        <div>
+          <br />
+          <br />
+          <Paper mt={4} elevation={3}>
+            <Box p={4}>
+              <FormSubmission formDesign={formPreview} displaySubmitButton={false} />
+            </Box>
+          </Paper>
+        </div>
+      ) : null}
 
     </>
   );
