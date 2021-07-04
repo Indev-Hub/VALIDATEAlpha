@@ -43,7 +43,7 @@ const sections = [
       {
         title: 'Overview',
         path: '/dashboard',
-        icon: <IndevLogo1 fontSize="small" />
+        // icon: <IndevLogo1 fontSize="small" />
       },
       // {
       //   title: 'Analytics',
@@ -58,7 +58,7 @@ const sections = [
       {
         title: 'Account',
         path: '/dashboard/account',
-        icon: <UserIcon fontSize="small" />
+        // icon: <UserIcon fontSize="small" />
       }
     ]
   },
@@ -131,19 +131,19 @@ const sections = [
   {
     items: [
       {
-        title: 'TESTS',
-        icon: <Clipboard fontSize="small" />,
+        title: 'Validations',
+        // icon: <Clipboard fontSize="small" />,
         path: '/dashboard/orders',
         children: [
           {
-            title: 'Add Test',
+            title: 'Add Form',
             path: '/dashboard/test-create',
             icon: <Plus fontSize="small" />
           },
           {
-            title: 'Test Collection',
+            title: 'Form Collection',
             path: '/dashboard/test-list',
-            icon: <Archive fontSize="small" />
+            // icon: <Archive fontSize="small" />
           }
         ]
       }
@@ -153,7 +153,7 @@ const sections = [
     items: [
       {
         title: 'ANALYTICS',
-        icon: <ClipboardList fontSize="small" />,
+        // icon: <ClipboardList fontSize="small" />,
         path: '/dashboard/validation'
       }
     ]

@@ -20,5 +20,7 @@
     "sideBar.foreground": "#ffffff",
     "activityBar.background": "#ffffff",
     "activityBar.foreground": "#000000"
-  }
+  },
+  "editor.tabSize": 2,
+  "editor.detectIndentation": false
 }

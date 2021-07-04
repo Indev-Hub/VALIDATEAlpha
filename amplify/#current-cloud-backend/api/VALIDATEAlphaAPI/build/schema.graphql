@@ -9,7 +9,7 @@ type User {
 
 type Company {
   id: ID!
-  title: String!
+  name: String!
   userID: ID!
   user: User
   forms(filter: ModelFormFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelFormConnection
@@ -20,6 +20,8 @@ type Company {
 type Form {
   id: ID!
   companyID: ID!
+  title: String
+  description: String
   company: Company
   validations: AWSJSON
   createdAt: AWSDateTime!
@@ -212,7 +214,7 @@ type ModelCompanyConnection {
 
 input ModelCompanyFilterInput {
   id: ModelIDInput
-  title: ModelStringInput
+  name: ModelStringInput
   userID: ModelIDInput
   and: [ModelCompanyFilterInput]
   or: [ModelCompanyFilterInput]
@@ -221,13 +223,13 @@ input ModelCompanyFilterInput {
 
 input CreateCompanyInput {
   id: ID
-  title: String!
+  name: String!
   userID: ID!
 }
 
 input UpdateCompanyInput {
   id: ID!
-  title: String
+  name: String
   userID: ID
 }
 
@@ -236,7 +238,7 @@ input DeleteCompanyInput {
 }
 
 input ModelCompanyConditionInput {
-  title: ModelStringInput
+  name: ModelStringInput
   userID: ModelIDInput
   and: [ModelCompanyConditionInput]
   or: [ModelCompanyConditionInput]
@@ -251,6 +253,8 @@ type ModelFormConnection {
 input ModelFormFilterInput {
   id: ModelIDInput
   companyID: ModelIDInput
+  title: ModelStringInput
+  description: ModelStringInput
   validations: ModelStringInput
   and: [ModelFormFilterInput]
   or: [ModelFormFilterInput]
@@ -260,12 +264,16 @@ input ModelFormFilterInput {
 input CreateFormInput {
   id: ID
   companyID: ID!
+  title: String
+  description: String
   validations: AWSJSON
 }
 
 input UpdateFormInput {
   id: ID!
   companyID: ID
+  title: String
+  description: String
   validations: AWSJSON
 }
 
@@ -275,6 +283,8 @@ input DeleteFormInput {
 
 input ModelFormConditionInput {
   companyID: ModelIDInput
+  title: ModelStringInput
+  description: ModelStringInput
   validations: ModelStringInput
   and: [ModelFormConditionInput]
   or: [ModelFormConditionInput]
