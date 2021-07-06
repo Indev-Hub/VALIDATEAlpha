@@ -5,12 +5,10 @@ import {
   Grid,
   IconButton,
   Paper,
-  Select,
-  TextField,
   Typography
 } from '@material-ui/core';
 import React, { useState } from 'react';
-import { Formik, Field } from 'formik';
+import { Formik, Form } from 'formik';
 import { Plus } from 'src/icons';
 import { API, Auth, graphqlOperation } from 'aws-amplify';
 import { uniqueId } from 'lodash';
@@ -28,11 +26,9 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
-import { createTrue } from 'typescript';
 
 // EXISTING ISSUES
-// 1. <TextField /> will not work for question input (crashes onChange)
-// 2. FormSubmission does not yet handle stringified 'validations' data
+// 1. FormSubmission does not yet handle stringified 'validations' data
 
 const FormCreate = () => {
   const INPUT_CONTROLS = [
@@ -80,9 +76,9 @@ const FormCreate = () => {
   };
 
   // Update question portion of form every time a field is modified
-  const handleInputChange = (e) => {
+  const handleInputChange = (qstidx, e) => {
     const updateState = [...inputState]; //make copy
-    updateState[e.target.dataset.idx][e.target.id] = e.target.value;
+    updateState[qstidx].question = e.target.value;
     setInputState(updateState);
   };
 
@@ -161,13 +157,13 @@ const FormCreate = () => {
     console.log('formDesign = ', JSON.stringify(createFormDesignDataSet(), null, 2));
     // await API.graphql(graphqlOperation(createForm, { input: createFormInput }));
   };
-
+  
   return (
     <>
       <Formik>
-        <form>
+        <Form autoComplete="off">
           {/* Business info part of the form */}
-          <TextField
+          <Controls.TextField
             label="Form Name"
             type="text"
             name="title"
@@ -176,7 +172,7 @@ const FormCreate = () => {
             onChange={handleOwnerChange}
             fullWidth
           />
-          <TextField
+          <Controls.TextField
             label="Form Description"
             type="text"
             name="description"
@@ -201,13 +197,14 @@ const FormCreate = () => {
                   <Box sx={{ backgroundColor: 'black', p: 1, color: 'white' }}>
                     <Typography variant="h6" fullWidth align='center'>{`Question ${qstidx + 1}`}</Typography>
                   </Box>
-                  <Grid container display="flex" sx={{ p: 2 }}>
+                  <Grid container display="flex" sx={{ p: 2 }} row>
                     <Grid item xs>
                       <Box>
                         <Typography>Question</Typography>
                       </Box>
                       <Box>
-                        <input
+                        <Controls.TextField
+                          // label="Question"
                           type="text"
                           name={questionId}
                           placeholder={`Question #${qstidx + 1}`}
@@ -215,14 +212,14 @@ const FormCreate = () => {
                           id="question"
                           className="question"
                           value={inputState[qstidx].question}
-                          onChange={handleInputChange}
+                          onChange={(e) => handleInputChange(qstidx, e)}
                         />
                       </Box>
                     </Grid>
                     <Grid item xs>
                       <Box>
                         <Controls.Select
-                          label={'Answer Type'}
+                          label="Answer Type"
                           name={typeId}
                           inputLabel={`Question #${qstidx + 1} Answer Type`}
                           data-idx={qstidx}
@@ -251,7 +248,7 @@ const FormCreate = () => {
                                     <Box>
                                       <Typography>Option {optidx + 1}</Typography>
                                     </Box>
-                                    <TextField
+                                    <Controls.TextField
                                       type="text"
                                       name={`option-${optidx + 1}`}
                                       placeholder={`Option ${optidx + 1} for Question #${qstidx + 1}`}
@@ -331,7 +328,7 @@ const FormCreate = () => {
           >
             CREATE FORM
           </Button>
-        </form>
+        </Form>
       </Formik >
 
       {
