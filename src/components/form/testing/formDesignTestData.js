@@ -1,4 +1,4 @@
-const formDesignX = {
+const formDesign = {
   "id": "form-3182",
   "companyID": "company-1",
   "title": "Form 1",
@@ -17,16 +17,35 @@ const formDesignX = {
       "question": "Form 1 Question 2",
       "type": "Checkbox",
       "options": [
+        "Red",
+        "Green",
+        "Blue",
+      ]
+    },
+    {
+      "question": "Form 1 Question 3",
+      "type": "Dropdown",
+      "options": [
         "North",
         "South",
         "East",
         "West",
       ]
-    }
+    },
+    {
+      "question": "Form 1 Question 4",
+      "type": "Text Input",
+      "options": []
+    },
+    {
+      "question": "Form 1 Question 5",
+      "type": "Rating",
+      "options": []
+    },
   ]
 }
 
-const formDesign = {
+const formDesignX = {
   "id": "form-3182",
   "companyID": "company-1",
   "title": "Form 1",

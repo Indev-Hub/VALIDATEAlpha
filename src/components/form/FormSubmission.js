@@ -23,7 +23,7 @@ const FormSubmission = props => {
     }
   };
 
-  // Create intial field values (answer types) for Formik
+  // Create initial field values (answer types) for Formik
   const initialValues = {};
   formDesign.validations.forEach((input, index) => {
     const name = `q${index + 1}`
@@ -53,7 +53,7 @@ const FormSubmission = props => {
 
   return (
     <React.Fragment>
-      <h2>{formDesign.name}</h2>
+      <h2>{formDesign.title}</h2>
       <h3>{formDesign.description}</h3>
 
       <Formik
@@ -96,8 +96,9 @@ const FormSubmission = props => {
                     return (
                       <Controls.Checkbox
                         key={index}
-                        label={question.question}
+                        id={`q${index + 1}`}
                         name={`q${index + 1}`}
+                        label={question.question}
                         options={question.options}
                       />
                     );
@@ -106,8 +107,9 @@ const FormSubmission = props => {
                     return (
                       <Controls.RadioGroup
                         key={index}
-                        label={question.question}
+                        id={`q${index + 1}`}
                         name={`q${index + 1}`}
+                        label={question.question}
                         options={question.options}
                       />
                     );
@@ -116,8 +118,9 @@ const FormSubmission = props => {
                     return (
                       <Controls.Rating
                         key={index}
-                        label={question.question}
+                        id={`q${index + 1}`}
                         name={`q${index + 1}`}
+                        label={question.question}
                       />
                     );
                     break;
@@ -125,8 +128,9 @@ const FormSubmission = props => {
                     return (
                       <Controls.Select
                         key={index}
-                        label={question.question}
+                        id={`q${index + 1}`}
                         name={`q${index + 1}`}
+                        label={question.question}
                         options={question.options}
                       />
                     );
@@ -135,8 +139,9 @@ const FormSubmission = props => {
                     return (
                       <Controls.TextField
                         key={index}
-                        label={question.question}
+                        id={`q${index + 1}`}
                         name={`q${index + 1}`}
+                        label={question.question}
                         type="text"
                         placeholder="Type your answer"
                       />

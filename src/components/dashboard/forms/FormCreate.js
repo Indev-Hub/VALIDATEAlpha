@@ -5,11 +5,12 @@ import {
   Grid,
   IconButton,
   Paper,
+  Select,
   TextField,
   Typography
 } from '@material-ui/core';
 import React, { useState } from 'react';
-import { Formik } from 'formik';
+import { Formik, Field } from 'formik';
 import { Plus } from 'src/icons';
 import { API, Auth, graphqlOperation } from 'aws-amplify';
 import { uniqueId } from 'lodash';
@@ -22,9 +23,19 @@ import formDesign from 'src/components/form/testing/formDesignTestData';
 import FormsList from 'src/components/form/testing/FormsList';
 import SubmissionsList from 'src/components/form/testing/SubmissionsList';
 
+import { makeStyles } from '@material-ui/core/styles';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+
+// EXISTING ISSUES
+// 1. Remove Option removes last item, regardless of 
+//    which is selected for removal
+// 2. FormSubmission does not yet handle stringified 'validations' data
+
 const FormCreate = () => {
-  const FORM_CONTROLS = [
-    'Button',
+  const INPUT_CONTROLS = [
     'Checkbox',
     'Dropdown',
     'Radio Group',
@@ -45,8 +56,7 @@ const FormCreate = () => {
   });
 
   // Validation questions part of form
-  const blankOption = {};
-  const blankInput = { question: '', type: '', options: [{ ...blankOption }] };
+  const blankInput = { question: '', type: '', options: [''] };
   const [inputState, setInputState] = useState([
     { ...blankInput },
   ]);
@@ -70,24 +80,32 @@ const FormCreate = () => {
     setInputState(updatedInputs);
   };
 
-  // Add answer option to form and add the new option to our inputState array
-  const addOption = (index) => {
+  // Select answer type
+  const handleSelectChange = (questionIndex, e) => {
     const updatedState = [...inputState];
-    updatedState[index].options = [...updatedState[index].options, {}]
-    setInputState([...updatedState]);
+    updatedState[questionIndex].type = e.target.value;
+    setInputState(updatedState);
+  };
+
+  // Add answer option to form and add the new option to our inputState array
+  const addOption = (questionIndex) => {
+    const updatedState = [...inputState];
+    updatedState[questionIndex].options = [...updatedState[questionIndex].options, '']
+    setInputState(updatedState);
   };
 
   // Removes answer option from mapped array.
-  const removeOption = (inputIndex, optionIndex) => {
-    const array = [...inputState]; //make copy
-    array[inputIndex].options.splice(optionIndex, 1);
-    setInputState([...array]);
+  const removeOption = (questionIndex, optionIndex) => {
+    const updatedState = [...inputState]; //make copy
+    const updatedOptions = updatedState[questionIndex].options;
+    updatedState[questionIndex].options = updatedOptions.splice(optionIndex, 1);
+    setInputState(updatedState);
   };
 
   // Update answer option portion of form every time a field is modified
-  const handleOptionChange = (questionIdx, optionIdx, e) => {
+  const handleOptionChange = (questionIndex, optionIndex, e) => {
     const updatedOptions = [...inputState];
-    updatedOptions[questionIdx].options[optionIdx][e.target.name] = e.target.value;
+    updatedOptions[questionIndex].options[optionIndex] = e.target.value;
     setInputState(updatedOptions);
   };
 
@@ -198,18 +216,16 @@ const FormCreate = () => {
                     </Grid>
                     <Grid item xs>
                       <Box>
-                        <Typography>Answer Type</Typography>
-                      </Box>
-                      <Box>
-                        <input
-                          type="text"
+                        <Controls.Select
+                          label={'Answer Type'}
                           name={typeId}
-                          placeholder={`Question #${idx + 1} Answer Type`}
+                          inputLabel={`Question #${idx + 1} Answer Type`}
                           data-idx={idx}
                           id="type"
                           className="type"
                           value={inputState[idx].type}
-                          onChange={handleInputChange}
+                          options={INPUT_CONTROLS}
+                          onChange={(e) => handleSelectChange(idx, e)}
                         />
                       </Box>
                     </Grid>
@@ -230,10 +246,10 @@ const FormCreate = () => {
                                     <Box>
                                       <Typography>Option {optidx + 1}</Typography>
                                     </Box>
-                                    <input
+                                    <TextField
                                       type="text"
                                       name={`option-${optidx + 1}`}
-                                      placeholder={`Option for Question #${idx + 1}`}
+                                      placeholder={`Option ${optidx + 1} for Question #${idx + 1}`}
                                       data-idx={optidx}
                                       id={optidx}
                                       className="option"
@@ -311,19 +327,21 @@ const FormCreate = () => {
             CREATE FORM
           </Button>
         </form>
-      </Formik>
+      </Formik >
 
-      {formPreview ? (
-        <div>
-          <br />
-          <br />
-          <Paper mt={4} elevation={3}>
-            <Box p={4}>
-              <FormSubmission formDesign={formPreview} displaySubmitButton={false} />
-            </Box>
-          </Paper>
-        </div>
-      ) : null}
+      {
+        formPreview ? (
+          <div>
+            <br />
+            <br />
+            <Paper mt={4} elevation={3}>
+              <Box p={4}>
+                {/* <FormSubmission formDesign={formPreview} displaySubmitButton={false} /> */}
+                <FormSubmission formDesign={formPreview} displaySubmitButton={false} />
+              </Box>
+            </Paper>
+          </div >
+        ) : null}
 
     </>
   );
