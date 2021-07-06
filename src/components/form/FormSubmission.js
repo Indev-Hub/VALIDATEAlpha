@@ -16,16 +16,20 @@ const FormSubmission = props => {
     answers: {},
   };
 
-  for (let i = 0; i < formDesign.validations.length; i++) {
+  // De-stringify "validations" single-field dataset
+  const questions = JSON.parse(formDesign.validations);
+
+  // Add question-answer pair, with question value, for each set of answers
+  for (let i = 0; i < questions.length; i++) {
     submitStructure.answers[`q${i + 1}`] = {
-      question: formDesign.validations[i].question,
+      question: questions[i].question,
       answer: '',
     }
   };
 
   // Create initial field values (answer types) for Formik
   const initialValues = {};
-  formDesign.validations.forEach((input, index) => {
+  questions.forEach((input, index) => {
     const name = `q${index + 1}`
     if (input.type === 'Checkbox') {
       initialValues[name] = [];
@@ -38,7 +42,7 @@ const FormSubmission = props => {
 
   // Create Formik/Yup validation schema
   const validationSchema = {};
-  formDesign.validations.forEach((input, index) => {
+  questions.forEach((input, index) => {
     const name = `q${index + 1}`
     if (input.type === 'Checkbox') {
       validationSchema[name] = Yup.array()
@@ -65,15 +69,15 @@ const FormSubmission = props => {
         })}
 
         onSubmit={async (values, { setSubmitting }) => {
-          // Add user input values into Q&A submission structure
+          // Add user input values into question-answer submission structure
           let formSubmission = { ...submitStructure };
           Object.keys(formSubmission.answers).forEach(questionNum => {
             formSubmission.answers[questionNum]['answer'] = values[questionNum];
           });
 
-          // Preview output via window alert and console
-          alert(JSON.stringify(formSubmission, null, 2));
-          console.log('formSubmission:', formSubmission)
+          // // Preview output via window alert and console
+          // alert(JSON.stringify(formSubmission, null, 2));
+          // console.log('formSubmission:', formSubmission)
 
           // Stringify 'answers' collection for single DynamoDB field
           formSubmission.answers = JSON.stringify(formSubmission.answers)
@@ -90,7 +94,7 @@ const FormSubmission = props => {
         <Form autoComplete="off">
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              {formDesign.validations.map((question, index) => {
+              {questions.map((question, index) => {
                 switch (question.type) {
                   case 'Checkbox':
                     return (

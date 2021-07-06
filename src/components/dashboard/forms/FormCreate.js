@@ -1,3 +1,8 @@
+import React, { useState } from 'react';
+import { API, Auth, graphqlOperation } from 'aws-amplify';
+import { createForm } from 'src/graphql/mutations';
+import { Formik, Form } from 'formik';
+import { uniqueId } from 'lodash';
 import {
   Box,
   Button,
@@ -7,28 +12,10 @@ import {
   Paper,
   Typography
 } from '@material-ui/core';
-import React, { useState } from 'react';
-import { Formik, Form } from 'formik';
-import { Plus } from 'src/icons';
-import { API, Auth, graphqlOperation } from 'aws-amplify';
-import { uniqueId } from 'lodash';
-import { createForm } from 'src/graphql/mutations';
 import { Close } from '@material-ui/icons';
-
+import { Plus } from 'src/icons';
 import Controls from 'src/components/form/controls/_controls';
 import FormSubmission from 'src/components/form/FormSubmission';
-import formDesign from 'src/components/form/testing/formDesignTestData';
-import FormsList from 'src/components/form/testing/FormsList';
-import SubmissionsList from 'src/components/form/testing/SubmissionsList';
-
-import { makeStyles } from '@material-ui/core/styles';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormControl from '@material-ui/core/FormControl';
-
-// EXISTING ISSUES
-// 1. FormSubmission does not yet handle stringified 'validations' data
 
 const FormCreate = () => {
   const INPUT_CONTROLS = [
@@ -130,8 +117,7 @@ const FormCreate = () => {
       companyID: `company-${compID}`,
       title: title,
       description: description,
-      // validations: JSON.stringify(inputState)
-      validations: inputState
+      validations: JSON.stringify(inputState)
     };
 
     return formDesignDataSet;
@@ -154,8 +140,9 @@ const FormCreate = () => {
     const userId = signInUserSession.accessToken.payload.sub
 
     // Output form data set
-    console.log('formDesign = ', JSON.stringify(createFormDesignDataSet(), null, 2));
-    // await API.graphql(graphqlOperation(createForm, { input: createFormInput }));
+    const formDesignDataSet = createFormDesignDataSet();
+    console.log('formDesign = ', JSON.stringify(formDesignDataSet, null, 2));
+    // await API.graphql(graphqlOperation(createForm, { input: formDesignDataSet }));
   };
   
   return (
