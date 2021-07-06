@@ -21,6 +21,7 @@ const FormCreate = () => {
   const INPUT_CONTROLS = [
     'Checkbox',
     'Dropdown',
+    'Number',
     'Radio Group',
     'Rating',
     'Text Input',

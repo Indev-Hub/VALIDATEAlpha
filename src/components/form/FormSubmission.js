@@ -107,6 +107,29 @@ const FormSubmission = props => {
                       />
                     );
                     break;
+                  case 'Dropdown':
+                    return (
+                      <Controls.Select
+                        key={index}
+                        id={`q${index + 1}`}
+                        name={`q${index + 1}`}
+                        label={question.question}
+                        options={question.options}
+                      />
+                    );
+                    break;
+                  case 'Number':
+                    return (
+                      <Controls.TextField
+                        key={index}
+                        id={`q${index + 1}`}
+                        name={`q${index + 1}`}
+                        label={question.question}
+                        type="number"
+                        placeholder="Enter a number"
+                      />
+                    );
+                    break;
                   case 'Radio Group':
                     return (
                       <Controls.RadioGroup
@@ -125,17 +148,6 @@ const FormSubmission = props => {
                         id={`q${index + 1}`}
                         name={`q${index + 1}`}
                         label={question.question}
-                      />
-                    );
-                    break;
-                  case 'Dropdown':
-                    return (
-                      <Controls.Select
-                        key={index}
-                        id={`q${index + 1}`}
-                        name={`q${index + 1}`}
-                        label={question.question}
-                        options={question.options}
                       />
                     );
                     break;
