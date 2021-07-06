@@ -28,10 +28,10 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
+import { createTrue } from 'typescript';
 
 // EXISTING ISSUES
-// 1. Remove Option removes last item, regardless of 
-//    which is selected for removal
+// 1. <TextField /> will not work for question input (crashes onChange)
 // 2. FormSubmission does not yet handle stringified 'validations' data
 
 const FormCreate = () => {
@@ -56,7 +56,13 @@ const FormCreate = () => {
   });
 
   // Validation questions part of form
-  const blankInput = { question: '', type: '', options: [''] };
+  const blankInput = {
+    question: '',
+    type: '',
+    options: [''],
+  };
+
+  // Initialize questions state
   const [inputState, setInputState] = useState([
     { ...blankInput },
   ]);
@@ -66,46 +72,45 @@ const FormCreate = () => {
     setInputState([...inputState, { ...blankInput }]);
   };
 
-  // Removes question from mapped array
-  const removeInput = (index) => {
-    const array = [...inputState]; //make copy
-    array.splice(index, 1);
-    setInputState([...array]);
+  // Remove question from mapped array
+  const removeInput = (qstidx) => {
+    const updateState = [...inputState]; //make copy
+    updateState.splice(qstidx, 1);
+    setInputState(updateState);
   };
 
   // Update question portion of form every time a field is modified
   const handleInputChange = (e) => {
-    const updatedInputs = [...inputState];
-    updatedInputs[e.target.dataset.idx][e.target.id] = e.target.value;
-    setInputState(updatedInputs);
+    const updateState = [...inputState]; //make copy
+    updateState[e.target.dataset.idx][e.target.id] = e.target.value;
+    setInputState(updateState);
   };
 
   // Select answer type
-  const handleSelectChange = (questionIndex, e) => {
-    const updatedState = [...inputState];
-    updatedState[questionIndex].type = e.target.value;
-    setInputState(updatedState);
+  const handleSelectChange = (qstidx, e) => {
+    const updateState = [...inputState]; //make copy
+    updateState[qstidx].type = e.target.value;
+    setInputState(updateState);
   };
 
   // Add answer option to form and add the new option to our inputState array
-  const addOption = (questionIndex) => {
-    const updatedState = [...inputState];
-    updatedState[questionIndex].options = [...updatedState[questionIndex].options, '']
-    setInputState(updatedState);
+  const addOption = (qstidx) => {
+    const updateState = [...inputState]; //make copy
+    updateState[qstidx].options = [...updateState[qstidx].options, '']
+    setInputState(updateState);
   };
 
   // Removes answer option from mapped array.
-  const removeOption = (questionIndex, optionIndex) => {
-    const updatedState = [...inputState]; //make copy
-    const updatedOptions = updatedState[questionIndex].options;
-    updatedState[questionIndex].options = updatedOptions.splice(optionIndex, 1);
-    setInputState(updatedState);
+  const removeOption = (qstidx, optidx) => {
+    const updateState = [...inputState]; //make copy
+    updateState[qstidx].options.splice(optidx, 1);
+    setInputState(updateState);
   };
 
   // Update answer option portion of form every time a field is modified
-  const handleOptionChange = (questionIndex, optionIndex, e) => {
-    const updatedOptions = [...inputState];
-    updatedOptions[questionIndex].options[optionIndex] = e.target.value;
+  const handleOptionChange = (qstidx, optidx, e) => {
+    const updatedOptions = [...inputState]; //make copy
+    updatedOptions[qstidx].options[optidx] = e.target.value;
     setInputState(updatedOptions);
   };
 
@@ -120,13 +125,13 @@ const FormCreate = () => {
 
     // Destructure form properties
     const { title, description } = ownerState;
-    const { question, type, options } = inputState;
     const formID = getRandomInt(1000, 9999);
+    const compID = getRandomInt(1000, 9999);
 
     // the input data to be sent in our createForm request 
     const formDesignDataSet = {
       id: `form-${formID}`,
-      companyID: 'company-1',
+      companyID: `company-${compID}`,
       title: title,
       description: description,
       // validations: JSON.stringify(inputState)
@@ -186,15 +191,15 @@ const FormCreate = () => {
 
           {/* Start mapping the validation questions */}
           {
-            inputState.map((val, idx) => {
-              const questionId = `question-${idx}`;
-              const typeId = `type-${idx}`;
-              const optionId = `option-${idx}`;
-              const deleteId = `delete-${idx}`;
+            inputState.map((qst, qstidx) => {
+              const questionId = `question-${qstidx}`;
+              const typeId = `type-${qstidx}`;
+              const optionId = `option-${qstidx}`;
+              const deleteId = `delete-${qstidx}`;
               return (
-                <Card key={`input-${idx}`} sx={{ my: 1 }}>
+                <Card key={`input-${qstidx}`} sx={{ my: 1 }}>
                   <Box sx={{ backgroundColor: 'black', p: 1, color: 'white' }}>
-                    <Typography variant="h6" fullWidth align='center'>{`Question ${idx + 1}`}</Typography>
+                    <Typography variant="h6" fullWidth align='center'>{`Question ${qstidx + 1}`}</Typography>
                   </Box>
                   <Grid container display="flex" sx={{ p: 2 }}>
                     <Grid item xs>
@@ -205,11 +210,11 @@ const FormCreate = () => {
                         <input
                           type="text"
                           name={questionId}
-                          placeholder={`Question #${idx + 1}`}
-                          data-idx={idx}
+                          placeholder={`Question #${qstidx + 1}`}
+                          data-idx={qstidx}
                           id="question"
                           className="question"
-                          value={inputState[idx].question}
+                          value={inputState[qstidx].question}
                           onChange={handleInputChange}
                         />
                       </Box>
@@ -219,13 +224,13 @@ const FormCreate = () => {
                         <Controls.Select
                           label={'Answer Type'}
                           name={typeId}
-                          inputLabel={`Question #${idx + 1} Answer Type`}
-                          data-idx={idx}
+                          inputLabel={`Question #${qstidx + 1} Answer Type`}
+                          data-idx={qstidx}
                           id="type"
                           className="type"
-                          value={inputState[idx].type}
+                          value={inputState[qstidx].type}
                           options={INPUT_CONTROLS}
-                          onChange={(e) => handleSelectChange(idx, e)}
+                          onChange={(e) => handleSelectChange(qstidx, e)}
                         />
                       </Box>
                     </Grid>
@@ -233,7 +238,7 @@ const FormCreate = () => {
                       <Box>
                         {/* Start mapping the validation answer options */}
                         {
-                          inputState[idx].options.map((opt, optidx) => {
+                          inputState[qstidx].options.map((opt, optidx) => {
                             const optionId = `option-${optidx}`;
                             const deleteId = `delete-${optidx}`;
                             return (
@@ -249,18 +254,18 @@ const FormCreate = () => {
                                     <TextField
                                       type="text"
                                       name={`option-${optidx + 1}`}
-                                      placeholder={`Option ${optidx + 1} for Question #${idx + 1}`}
+                                      placeholder={`Option ${optidx + 1} for Question #${qstidx + 1}`}
                                       data-idx={optidx}
                                       id={optidx}
                                       className="option"
-                                      value={opt.option}
-                                      onChange={(e) => handleOptionChange(idx, optidx, e)}
+                                      value={inputState[qstidx].options[optidx]}
+                                      onChange={(e) => handleOptionChange(qstidx, optidx, e)}
                                     />
                                   </Grid>
                                   <Grid item xs={2}>
                                     <IconButton
                                       type="button"
-                                      onClick={() => removeOption(idx, optidx)}
+                                      onClick={() => removeOption(qstidx, optidx)}
                                       id={optidx}
                                     >
                                       <Close />
@@ -273,7 +278,7 @@ const FormCreate = () => {
                         }
                         <Button
                           type="button"
-                          onClick={() => addOption(idx)}
+                          onClick={() => addOption(qstidx)}
                           variant="contained"
                           color="secondary"
                           sx={{ m: 1, pr: 3 }}
@@ -286,8 +291,8 @@ const FormCreate = () => {
                     <Grid item xs={2}>
                       <Button
                         type="button"
-                        onClick={() => removeInput(idx)}
-                        id={idx}
+                        onClick={() => removeInput(qstidx)}
+                        id={qstidx}
                       >
                         remove
                       </Button>
@@ -336,7 +341,6 @@ const FormCreate = () => {
             <br />
             <Paper mt={4} elevation={3}>
               <Box p={4}>
-                {/* <FormSubmission formDesign={formPreview} displaySubmitButton={false} /> */}
                 <FormSubmission formDesign={formPreview} displaySubmitButton={false} />
               </Box>
             </Paper>
