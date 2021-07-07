@@ -146,7 +146,7 @@ const FormCreate = () => {
     console.log('formDesign = ', JSON.stringify(formDesignDataSet, null, 2));
     // await API.graphql(graphqlOperation(createForm, { input: formDesignDataSet }));
   };
-  
+
   return (
     <>
       <Formik>
@@ -186,11 +186,11 @@ const FormCreate = () => {
                   <Box sx={{ backgroundColor: 'black', p: 1, color: 'white' }}>
                     <Typography variant="h6" fullWidth align='center'>{`Question ${qstidx + 1}`}</Typography>
                   </Box>
-                  <Grid container display="flex" sx={{ p: 2 }} row>
+                  <Grid container display="flex" sx={{ p: 2 }} row="true">
                     <Grid item xs>
                       <Box>
                         <Controls.TextField
-                          altLabel="Question" // Typography label
+                          altlabel="Question" // Typography label
                           type="text"
                           name={questionId}
                           placeholder={`Question #${qstidx + 1}`}
@@ -205,9 +205,9 @@ const FormCreate = () => {
                     <Grid item xs>
                       <Box>
                         <Controls.Select
-                          altLabel="Answer Type" // Typography label
+                          altlabel="Answer Type" // Typography label
                           name={typeId}
-                          inputLabel={`Question #${qstidx + 1} Answer Type`}
+                          inputlabel={`Question #${qstidx + 1} Answer Type`}
                           data-idx={qstidx}
                           id="type"
                           className="type"
@@ -229,12 +229,12 @@ const FormCreate = () => {
                                 <Grid container display="flex" sx={{ p: 2 }}>
                                   <Grid item xs>
                                     <Controls.TextField
-                                      altLabel={`Option ${optidx + 1}`} // Typography label
+                                      altlabel={`Option ${optidx + 1}`} // Typography label
                                       type="text"
                                       name={`option-${optidx + 1}`}
                                       placeholder={`Option ${optidx + 1} for Question #${qstidx + 1}`}
                                       data-idx={optidx}
-                                      id={optidx}
+                                      id={`${optidx}`}
                                       className="option"
                                       value={inputState[qstidx].options[optidx]}
                                       onChange={(e) => handleOptionChange(qstidx, optidx, e)}
@@ -244,7 +244,7 @@ const FormCreate = () => {
                                     <IconButton
                                       type="button"
                                       onClick={() => removeOption(qstidx, optidx)}
-                                      id={optidx}
+                                      id={`${optidx}`}
                                     >
                                       <Close />
                                     </IconButton>
@@ -270,7 +270,7 @@ const FormCreate = () => {
                       <Button
                         type="button"
                         onClick={() => removeInput(qstidx)}
-                        id={qstidx}
+                        id={`${qstidx}`}
                       >
                         remove
                       </Button>
@@ -319,12 +319,12 @@ const FormCreate = () => {
             <br />
             <Paper mt={4} elevation={3}>
               <Box p={4}>
-                <FormSubmission formDesign={formPreview} displaySubmitButton={true} />
+                <FormSubmission formDesign={formPreview} displaySubmitButton={false} />
               </Box>
             </Paper>
           </div >
-        ) : null}
-
+        ) : null
+      }
     </>
   );
 };

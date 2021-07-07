@@ -111,7 +111,7 @@ const FormSubmission = props => {
                         key={index}
                         id={`q${index + 1}`}
                         name={`q${index + 1}`}
-                        altLabel={question.question}
+                        altlabel={question.question}
                         options={question.options}
                       />
                     );
@@ -122,7 +122,7 @@ const FormSubmission = props => {
                         key={index}
                         id={`q${index + 1}`}
                         name={`q${index + 1}`}
-                        altLabel={question.question}
+                        altlabel={question.question}
                         options={question.options}
                       />
                     );
@@ -133,7 +133,7 @@ const FormSubmission = props => {
                         key={index}
                         id={`q${index + 1}`}
                         name={`q${index + 1}`}
-                        altLabel={question.question}
+                        altlabel={question.question}
                         type="number"
                         placeholder="Enter a number"
                       />
@@ -145,7 +145,7 @@ const FormSubmission = props => {
                         key={index}
                         id={`q${index + 1}`}
                         name={`q${index + 1}`}
-                        altLabel={question.question}
+                        altlabel={question.question}
                         options={question.options}
                       />
                     );
@@ -156,7 +156,7 @@ const FormSubmission = props => {
                         key={index}
                         id={`q${index + 1}`}
                         name={`q${index + 1}`}
-                        altLabel={question.question}
+                        altlabel={question.question}
                       />
                     );
                     break;
@@ -166,7 +166,7 @@ const FormSubmission = props => {
                         key={index}
                         id={`q${index + 1}`}
                         name={`q${index + 1}`}
-                        altLabel={question.question}
+                        altlabel={question.question}
                         label={question.options}
                       />
                     );
@@ -177,7 +177,7 @@ const FormSubmission = props => {
                         key={index}
                         id={`q${index + 1}`}
                         name={`q${index + 1}`}
-                        altLabel={question.question}
+                        altlabel={question.question}
                         type="text"
                         placeholder="Type your answer"
                       />
@@ -185,7 +185,7 @@ const FormSubmission = props => {
                     break;
                   default:
                     return (
-                      <div>
+                      <div key={index}>
                         <h3>Unable to match answer type '{question.type}'.</h3>
                       </div>
                     );

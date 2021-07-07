@@ -22,7 +22,7 @@ const Switch = props => {
 
   return (
     <div className="form-group">
-      <Typography>{props.altLabel}</Typography>
+      <Typography>{props.altlabel}</Typography>
       <FormGroup row>
         <FormControlLabel
           control={<MuiSwitch {...config} />}

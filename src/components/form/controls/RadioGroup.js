@@ -9,7 +9,6 @@ import {
   Typography
 } from '@material-ui/core';
 import { useField, useFormikContext } from 'formik';
-import { OperationCanceledException } from 'typescript';
 
 const RadioGroup = ({
   name,
@@ -38,7 +37,7 @@ const RadioGroup = ({
     <div className="form-group">
       <FormControl component="fieldset">
         {/* <FormLabel component="legend">{other.label}</FormLabel> */}
-        <Typography>{other.altLabel}</Typography>
+        <Typography>{other.altlabel}</Typography>
         <MuiRadioGroup {...config}>
           {options.map((option, index) => {
             const id = `${option.id}opt${index + 1}`;
