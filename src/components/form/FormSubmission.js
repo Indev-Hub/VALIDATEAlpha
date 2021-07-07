@@ -35,6 +35,8 @@ const FormSubmission = props => {
       initialValues[name] = [];
     } else if (input.type === 'Rating') {
       initialValues[name] = 0;
+    } else if (input.type === 'Switch') {
+      initialValues[name] = false;
     } else {
       initialValues[name] = '';
     };
@@ -50,6 +52,8 @@ const FormSubmission = props => {
     } else if (input.type === 'Rating') {
       validationSchema[name] = Yup.number()
         .moreThan(0, 'Please rate this item.')
+    } else if (input.type === 'Switch') {
+      validationSchema[name] = Yup.boolean().required('Required');
     } else {
       validationSchema[name] = Yup.string().required('Required');
     };
@@ -76,11 +80,16 @@ const FormSubmission = props => {
           });
 
           // // Preview output via window alert and console
-          // alert(JSON.stringify(formSubmission, null, 2));
-          // console.log('formSubmission:', formSubmission)
+          alert(JSON.stringify(formSubmission, null, 2));
+
 
           // Stringify 'answers' collection for single DynamoDB field
-          formSubmission.answers = JSON.stringify(formSubmission.answers)
+          formSubmission.answers = JSON.stringify(formSubmission.answers);
+
+          console.log(
+            'formSubmission:',
+            JSON.stringify(formSubmission, null, 2)
+          );
 
           // // POST to DynamoDB
           // await API.graphql(graphqlOperation(
@@ -102,7 +111,7 @@ const FormSubmission = props => {
                         key={index}
                         id={`q${index + 1}`}
                         name={`q${index + 1}`}
-                        label={question.question}
+                        altLabel={question.question}
                         options={question.options}
                       />
                     );
@@ -113,7 +122,7 @@ const FormSubmission = props => {
                         key={index}
                         id={`q${index + 1}`}
                         name={`q${index + 1}`}
-                        label={question.question}
+                        altLabel={question.question}
                         options={question.options}
                       />
                     );
@@ -124,7 +133,7 @@ const FormSubmission = props => {
                         key={index}
                         id={`q${index + 1}`}
                         name={`q${index + 1}`}
-                        label={question.question}
+                        altLabel={question.question}
                         type="number"
                         placeholder="Enter a number"
                       />
@@ -136,7 +145,7 @@ const FormSubmission = props => {
                         key={index}
                         id={`q${index + 1}`}
                         name={`q${index + 1}`}
-                        label={question.question}
+                        altLabel={question.question}
                         options={question.options}
                       />
                     );
@@ -147,7 +156,18 @@ const FormSubmission = props => {
                         key={index}
                         id={`q${index + 1}`}
                         name={`q${index + 1}`}
-                        label={question.question}
+                        altLabel={question.question}
+                      />
+                    );
+                    break;
+                  case 'Switch':
+                    return (
+                      <Controls.Switch
+                        key={index}
+                        id={`q${index + 1}`}
+                        name={`q${index + 1}`}
+                        altLabel={question.question}
+                        label={question.options}
                       />
                     );
                     break;
@@ -157,7 +177,7 @@ const FormSubmission = props => {
                         key={index}
                         id={`q${index + 1}`}
                         name={`q${index + 1}`}
-                        label={question.question}
+                        altLabel={question.question}
                         type="text"
                         placeholder="Type your answer"
                       />

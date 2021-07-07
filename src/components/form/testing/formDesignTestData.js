@@ -1,6 +1,6 @@
 const formDesign = {
   "id": "form-3182",
-  "companyID": "company-1",
+  "companyID": "company-1865",
   "title": "Form 1",
   "description": "Form 1 description.",
   "validations": [
@@ -42,48 +42,16 @@ const formDesign = {
       "type": "Rating",
       "options": []
     },
-  ]
-}
-
-const formDesignX = {
-  "id": "form-3182",
-  "companyID": "company-1",
-  "title": "Form 1",
-  "description": "Form 1 description.",
-  "validations": [
     {
-      "question": "Form 1 Question 1",
-      "type": "Radio Group",
-      "options": [
-        {
-          "option-1": "Red"
-        },
-        {
-          "option-2": "Yellow"
-        },
-        {
-          "option-3": "Green"
-        }
-      ]
+      "question": "Form 1 Question 6",
+      "type": "Number",
+      "options": []
     },
     {
-      "question": "Form 1 Question 2",
-      "type": "Checkbox",
-      "options": [
-        {
-          "option-1": "North"
-        },
-        {
-          "option-2": "South"
-        },
-        {
-          "option-3": "East"
-        },
-        {
-          "option-4": "West"
-        }
-      ]
-    }
+      "question": "Form 1 Question 7",
+      "type": "Switch",
+      "options": ['off/on']
+    },
   ]
 }
 
