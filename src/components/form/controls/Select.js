@@ -35,7 +35,7 @@ const Select = props => {
 
   return (
     <div className="form-group">
-      <Typography>{props.label}</Typography>
+      <Typography>{props.altLabel}</Typography>
       <FormControl variant="outlined" className={classes.formControl}>
         <InputLabel id="select">{props.inputLabel || "Select One"}</InputLabel>
         <MuiSelect

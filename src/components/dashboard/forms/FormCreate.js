@@ -24,6 +24,7 @@ const FormCreate = () => {
     'Number',
     'Radio Group',
     'Rating',
+    'Switch',
     'Text Input',
   ]
 
@@ -188,11 +189,8 @@ const FormCreate = () => {
                   <Grid container display="flex" sx={{ p: 2 }} row>
                     <Grid item xs>
                       <Box>
-                        <Typography>Question</Typography>
-                      </Box>
-                      <Box>
                         <Controls.TextField
-                          // label="Question"
+                          altLabel="Question" // Typography label
                           type="text"
                           name={questionId}
                           placeholder={`Question #${qstidx + 1}`}
@@ -207,7 +205,7 @@ const FormCreate = () => {
                     <Grid item xs>
                       <Box>
                         <Controls.Select
-                          label="Answer Type"
+                          altLabel="Answer Type" // Typography label
                           name={typeId}
                           inputLabel={`Question #${qstidx + 1} Answer Type`}
                           data-idx={qstidx}
@@ -228,15 +226,10 @@ const FormCreate = () => {
                             const deleteId = `delete-${optidx}`;
                             return (
                               <Card key={`input-${optidx}`} sx={{ my: 1 }}>
-                                {/* <Box sx={{ backgroundColor: 'black', p: 1, color: 'white' }}>
-                                  <Typography variant="h6" fullWidth align='center'>{`Question ${optidx + 1}`}</Typography>
-                                </Box> */}
                                 <Grid container display="flex" sx={{ p: 2 }}>
                                   <Grid item xs>
-                                    <Box>
-                                      <Typography>Option {optidx + 1}</Typography>
-                                    </Box>
                                     <Controls.TextField
+                                      altLabel={`Option ${optidx + 1}`} // Typography label
                                       type="text"
                                       name={`option-${optidx + 1}`}
                                       placeholder={`Option ${optidx + 1} for Question #${qstidx + 1}`}
@@ -326,7 +319,7 @@ const FormCreate = () => {
             <br />
             <Paper mt={4} elevation={3}>
               <Box p={4}>
-                <FormSubmission formDesign={formPreview} displaySubmitButton={false} />
+                <FormSubmission formDesign={formPreview} displaySubmitButton={true} />
               </Box>
             </Paper>
           </div >

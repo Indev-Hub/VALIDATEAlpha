@@ -38,7 +38,7 @@ const RadioGroup = ({
     <div className="form-group">
       <FormControl component="fieldset">
         {/* <FormLabel component="legend">{other.label}</FormLabel> */}
-        <Typography>{other.label}</Typography>
+        <Typography>{other.altLabel}</Typography>
         <MuiRadioGroup {...config}>
           {options.map((option, index) => {
             const id = `${option.id}opt${index + 1}`;

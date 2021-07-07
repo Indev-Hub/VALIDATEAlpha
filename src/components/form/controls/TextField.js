@@ -1,7 +1,7 @@
 import React from 'react';
-import { 
-  TextField as MuiTextField, 
-  Typography 
+import {
+  TextField as MuiTextField,
+  Typography
 } from '@material-ui/core';
 import { useField } from 'formik';
 
@@ -20,7 +20,7 @@ const TextField = props => {
 
   return (
     <div className="form-group">
-      <Typography>{props.label}</Typography>
+      <Typography>{props.altLabel}</Typography>
       <MuiTextField {...config} />
     </div>
   );
