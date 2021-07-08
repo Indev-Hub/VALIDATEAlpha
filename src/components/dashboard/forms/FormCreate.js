@@ -143,8 +143,12 @@ const FormCreate = () => {
 
     // Output form data set
     const formDesignDataSet = createFormDesignDataSet();
-    console.log('formDesign = ', JSON.stringify(formDesignDataSet, null, 2));
-    // await API.graphql(graphqlOperation(createForm, { input: formDesignDataSet }));
+    // console.log('formDesign = ', JSON.stringify(formDesignDataSet, null, 2));
+    try {
+      await API.graphql(graphqlOperation(createForm, { input: formDesignDataSet }));
+    } catch (error) {
+      console.log('error uploading form', error);
+    }
   };
 
   return (
