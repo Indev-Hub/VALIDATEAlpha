@@ -6,10 +6,12 @@ import {
   Paper,
   Typography,
 } from '@material-ui/core'
+import { Close } from '@material-ui/icons'
 import { API, graphqlOperation, Storage } from 'aws-amplify'
 import { listForms } from '../../graphql/queries'
+import { deleteForm } from '../../graphql/mutations'
 import { Grid } from '@material-ui/core'
-import Controls from 'src/components/form/controls/_controls';
+import Controls from 'src/components/form/controls/_controls'
 import FormSubmission from 'src/components/form/FormSubmission'
 
 const TestList = () => {
@@ -32,8 +34,21 @@ const TestList = () => {
   }
   const idx = 0;
 
+  const formDelete = async (id) => {
+    try {
+      await API.graphql(graphqlOperation(deleteForm, { input: { id: id } }));
+    } catch (error) {
+      console.log('error deleting form', error);
+    }
+  }
+
   const handleFormSelection = (form) => {
     setSelectedForm(form);
+  }
+
+  const handleFormDelete = (id) => {
+    formDelete(id);
+    fetchForms();
   }
 
   if (!selectedForm) {
@@ -56,16 +71,24 @@ const TestList = () => {
                   container
                   display="flex"
                   className="formCard"
-                  direction="column"
-                  alignItems="left"
-                  justify="center"
-                  onClick={() => handleFormSelection(form)}
+                  // direction="column"
+                  // alignItems="left"
+                  // justify="center"
+
                 >
-                  <Grid item xs={12}>
-                    <Typography variant="h4" className="formTitle">{form.title}</Typography>
+                  <Grid item xs>
+                    <Typography variant="h4" className="formTitle" onClick={() => handleFormSelection(form)}>{form.title}</Typography>
                     <Typography variant="h5" className="formTitle">{form.id}</Typography>
                     <Typography className="formTitle">{form.description}</Typography>
-                    <Typography className="formDescription">{form.validations}</Typography>
+                    {/* <Typography className="formDescription">{form.validations}</Typography> */}
+                  </Grid>
+                  <Grid item xs={1}>
+                    <IconButton
+                      type="button"
+                      onClick={() => handleFormDelete(form.id)}
+                    >
+                      <Close />
+                    </IconButton>
                   </Grid>
                 </Grid>
               </Paper>
