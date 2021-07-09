@@ -16,6 +16,7 @@ import { Close } from '@material-ui/icons';
 import { Plus } from 'src/icons';
 import Controls from 'src/components/form/controls/_controls';
 import FormSubmission from 'src/components/form/FormSubmission';
+import Notification from 'src/components/form/Notification';
 
 const FormCreate = () => {
   const INPUT_CONTROLS = [
@@ -27,6 +28,13 @@ const FormCreate = () => {
     'Switch',
     'Text Input',
   ]
+
+  // Set state of upload success and failure notifications
+  const [notify, setNotify] = useState({
+    isOpen: false,
+    message: '',
+    type: ''
+  })
 
   // Company part of form
   const [ownerState, setOwnerState] = useState({
@@ -115,8 +123,8 @@ const FormCreate = () => {
 
     // the input data to be sent in our createForm request 
     const formDesignDataSet = {
-      id: `form-${formID}`,
-      companyID: `company-${compID}`,
+      id: `form-${formID}`, // formNumber?
+      companyID: `company-${compID}`, // companyName?
       title: title,
       description: description,
       validations: JSON.stringify(inputState)
@@ -135,6 +143,18 @@ const FormCreate = () => {
     setFormPreview(formDesign);
   };
 
+  // Reset form to initial state
+  const resetForm = () => {
+    setOwnerState({
+      title: '',
+      description: '',
+    });
+    setInputState([
+      { ...blankInput },
+    ]);
+    setFormPreview(null);
+  }
+
   const uploadForm = async () => {
     // Get user attributes
     const { signInUserSession } = await Auth.currentAuthenticatedUser();
@@ -146,8 +166,19 @@ const FormCreate = () => {
     // console.log('formDesign = ', JSON.stringify(formDesignDataSet, null, 2));
     try {
       await API.graphql(graphqlOperation(createForm, { input: formDesignDataSet }));
+      setNotify({
+        isOpen: true,
+        message: 'Uploaded Successfully',
+        type: 'success'
+      });
+      resetForm();
     } catch (error) {
       console.log('error uploading form', error);
+      setNotify({
+        isOpen: true,
+        message: `Upload Unsuccessful: ${error}`,
+        type: 'error'
+      });
     }
   };
 
@@ -329,6 +360,10 @@ const FormCreate = () => {
           </div >
         ) : null
       }
+      <Notification
+        notify={notify}
+        setNotify={setNotify}
+      />
     </>
   );
 };
