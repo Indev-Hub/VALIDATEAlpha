@@ -12,7 +12,7 @@ import {
   Paper,
   Typography
 } from '@material-ui/core';
-import { Close } from '@material-ui/icons';
+import { Close, DeleteForever } from '@material-ui/icons';
 import { Plus } from 'src/icons';
 import Controls from 'src/components/form/controls/_controls';
 import FormSubmission from 'src/components/form/FormSubmission';
@@ -218,31 +218,50 @@ const FormCreate = () => {
               const deleteId = `delete-${qstidx}`;
               return (
                 <Card key={`input-${qstidx}`} sx={{ my: 1 }}>
-                  <Box sx={{ backgroundColor: 'black', p: 1, color: 'white' }}>
-                    <Typography variant="h6" fullWidth align='center'>{`Question ${qstidx + 1}`}</Typography>
-                  </Box>
-                  <Grid container display="flex" sx={{ p: 2 }} row="true">
-                    <Grid item xs>
+                  <Grid container display="flex" sx={{ backgroundColor: 'black', p: 1, color: 'white' }}>
+                    <Grid item justifyContent="center" xs={11}>
+                      <Typography variant="h6" fullWidth align='center'>{`Question ${qstidx + 1}`}</Typography>
+                    </Grid>
+                    <Grid item xs={1}>
+                      <Button
+                          type="button"
+                          sx={{
+                            color: 'text.secondary',
+                            '&:hover': {
+                              color: 'text.light'
+                            }
+                          }}
+                          onClick={() => removeInput(qstidx)}
+                          id={`${qstidx}`}
+                        >
+                          <DeleteForever />
+                        </Button>
+                      </Grid>
+                  </Grid>
+                  <Grid container spacing={1} display="flex" sx={{ p: 2 }} row="true">
+                    <Grid item xs={12} md={4}>
                       <Box>
                         <Controls.TextField
-                          altlabel="Question" // Typography label
+                          label="Question" // Typography label
                           type="text"
                           name={questionId}
                           placeholder={`Question #${qstidx + 1}`}
                           data-idx={qstidx}
                           id="question"
                           className="question"
+                          fullWidth
                           value={inputState[qstidx].question}
                           onChange={(e) => handleInputChange(qstidx, e)}
                         />
                       </Box>
                     </Grid>
-                    <Grid item xs>
+                    <Grid item xs={12} md={4}>
                       <Box>
                         <Controls.Select
-                          altlabel="Answer Type" // Typography label
+                          label="Answer Type" // Typography label
                           name={typeId}
                           inputlabel={`Question #${qstidx + 1} Answer Type`}
+                          InputLabelProps={{shrink: false}}
                           data-idx={qstidx}
                           id="type"
                           className="type"
@@ -252,7 +271,7 @@ const FormCreate = () => {
                         />
                       </Box>
                     </Grid>
-                    <Grid item xs>
+                    <Grid item xs={12} md={4}>
                       <Box>
                         {/* Start mapping the validation answer options */}
                         {
@@ -260,16 +279,17 @@ const FormCreate = () => {
                             const optionId = `option-${optidx}`;
                             const deleteId = `delete-${optidx}`;
                             return (
-                              <Card key={`input-${optidx}`} sx={{ my: 1 }}>
-                                <Grid container display="flex" sx={{ p: 2 }}>
+                              <Box key={`input-${optidx}`} sx={{ my: 0 }}>
+                                <Grid container display="flex" sx={{ pb: 1 }}>
                                   <Grid item xs>
                                     <Controls.TextField
-                                      altlabel={`Option ${optidx + 1}`} // Typography label
+                                      label={`Option ${optidx + 1}`} // Typography label
                                       type="text"
                                       name={`option-${optidx + 1}`}
                                       placeholder={`Option ${optidx + 1} for Question #${qstidx + 1}`}
                                       data-idx={optidx}
                                       id={`${optidx}`}
+                                      fullWidth
                                       className="option"
                                       value={inputState[qstidx].options[optidx]}
                                       onChange={(e) => handleOptionChange(qstidx, optidx, e)}
@@ -285,7 +305,7 @@ const FormCreate = () => {
                                     </IconButton>
                                   </Grid>
                                 </Grid>
-                              </Card>
+                              </Box>
                             );
                           })
                         }
@@ -300,15 +320,6 @@ const FormCreate = () => {
                           Add Option
                         </Button>
                       </Box>
-                    </Grid>
-                    <Grid item xs={2}>
-                      <Button
-                        type="button"
-                        onClick={() => removeInput(qstidx)}
-                        id={`${qstidx}`}
-                      >
-                        remove
-                      </Button>
                     </Grid>
                   </Grid>
                 </Card>
