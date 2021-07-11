@@ -1,212 +1,332 @@
 import {
-    Button,
-    Card,
-    Grid,
-    TextField
+  Box,
+  Button,
+  Card,
+  Grid,
+  IconButton,
+  Paper,
+  TextField,
+  Typography
 } from '@material-ui/core';
 import React, { useState } from 'react';
 import { Formik } from 'formik';
 import { Plus } from 'src/icons';
-import { Box } from '@material-ui/core';
-import { Typography } from '@material-ui/core';
 import { API, Auth, graphqlOperation } from 'aws-amplify';
 import { uniqueId } from 'lodash';
 import { createForm } from 'src/graphql/mutations';
+import { Close } from '@material-ui/icons';
+
+import Controls from 'src/components/form/controls/_controls';
+import FormSubmission from 'src/components/form/FormSubmission';
+import formDesign from 'src/components/form/testing/formDesignTestData';
+import FormsList from 'src/components/form/testing/FormsList';
+import SubmissionsList from 'src/components/form/testing/SubmissionsList';
 
 const FormCreate = () => {
-    // Company part of form
-    const [ownerState, setOwnerState] = useState({
-        owner: '',
-        description: '',
-    });
+  const FORM_CONTROLS = [
+    'Button',
+    'Checkbox',
+    'Dropdown',
+    'Radio Group',
+    'Rating',
+    'Text Input',
+  ]
 
-    // Update to company part of form
-    const handleOwnerChange = (e) => setOwnerState({
-        ...ownerState,
-        [e.target.name]: [e.target.value],
-    });
+  // Company part of form
+  const [ownerState, setOwnerState] = useState({
+    title: '',
+    description: '',
+  });
 
-    // Validation questions part of form
-    const blankInput = {question: '', type: '', option: ''};
-    const [inputState, setInputState] = useState([
-        { ...blankInput },
-    ]);
+  // Update to company part of form
+  const handleOwnerChange = (e) => setOwnerState({
+    ...ownerState,
+    [e.target.name]: e.target.value,
+  });
 
-    // Add question to form and add the new question to our inputState array
-    const addInput = () => {
-        setInputState([...inputState, { ...blankInput }]);
+  // Validation questions part of form
+  const blankOption = {};
+  const blankInput = { question: '', type: '', options: [{ ...blankOption }] };
+  const [inputState, setInputState] = useState([
+    { ...blankInput },
+  ]);
+
+  // Add question to form and add the new question to our inputState array
+  const addInput = () => {
+    setInputState([...inputState, { ...blankInput }]);
+  };
+
+  // Removes question from mapped array
+  const removeInput = (index) => {
+    const array = [...inputState]; //make copy
+    array.splice(index, 1);
+    setInputState([...array]);
+  };
+
+  // Update question portion of form every time a field is modified
+  const handleInputChange = (e) => {
+    const updatedInputs = [...inputState];
+    updatedInputs[e.target.dataset.idx][e.target.id] = e.target.value;
+    setInputState(updatedInputs);
+  };
+
+  // Add answer option to form and add the new option to our inputState array
+  const addOption = (index) => {
+    const updatedState = [...inputState];
+    updatedState[index].options = [...updatedState[index].options, {}]
+    setInputState([...updatedState]);
+  };
+
+  // Removes answer option from mapped array.
+  const removeOption = (inputIndex, optionIndex) => {
+    const array = [...inputState]; //make copy
+    array[inputIndex].options.splice(optionIndex, 1);
+    setInputState([...array]);
+  };
+
+  // Update answer option portion of form every time a field is modified
+  const handleOptionChange = (questionIdx, optionIdx, e) => {
+    const updatedOptions = [...inputState];
+    updatedOptions[questionIdx].options[optionIdx][e.target.name] = e.target.value;
+    setInputState(updatedOptions);
+  };
+
+  // Create full data object to be used as output for DB and prop for form preview
+  const createFormDesignDataSet = () => {
+    // Create random number for ID (temp solution for unique ID — will add company name and form number later on)
+    function getRandomInt(min, max) {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    // Destructure form properties
+    const { title, description } = ownerState;
+    const { question, type, options } = inputState;
+    const formID = getRandomInt(1000, 9999);
+
+    // the input data to be sent in our createForm request 
+    const formDesignDataSet = {
+      id: `form-${formID}`,
+      companyID: 'company-1',
+      title: title,
+      description: description,
+      // validations: JSON.stringify(inputState)
+      validations: inputState
     };
 
-    // Removes question from mapped array. Currently does not update values but needs to.
-    // SOMETHING BROKE IN THIS FUNCTION AND IT HASN"T BEEN FIXED YET!
-    const removeInput = (index) => {
-        const array = [...inputState]; //make copy
-        array.splice(index, 1);
-        setInputState([...array]);
-      };
-      
+    return formDesignDataSet;
+  };
 
-    // Update question portion of form every time a field is modified
-    const handleInputChange = (e) => {
-        const updatedInputs = [...inputState];
-        updatedInputs[e.target.dataset.idx][e.target.id] = e.target.value;
-        setInputState(updatedInputs);
-        // console.log('updated inputs:', updatedInputs)
-    };
+  // Form preview
+  const [formPreview, setFormPreview] = useState(null);
 
-    const uploadForm = async () => {
-		//Get user attributes
-		const { signInUserSession } = await Auth.currentAuthenticatedUser();
-		const userName = signInUserSession.accessToken.payload.username;
-		const userId = signInUserSession.accessToken.payload.sub
+  const previewForm = () => {
+    // Get form data set
+    const formDesign = createFormDesignDataSet();
+    // Update formPreview state
+    setFormPreview(formDesign);
+  };
 
-		// Destructure form properties
-        const { name, description } = ownerState; 
-		const { type, question, option  } = inputState;
-        const formID = uniqueId();
+  const uploadForm = async () => {
+    // Get user attributes
+    const { signInUserSession } = await Auth.currentAuthenticatedUser();
+    const userName = signInUserSession.accessToken.payload.username;
+    const userId = signInUserSession.accessToken.payload.sub
 
-		// the input data to be sent in our createForm request 
-		const createFormInput = {
-			id: `form-${formID}`,
-			companyID: 'company-2',
-			name: ownerState.name,
-            // description: description,
-			validations: JSON.stringify(inputState)
-		};
+    // Output form data set
+    console.log('formDesign = ', JSON.stringify(createFormDesignDataSet(), null, 2));
+    // await API.graphql(graphqlOperation(createForm, { input: createFormInput }));
+  };
 
-		console.log('formData', createFormInput);
-		await API.graphql(graphqlOperation(createForm, { input: createFormInput }));
-	};
+  return (
+    <>
+      <Formik>
+        <form>
+          {/* Business info part of the form */}
+          <TextField
+            label="Form Name"
+            type="text"
+            name="title"
+            id="title"
+            value={ownerState.title}
+            onChange={handleOwnerChange}
+            fullWidth
+          />
+          <TextField
+            label="Form Description"
+            type="text"
+            name="description"
+            id="description"
+            value={ownerState.description}
+            onChange={handleOwnerChange}
+            fullWidth
+            sx={{
+              mt: 2
+            }}
+          />
 
-    console.log(inputState)
-
-    return (
-        <Formik>
-            <form>
-
-                {/* Business info part of the form */}
-                <TextField
-                    label="Form Name"
-                    type="text"
-                    name="name"
-                    id="name"
-                    value={ownerState.name}
-                    onChange={handleOwnerChange}
-                    fullWidth
-                />
-                <TextField
-                    label="Form Description"
-                    type="text"
-                    name="description"
-                    id="description"
-                    value={ownerState.description}
-                    onChange={handleOwnerChange}
-                    fullWidth
-                    sx={{
-                        mt:2
-                    }}
-                />
-
-                {/* Start mapping the validation questions */}
-                {
-                    inputState.map((val, idx) => {
-                        const questionId = `question-${idx}`;
-                        const typeId = `type-${idx}`;
-                        const optionId = `option-${idx}`;
-                        const deleteId = `delete-${idx}`;
-                        return (
-                            <Card key={`input-${idx}`} sx={{my:1}}>
-                                <Box sx={{backgroundColor:'black', p:1, color:'white'}}>
-                                    <Typography variant="h6" fullWidth align='center'>{`Question ${idx + 1}`}</Typography>
-                                </Box>
-                                <Grid container display="flex" sx={{p:2}}>
-                                    <Grid item xs>
-                                        <Box>
-                                            <Typography>Question</Typography>
-                                        </Box>
-                                        <Box>
-                                            <input
-                                                type="text"
-                                                name={questionId}
-                                                placeholder={`Question #${idx + 1}`}
-                                                data-idx={idx}
-                                                id="question"
-                                                className="question"
-                                                value={inputState[idx].question}
-                                                onChange={handleInputChange}
-                                            />
-                                        </Box>
-                                    </Grid>
-                                    <Grid item xs>
-                                        <Box>
-                                            <Typography>Answer Type</Typography>
-                                        </Box>
-                                        <Box>
-                                            <input
-                                                type="text"
-                                                name={typeId}
-                                                placeholder={`Question #${idx + 1} Answer Type`}
-                                                data-idx={idx}
-                                                id="type"
-                                                className="type"
-                                                value={inputState[idx].type}
-                                                onChange={handleInputChange}
-                                            />
-                                        </Box>
-                                    </Grid>
-                                    <Grid item xs>
-                                        <Box>
-                                            <Typography>Options</Typography>
-                                        </Box>                                        
-                                        <input
-                                            type="text"
-                                            name={optionId}
-                                            placeholder={`Answers for Question #${idx + 1}`}
-                                            data-idx={idx}
-                                            id="option"
-                                            className="option"
-                                            value={inputState[idx].option}
-                                            onChange={handleInputChange}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={2}>
-                                        <Button
-                                            type="button"
-                                            onClick={() => removeInput(idx)}
-                                            id={idx}
-                                        >
-                                            X
-                                        </Button>
-                                    </Grid>
+          {/* Start mapping the validation questions */}
+          {
+            inputState.map((val, idx) => {
+              const questionId = `question-${idx}`;
+              const typeId = `type-${idx}`;
+              const optionId = `option-${idx}`;
+              const deleteId = `delete-${idx}`;
+              return (
+                <Card key={`input-${idx}`} sx={{ my: 1 }}>
+                  <Box sx={{ backgroundColor: 'black', p: 1, color: 'white' }}>
+                    <Typography variant="h6" fullWidth align='center'>{`Question ${idx + 1}`}</Typography>
+                  </Box>
+                  <Grid container display="flex" sx={{ p: 2 }}>
+                    <Grid item xs>
+                      <Box>
+                        <Typography>Question</Typography>
+                      </Box>
+                      <Box>
+                        <input
+                          type="text"
+                          name={questionId}
+                          placeholder={`Question #${idx + 1}`}
+                          data-idx={idx}
+                          id="question"
+                          className="question"
+                          value={inputState[idx].question}
+                          onChange={handleInputChange}
+                        />
+                      </Box>
+                    </Grid>
+                    <Grid item xs>
+                      <Box>
+                        <Typography>Answer Type</Typography>
+                      </Box>
+                      <Box>
+                        <input
+                          type="text"
+                          name={typeId}
+                          placeholder={`Question #${idx + 1} Answer Type`}
+                          data-idx={idx}
+                          id="type"
+                          className="type"
+                          value={inputState[idx].type}
+                          onChange={handleInputChange}
+                        />
+                      </Box>
+                    </Grid>
+                    <Grid item xs>
+                      <Box>
+                        {/* Start mapping the validation answer options */}
+                        {
+                          inputState[idx].options.map((opt, optidx) => {
+                            const optionId = `option-${optidx}`;
+                            const deleteId = `delete-${optidx}`;
+                            return (
+                              <Card key={`input-${optidx}`} sx={{ my: 1 }}>
+                                {/* <Box sx={{ backgroundColor: 'black', p: 1, color: 'white' }}>
+                                  <Typography variant="h6" fullWidth align='center'>{`Question ${optidx + 1}`}</Typography>
+                                </Box> */}
+                                <Grid container display="flex" sx={{ p: 2 }}>
+                                  <Grid item xs>
+                                    <Box>
+                                      <Typography>Option {optidx + 1}</Typography>
+                                    </Box>
+                                    <input
+                                      type="text"
+                                      name={`option-${optidx + 1}`}
+                                      placeholder={`Option for Question #${idx + 1}`}
+                                      data-idx={optidx}
+                                      id={optidx}
+                                      className="option"
+                                      value={opt.option}
+                                      onChange={(e) => handleOptionChange(idx, optidx, e)}
+                                    />
+                                  </Grid>
+                                  <Grid item xs={2}>
+                                    <IconButton
+                                      type="button"
+                                      onClick={() => removeOption(idx, optidx)}
+                                      id={optidx}
+                                    >
+                                      <Close />
+                                    </IconButton>
+                                  </Grid>
                                 </Grid>
-                            </Card>
-                        );
-                    })
-                }
-                <Button
-                    type="button"
-                    onClick={addInput}
-                    variant="contained"
-                    color="secondary"
-                    sx={{ m:1, pr:3 }}
-                    startIcon={<Plus />}
-                    >
-                    Add Validation
-                </Button>
-                <Button
-                    sx={{ mt: 3, padding: 2 }}
-                    fullWidth
-                    color="primary"
-                    type="button"
-                    variant="contained"
-                    onClick={uploadForm}
-                >
-                    CREATE FORM
-                </Button>
-                <input type="submit" value="Submit" />
-            </form>
-        </Formik>
-    );
+                              </Card>
+                            );
+                          })
+                        }
+                        <Button
+                          type="button"
+                          onClick={() => addOption(idx)}
+                          variant="contained"
+                          color="secondary"
+                          sx={{ m: 1, pr: 3 }}
+                          startIcon={<Plus />}
+                        >
+                          Add Option
+                        </Button>
+                      </Box>
+                    </Grid>
+                    <Grid item xs={2}>
+                      <Button
+                        type="button"
+                        onClick={() => removeInput(idx)}
+                        id={idx}
+                      >
+                        remove
+                      </Button>
+                    </Grid>
+                  </Grid>
+                </Card>
+              );
+            })
+          }
+          <Button
+            type="button"
+            onClick={addInput}
+            variant="contained"
+            color="secondary"
+            sx={{ m: 1, pr: 3 }}
+            startIcon={<Plus />}
+          >
+            Add Validation
+          </Button>
+          <Button
+            type="button"
+            onClick={previewForm}
+            variant="contained"
+            color="secondary"
+            sx={{ m: 1, pr: 3 }}
+          >
+            Preview Form
+          </Button>
+          <Button
+            sx={{ mt: 3, padding: 2 }}
+            fullWidth
+            color="primary"
+            type="button"
+            variant="contained"
+            onClick={uploadForm}
+          >
+            CREATE FORM
+          </Button>
+        </form>
+      </Formik>
+
+      {formPreview ? (
+        <div>
+          <br />
+          <br />
+          <Paper mt={4} elevation={3}>
+            <Box p={4}>
+              <FormSubmission formDesign={formPreview} displaySubmitButton={false} />
+            </Box>
+          </Paper>
+        </div>
+      ) : null}
+
+    </>
+  );
 };
 
 export default FormCreate;

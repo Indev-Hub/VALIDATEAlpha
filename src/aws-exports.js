@@ -10,7 +10,7 @@ const awsmobile = {
     "oauth": {
         "domain": "validate-registration.auth.us-west-2.amazoncognito.com"
     },
-    "aws_appsync_graphqlEndpoint": "https://uyc7wn573rg7vl47o74vwr2ieu.appsync-api.us-west-2.amazonaws.com/graphql",
+    "aws_appsync_graphqlEndpoint": "https://el45zb6obrdrhkjrag6nqdvdk4.appsync-api.us-west-2.amazonaws.com/graphql",
     "aws_appsync_region": "us-west-2",
     "aws_appsync_authenticationType": "AMAZON_COGNITO_USER_POOLS"
 };

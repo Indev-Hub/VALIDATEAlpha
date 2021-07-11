@@ -1,6 +1,6 @@
 /* eslint-disable */
 import React, { useEffect, useState } from 'react';
-import { createForm } from '../../graphql/mutations';
+import { createForm } from '../../../graphql/mutations';
 // import { v4 as uuid } from 'uuid';
 import Amplify, { API, Auth, graphqlOperation, Storage } from 'aws-amplify';
 import {

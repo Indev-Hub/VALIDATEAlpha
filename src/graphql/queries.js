@@ -5,11 +5,12 @@ export const getUser = /* GraphQL */ `
   query GetUser($id: ID!) {
     getUser(id: $id) {
       id
-      name
+      username
+      email
       companies {
         items {
           id
-          title
+          name
           userID
           createdAt
           updatedAt
@@ -30,7 +31,8 @@ export const listUsers = /* GraphQL */ `
     listUsers(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        name
+        username
+        email
         companies {
           nextToken
         }
@@ -45,11 +47,12 @@ export const getCompany = /* GraphQL */ `
   query GetCompany($id: ID!) {
     getCompany(id: $id) {
       id
-      title
+      name
       userID
       user {
         id
-        name
+        username
+        email
         companies {
           nextToken
         }
@@ -60,6 +63,8 @@ export const getCompany = /* GraphQL */ `
         items {
           id
           companyID
+          title
+          description
           validations
           createdAt
           updatedAt
@@ -80,11 +85,12 @@ export const listCompanys = /* GraphQL */ `
     listCompanys(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        title
+        name
         userID
         user {
           id
-          name
+          username
+          email
           createdAt
           updatedAt
         }
@@ -103,13 +109,16 @@ export const getForm = /* GraphQL */ `
     getForm(id: $id) {
       id
       companyID
+      title
+      description
       company {
         id
-        title
+        name
         userID
         user {
           id
-          name
+          username
+          email
           createdAt
           updatedAt
         }
@@ -135,14 +144,70 @@ export const listForms = /* GraphQL */ `
       items {
         id
         companyID
+        title
+        description
         company {
           id
-          title
+          name
           userID
           createdAt
           updatedAt
         }
         validations
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getFormSubmission = /* GraphQL */ `
+  query GetFormSubmission($id: ID!) {
+    getFormSubmission(id: $id) {
+      id
+      formID
+      form {
+        id
+        companyID
+        title
+        description
+        company {
+          id
+          name
+          userID
+          createdAt
+          updatedAt
+        }
+        validations
+        createdAt
+        updatedAt
+      }
+      answers
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listFormSubmissions = /* GraphQL */ `
+  query ListFormSubmissions(
+    $filter: ModelFormSubmissionFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listFormSubmissions(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        formID
+        form {
+          id
+          companyID
+          title
+          description
+          validations
+          createdAt
+          updatedAt
+        }
+        answers
         createdAt
         updatedAt
       }

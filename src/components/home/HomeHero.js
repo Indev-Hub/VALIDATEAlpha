@@ -5,7 +5,6 @@ import {
   Box,
   // Button,
   Container,
-  Skeleton,
   Typography
 } from '@material-ui/core';
 import { useTheme } from '@material-ui/core/styles';
@@ -15,7 +14,9 @@ import awsconfig from '../../aws-exports';
 // import FormSelect from '../form/FormSelect';
 // import FormCheckbox from '../form/FormCheckbox';
 import Logo from '../../images/VALIDATE PunchOut.png';
-import CreateFormDesign from '../form/CreateFormDesign';
+// import CreateFormDesign from '../form/CreateFormDesign';
+import UserList from '../user/UserList';
+import SubmissionList from '../submissions/submissionList';
 
 Amplify.configure(awsconfig);
 
@@ -121,7 +122,9 @@ const HomeHero = (props) => {
           }
         }}
       >
-        <CreateFormDesign width="760px" />
+        <UserList />
+        <SubmissionList />
+        {/* <CreateFormDesign width="760px" /> */}
       </Container>
     </Box>
   );

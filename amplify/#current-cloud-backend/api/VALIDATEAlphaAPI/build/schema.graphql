@@ -1,6 +1,7 @@
 type User {
   id: ID!
-  name: String!
+  username: String!
+  email: String
   companies(filter: ModelCompanyFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelCompanyConnection
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
@@ -8,7 +9,7 @@ type User {
 
 type Company {
   id: ID!
-  title: String!
+  name: String!
   userID: ID!
   user: User
   forms(filter: ModelFormFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelFormConnection
@@ -19,8 +20,19 @@ type Company {
 type Form {
   id: ID!
   companyID: ID!
+  title: String
+  description: String
   company: Company
   validations: AWSJSON
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type FormSubmission {
+  id: ID!
+  formID: ID!
+  form: Form
+  answers: AWSJSON
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
 }
@@ -110,7 +122,8 @@ input ModelSizeInput {
 
 input ModelUserFilterInput {
   id: ModelIDInput
-  name: ModelStringInput
+  username: ModelStringInput
+  email: ModelStringInput
   and: [ModelUserFilterInput]
   or: [ModelUserFilterInput]
   not: ModelUserFilterInput
@@ -136,16 +149,20 @@ type Query {
   listCompanys(filter: ModelCompanyFilterInput, limit: Int, nextToken: String): ModelCompanyConnection
   getForm(id: ID!): Form
   listForms(filter: ModelFormFilterInput, limit: Int, nextToken: String): ModelFormConnection
+  getFormSubmission(id: ID!): FormSubmission
+  listFormSubmissions(filter: ModelFormSubmissionFilterInput, limit: Int, nextToken: String): ModelFormSubmissionConnection
 }
 
 input CreateUserInput {
   id: ID
-  name: String!
+  username: String!
+  email: String
 }
 
 input UpdateUserInput {
   id: ID!
-  name: String
+  username: String
+  email: String
 }
 
 input DeleteUserInput {
@@ -162,10 +179,14 @@ type Mutation {
   createForm(input: CreateFormInput!, condition: ModelFormConditionInput): Form
   updateForm(input: UpdateFormInput!, condition: ModelFormConditionInput): Form
   deleteForm(input: DeleteFormInput!, condition: ModelFormConditionInput): Form
+  createFormSubmission(input: CreateFormSubmissionInput!, condition: ModelFormSubmissionConditionInput): FormSubmission
+  updateFormSubmission(input: UpdateFormSubmissionInput!, condition: ModelFormSubmissionConditionInput): FormSubmission
+  deleteFormSubmission(input: DeleteFormSubmissionInput!, condition: ModelFormSubmissionConditionInput): FormSubmission
 }
 
 input ModelUserConditionInput {
-  name: ModelStringInput
+  username: ModelStringInput
+  email: ModelStringInput
   and: [ModelUserConditionInput]
   or: [ModelUserConditionInput]
   not: ModelUserConditionInput
@@ -181,6 +202,9 @@ type Subscription {
   onCreateForm: Form @aws_subscribe(mutations: ["createForm"])
   onUpdateForm: Form @aws_subscribe(mutations: ["updateForm"])
   onDeleteForm: Form @aws_subscribe(mutations: ["deleteForm"])
+  onCreateFormSubmission: FormSubmission @aws_subscribe(mutations: ["createFormSubmission"])
+  onUpdateFormSubmission: FormSubmission @aws_subscribe(mutations: ["updateFormSubmission"])
+  onDeleteFormSubmission: FormSubmission @aws_subscribe(mutations: ["deleteFormSubmission"])
 }
 
 type ModelCompanyConnection {
@@ -190,7 +214,7 @@ type ModelCompanyConnection {
 
 input ModelCompanyFilterInput {
   id: ModelIDInput
-  title: ModelStringInput
+  name: ModelStringInput
   userID: ModelIDInput
   and: [ModelCompanyFilterInput]
   or: [ModelCompanyFilterInput]
@@ -199,13 +223,13 @@ input ModelCompanyFilterInput {
 
 input CreateCompanyInput {
   id: ID
-  title: String!
+  name: String!
   userID: ID!
 }
 
 input UpdateCompanyInput {
   id: ID!
-  title: String
+  name: String
   userID: ID
 }
 
@@ -214,7 +238,7 @@ input DeleteCompanyInput {
 }
 
 input ModelCompanyConditionInput {
-  title: ModelStringInput
+  name: ModelStringInput
   userID: ModelIDInput
   and: [ModelCompanyConditionInput]
   or: [ModelCompanyConditionInput]
@@ -229,6 +253,8 @@ type ModelFormConnection {
 input ModelFormFilterInput {
   id: ModelIDInput
   companyID: ModelIDInput
+  title: ModelStringInput
+  description: ModelStringInput
   validations: ModelStringInput
   and: [ModelFormFilterInput]
   or: [ModelFormFilterInput]
@@ -238,12 +264,16 @@ input ModelFormFilterInput {
 input CreateFormInput {
   id: ID
   companyID: ID!
+  title: String
+  description: String
   validations: AWSJSON
 }
 
 input UpdateFormInput {
   id: ID!
   companyID: ID
+  title: String
+  description: String
   validations: AWSJSON
 }
 
@@ -253,8 +283,48 @@ input DeleteFormInput {
 
 input ModelFormConditionInput {
   companyID: ModelIDInput
+  title: ModelStringInput
+  description: ModelStringInput
   validations: ModelStringInput
   and: [ModelFormConditionInput]
   or: [ModelFormConditionInput]
   not: ModelFormConditionInput
+}
+
+type ModelFormSubmissionConnection {
+  items: [FormSubmission]
+  nextToken: String
+}
+
+input ModelFormSubmissionFilterInput {
+  id: ModelIDInput
+  formID: ModelIDInput
+  answers: ModelStringInput
+  and: [ModelFormSubmissionFilterInput]
+  or: [ModelFormSubmissionFilterInput]
+  not: ModelFormSubmissionFilterInput
+}
+
+input CreateFormSubmissionInput {
+  id: ID
+  formID: ID!
+  answers: AWSJSON
+}
+
+input UpdateFormSubmissionInput {
+  id: ID!
+  formID: ID
+  answers: AWSJSON
+}
+
+input DeleteFormSubmissionInput {
+  id: ID!
+}
+
+input ModelFormSubmissionConditionInput {
+  formID: ModelIDInput
+  answers: ModelStringInput
+  and: [ModelFormSubmissionConditionInput]
+  or: [ModelFormSubmissionConditionInput]
+  not: ModelFormSubmissionConditionInput
 }
