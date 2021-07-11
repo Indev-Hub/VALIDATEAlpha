@@ -11,10 +11,10 @@ import { API, graphqlOperation, Storage } from 'aws-amplify'
 import { listForms } from '../../graphql/queries'
 import { deleteForm } from '../../graphql/mutations'
 import { Grid } from '@material-ui/core'
-import Controls from 'src/components/form/controls/_controls'
-import FormSubmission from 'src/components/form/FormSubmission'
-import Notification from 'src/components/form/Notification'
-import ConfirmDialog from 'src/components/form/ConfirmDialog'
+import Controls from '../../components/form/controls/_controls'
+import FormSubmission from '../../components/form/FormSubmission'
+import Notification from '../../components/form/Notification'
+import ConfirmDialog from '../../components/form/ConfirmDialog'
 
 
 // EXISTING ISSUES
