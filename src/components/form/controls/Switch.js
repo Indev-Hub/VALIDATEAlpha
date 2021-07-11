@@ -1,16 +1,18 @@
 import React from 'react';
 import {
-  TextField as MuiTextField,
-  Typography
+  FormControlLabel,
+  FormGroup,
+  FormHelperText,
+  Switch as MuiSwitch,
+  Typography,
 } from '@material-ui/core';
 import { useField } from 'formik';
 
-const TextField = props => {
+const Switch = props => {
   const [field, meta] = useField(props);
   const config = {
     ...field,
     ...props,
-    variant: 'outlined',
   };
 
   if (meta && meta.touched && meta.error) {
@@ -21,9 +23,17 @@ const TextField = props => {
   return (
     <div className="form-group">
       <Typography>{props.altlabel}</Typography>
-      <MuiTextField {...config} />
+      <FormGroup row>
+        <FormControlLabel
+          control={<MuiSwitch {...config} />}
+          label={props.label}
+        />
+      </FormGroup>
+      {meta.touched && meta.error ? (
+        <FormHelperText error>{meta.error}</FormHelperText>
+      ) : null}
     </div>
   );
-};
+}
 
-export default TextField;
+export default Switch;

@@ -3,6 +3,7 @@ import Checkbox from './Checkbox';
 import RadioGroup from './RadioGroup';
 import Rating from './Rating';
 import Select from './Select';
+import Switch from './Switch';
 import TextField from './TextField';
 
 const Controls = {
@@ -11,6 +12,7 @@ const Controls = {
   RadioGroup,
   Rating,
   Select,
+  Switch,
   TextField,
 }
 

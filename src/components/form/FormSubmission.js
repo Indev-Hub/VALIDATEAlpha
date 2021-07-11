@@ -16,21 +16,27 @@ const FormSubmission = props => {
     answers: {},
   };
 
-  for (let i = 0; i < formDesign.validations.length; i++) {
+  // De-stringify "validations" single-field dataset
+  const questions = JSON.parse(formDesign.validations);
+
+  // Add question-answer pair, with question value, for each set of answers
+  for (let i = 0; i < questions.length; i++) {
     submitStructure.answers[`q${i + 1}`] = {
-      question: formDesign.validations[i].question,
+      question: questions[i].question,
       answer: '',
     }
   };
 
-  // Create intial field values (answer types) for Formik
+  // Create initial field values (answer types) for Formik
   const initialValues = {};
-  formDesign.validations.forEach((input, index) => {
+  questions.forEach((input, index) => {
     const name = `q${index + 1}`
     if (input.type === 'Checkbox') {
       initialValues[name] = [];
     } else if (input.type === 'Rating') {
       initialValues[name] = 0;
+    } else if (input.type === 'Switch') {
+      initialValues[name] = false;
     } else {
       initialValues[name] = '';
     };
@@ -38,7 +44,7 @@ const FormSubmission = props => {
 
   // Create Formik/Yup validation schema
   const validationSchema = {};
-  formDesign.validations.forEach((input, index) => {
+  questions.forEach((input, index) => {
     const name = `q${index + 1}`
     if (input.type === 'Checkbox') {
       validationSchema[name] = Yup.array()
@@ -46,6 +52,8 @@ const FormSubmission = props => {
     } else if (input.type === 'Rating') {
       validationSchema[name] = Yup.number()
         .moreThan(0, 'Please rate this item.')
+    } else if (input.type === 'Switch') {
+      validationSchema[name] = Yup.boolean().required('Required');
     } else {
       validationSchema[name] = Yup.string().required('Required');
     };
@@ -53,7 +61,7 @@ const FormSubmission = props => {
 
   return (
     <React.Fragment>
-      <h2>{formDesign.name}</h2>
+      <h2>{formDesign.title}</h2>
       <h3>{formDesign.description}</h3>
 
       <Formik
@@ -65,18 +73,23 @@ const FormSubmission = props => {
         })}
 
         onSubmit={async (values, { setSubmitting }) => {
-          // Add user input values into Q&A submission structure
+          // Add user input values into question-answer submission structure
           let formSubmission = { ...submitStructure };
           Object.keys(formSubmission.answers).forEach(questionNum => {
             formSubmission.answers[questionNum]['answer'] = values[questionNum];
           });
 
-          // Preview output via window alert and console
+          // // Preview output via window alert and console
           alert(JSON.stringify(formSubmission, null, 2));
-          console.log('formSubmission:', formSubmission)
+
 
           // Stringify 'answers' collection for single DynamoDB field
-          formSubmission.answers = JSON.stringify(formSubmission.answers)
+          formSubmission.answers = JSON.stringify(formSubmission.answers);
+
+          console.log(
+            'formSubmission:',
+            JSON.stringify(formSubmission, null, 2)
+          );
 
           // // POST to DynamoDB
           // await API.graphql(graphqlOperation(
@@ -90,15 +103,39 @@ const FormSubmission = props => {
         <Form autoComplete="off">
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              {formDesign.validations.map((question, index) => {
+              {questions.map((question, index) => {
                 switch (question.type) {
                   case 'Checkbox':
                     return (
                       <Controls.Checkbox
                         key={index}
-                        label={question.question}
+                        id={`q${index + 1}`}
                         name={`q${index + 1}`}
+                        altlabel={question.question}
                         options={question.options}
+                      />
+                    );
+                    break;
+                  case 'Dropdown':
+                    return (
+                      <Controls.Select
+                        key={index}
+                        id={`q${index + 1}`}
+                        name={`q${index + 1}`}
+                        altlabel={question.question}
+                        options={question.options}
+                      />
+                    );
+                    break;
+                  case 'Number':
+                    return (
+                      <Controls.TextField
+                        key={index}
+                        id={`q${index + 1}`}
+                        name={`q${index + 1}`}
+                        altlabel={question.question}
+                        type="number"
+                        placeholder="Enter a number"
                       />
                     );
                     break;
@@ -106,8 +143,9 @@ const FormSubmission = props => {
                     return (
                       <Controls.RadioGroup
                         key={index}
-                        label={question.question}
+                        id={`q${index + 1}`}
                         name={`q${index + 1}`}
+                        altlabel={question.question}
                         options={question.options}
                       />
                     );
@@ -116,18 +154,20 @@ const FormSubmission = props => {
                     return (
                       <Controls.Rating
                         key={index}
-                        label={question.question}
+                        id={`q${index + 1}`}
                         name={`q${index + 1}`}
+                        altlabel={question.question}
                       />
                     );
                     break;
-                  case 'Dropdown':
+                  case 'Switch':
                     return (
-                      <Controls.Select
+                      <Controls.Switch
                         key={index}
-                        label={question.question}
+                        id={`q${index + 1}`}
                         name={`q${index + 1}`}
-                        options={question.options}
+                        altlabel={question.question}
+                        label={question.options}
                       />
                     );
                     break;
@@ -135,8 +175,9 @@ const FormSubmission = props => {
                     return (
                       <Controls.TextField
                         key={index}
-                        label={question.question}
+                        id={`q${index + 1}`}
                         name={`q${index + 1}`}
+                        altlabel={question.question}
                         type="text"
                         placeholder="Type your answer"
                       />
@@ -144,7 +185,7 @@ const FormSubmission = props => {
                     break;
                   default:
                     return (
-                      <div>
+                      <div key={index}>
                         <h3>Unable to match answer type '{question.type}'.</h3>
                       </div>
                     );
