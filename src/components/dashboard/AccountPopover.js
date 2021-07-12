@@ -93,14 +93,14 @@ const AccountPopover = () => {
             color="textSecondary"
             variant="subtitle2"
           >
-            Devias IO
+            Indev
           </Typography>
         </Box>
         <Divider />
         <Box sx={{ mt: 2 }}>
           <MenuItem
             component={RouterLink}
-            to="/dashboard/social/profile"
+            to="/dashboard/account"
           >
             <ListItemIcon>
               <UserIcon fontSize="small" />
@@ -118,7 +118,7 @@ const AccountPopover = () => {
           </MenuItem>
           <MenuItem
             component={RouterLink}
-            to="/dashboard/account"
+            to="/dashboard/"
           >
             <ListItemIcon>
               <CogIcon fontSize="small" />
@@ -129,7 +129,7 @@ const AccountPopover = () => {
                   color="textPrimary"
                   variant="subtitle2"
                 >
-                  Settings
+                  Dashboard
                 </Typography>
               )}
             />
