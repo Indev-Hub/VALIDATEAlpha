@@ -219,10 +219,10 @@ const FormCreate = () => {
               return (
                 <Card key={`input-${qstidx}`} sx={{ my: 1 }}>
                   <Grid container display="flex" sx={{ backgroundColor: 'black', p: 1, color: 'white' }}>
-                    <Grid item justifyContent="center" xs={11}>
+                    <Grid item justifyContent="center" xs={10} md={11}>
                       <Typography variant="h6" fullWidth align='center'>{`Question ${qstidx + 1}`}</Typography>
                     </Grid>
-                    <Grid item xs={1}>
+                    <Grid item justifyContent="center" xs={1} md={1}>
                       <Button
                           type="button"
                           sx={{
@@ -261,7 +261,6 @@ const FormCreate = () => {
                           label="Answer Type" // Typography label
                           name={typeId}
                           inputlabel={`Question #${qstidx + 1} Answer Type`}
-                          InputLabelProps={{shrink: false}}
                           data-idx={qstidx}
                           id="type"
                           className="type"
@@ -339,7 +338,7 @@ const FormCreate = () => {
           <Button
             type="button"
             onClick={previewForm}
-            variant="contained"
+            variant="outlined"
             color="secondary"
             sx={{ m: 1, pr: 3 }}
           >
