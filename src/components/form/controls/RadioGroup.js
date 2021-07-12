@@ -37,17 +37,16 @@ const RadioGroup = ({
     <div className="form-group">
       <FormControl component="fieldset">
         {/* <FormLabel component="legend">{other.label}</FormLabel> */}
-        <Typography>{other.label}</Typography>
+        <Typography>{other.altlabel}</Typography>
         <MuiRadioGroup {...config}>
-          {options.map(option => {
-            const value = Object.values(option)[0];
-            const id = value.split(' ').join('-').toLowerCase();
+          {options.map((option, index) => {
+            const id = `${option.id}opt${index + 1}`;
             return (
               <FormControlLabel
                 key={id}
-                value={id}
+                value={option}
                 control={<Radio />}
-                label={value}
+                label={option}
               />)
           })}
         </MuiRadioGroup>

@@ -11,24 +11,23 @@ import { Field, useField } from 'formik';
 
 const Checkbox = (props) => {
   const [_field, meta] = useField({ ...props, type: 'checkbox' });
-  const { label, options, name } = props;
+  const { altlabel, options, name } = props;
   return (
     <div className="form-group">
       {/* <label id='my-checkbox-group'>{label}</label> */}
-      <Typography>{label}</Typography>
+      <Typography>{altlabel}</Typography>
       <div role='group' aria-labelledby='my-checkbox-group'>
-        {options.map(option => {
-          const value = Object.values(option)[0];
-          const id = value.split(' ').join('-').toLowerCase();
+        {options.map((option, index) => {
+          const id = `${option.id}opt${index + 1}`;
           return (
             <label key={id}>
               <Field
                 type='checkbox'
-                name={name}
                 id={id}
-                value={id}
+                name={name}
+                value={option}
               />
-              {value}
+              {option}
             </label>
           )
         })}

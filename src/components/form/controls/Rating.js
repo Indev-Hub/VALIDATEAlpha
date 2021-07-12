@@ -10,7 +10,7 @@ const Rating = props => {
   const [field, meta] = useField(props);
   return (
     <div className="form-group">
-      <Typography>{props.label}</Typography>
+      <Typography>{props.altlabel}</Typography>
       <MuiRating
         {...field}
         {...props}

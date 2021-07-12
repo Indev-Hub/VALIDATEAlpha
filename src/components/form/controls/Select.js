@@ -12,11 +12,11 @@ import { useField } from 'formik';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
+    margin: theme.spacing(0),
+    minWidth: 240,
   },
   selectEmpty: {
-    marginTop: theme.spacing(2),
+    marginTop: theme.spacing(0),
   },
 }));
 
@@ -35,17 +35,21 @@ const Select = props => {
 
   return (
     <div className="form-group">
-      <Typography>{props.label}</Typography>
-      <FormControl className={classes.formControl}>
-        <InputLabel id="select">Select One</InputLabel>
+      <Typography>{props.altlabel}</Typography>
+      <FormControl variant="outlined" fullWidth className={classes.formControl}>
+        <InputLabel id="select">{props.inputlabel || "Select One"}</InputLabel>
         <MuiSelect
           {...config}
         >
-          {props.options.map(option => {
-            const value = Object.values(option)[0];
-            const id = value.split(' ').join('-').toLowerCase();
+          {props.options.map((option, index) => {
+            const id = `${option.id}opt${index + 1}`;
             return (
-              <MenuItem key={id} value={id}>{value}</MenuItem>
+              <MenuItem
+                key={id}
+                value={option}
+              >
+                {option}
+              </MenuItem>
             )
           })}
         </MuiSelect>
