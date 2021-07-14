@@ -1,5 +1,4 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import {
   FormControl,
   FormHelperText,
@@ -8,6 +7,7 @@ import {
   Select as MuiSelect,
   Typography
 } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import { useField } from 'formik';
 
 const useStyles = makeStyles((theme) => ({
