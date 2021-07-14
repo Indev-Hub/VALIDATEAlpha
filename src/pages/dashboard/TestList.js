@@ -1,57 +1,52 @@
 /* eslint-disable */
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
 import {
   Box,
+  Grid,
   IconButton,
   Paper,
   Typography,
-} from '@material-ui/core'
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever'
-import { API, graphqlOperation, Storage } from 'aws-amplify'
-import { listForms } from '../../graphql/queries'
-import { deleteForm } from '../../graphql/mutations'
-import { Grid } from '@material-ui/core'
-import Controls from '../../components/form/controls/_controls'
-import FormSubmission from '../../components/form/FormSubmission'
-import Notification from '../../components/form/Notification'
-import ConfirmDialog from '../../components/form/ConfirmDialog'
+} from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import { API, graphqlOperation, Storage } from 'aws-amplify';
+import { listForms } from '../../graphql/queries';
+import { deleteForm } from '../../graphql/mutations';
+import Controls from '../../components/form/controls/_controls';
+import FormSubmission from '../../components/form/FormSubmission';
+import Notification from '../../components/form/Notification';
 
-
-// EXISTING ISSUES
-// 1. When a form is deleted, the list of remaining forms is 
-//    inconsistently re-rendered to reflect the change
-// 2. Custom confirmation dialog for form deletion throws an error
-//    "Uncaught TypeError: Cannot read property 'dark' of undefined"
+const useStyles = makeStyles(() => ({
+  deleteButton: {
+    position: 'absolute',
+    right: '20px',
+  }
+}));
 
 const TestList = () => {
+  const classes = useStyles();
+
   const [forms, setForms] = useState([]);
   const [selectedForm, setSelectedForm] = useState(null);
   const [notify, setNotify] = useState({
     isOpen: false,
     message: '',
     type: ''
-  })
-  const [confirmDialog, setConfirmDialog] = useState({
-    isOpen: false,
-    title: '',
-    subtitle: ''
-  })
+  });
 
   useEffect(() => {
     fetchForms();
-  }, [])
+  }, [notify]);
 
   const fetchForms = async () => {
     try {
       const formData = await API.graphql(graphqlOperation(listForms));
       const formList = formData.data.listForms.items;
-      console.log('form list', formList);
       setForms(formList);
     } catch (error) {
       console.log('error on fetching forms', error);
     }
-  }
-  const idx = 0;
+  };
 
   const formDelete = async (id) => {
     try {
@@ -59,23 +54,22 @@ const TestList = () => {
     } catch (error) {
       console.log('error deleting form', error);
     }
-  }
+  };
 
   const handleFormSelection = (form) => {
     setSelectedForm(form);
-  }
+  };
 
   const handleFormDelete = (id) => {
-    if (window.confirm('Delete this form? (This cannot be undone).')) {
+    if (window.confirm(`Delete this form? Action cannot be undone!`)) {
       formDelete(id);
-      fetchForms();
       setNotify({
         isOpen: true,
         message: 'Deleted Successfully',
         type: 'error'
       });
-    }
-  }
+    };
+  };
 
   if (!selectedForm) {
     return (
@@ -98,32 +92,35 @@ const TestList = () => {
                     container
                     display="flex"
                     className="formCard"
-                  // direction="column"
-                  // alignItems="left"
-                  // justify="center"
-
+                    direction="column"
+                    alignItems="left"
+                    justify="center"
                   >
-                    <Grid item xs>
-                      <Typography variant="h4" className="formTitle" onClick={() => handleFormSelection(form)}>{form.title}</Typography>
-                      <Typography variant="h5" className="formTitle">{form.id}</Typography>
-                      <Typography className="formTitle">{form.description}</Typography>
-                      <Typography className="formDescription">{form.validations}</Typography>
-                    </Grid>
-                    <Grid item xs={1}>
-                      <IconButton
-                        type="button"
-                        onClick={() => {
-                          // setConfirmDialog({
-                          //   isOpen: true,
-                          //   title: 'Delete this form?',
-                          //   subtitle: 'Warning: this cannot be undone!'
-                          // })
-                          handleFormDelete(form.id)
-                        }}
+                    <Grid item xs={12}>
+                      <Typography
+                        variant="h4"
+                        className="formTitle"
+                        onClick={() => handleFormSelection(form)}
                       >
-                        <DeleteForeverIcon fontSize="large" />
-                      </IconButton>
+                        {form.title}
+                      </Typography>
+                      <Typography variant="h5" className="formTitle">
+                        {form.id}
+                      </Typography>
+                      <Typography className="formTitle">
+                        {form.description}
+                      </Typography>
+                      <Typography className="formDescription">
+                        {form.validations}
+                      </Typography>
                     </Grid>
+                    <IconButton
+                      type="button"
+                      onClick={() => handleFormDelete(form.id)}
+                      className={classes.deleteButton}
+                    >
+                      <DeleteForeverIcon fontSize="large" />
+                    </IconButton>
                   </Grid>
                 </Paper>
               )
@@ -134,20 +131,21 @@ const TestList = () => {
           notify={notify}
           setNotify={setNotify}
         />
-        <ConfirmDialog
-          confirmDialog={confirmDialog}
-          setConfirmDialog={setConfirmDialog}
-        />
       </>
-    )
+    );
   } else {
     return (
       <>
-        <Controls.Button text="Return to list" color="secondary" fullWidth onClick={() => handleFormSelection(null)} />
+        <Controls.Button
+          text="Return to list"
+          color="secondary"
+          fullWidth
+          onClick={() => handleFormSelection(null)}
+        />
         <FormSubmission formDesign={selectedForm} displaySubmitButton={false} />
       </>
-    )
-  }
-}
+    );
+  };
+};
 
 export default TestList;
