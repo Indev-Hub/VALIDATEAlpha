@@ -9,6 +9,10 @@ import {
 } from '@material-ui/core';
 import { Field, useField } from 'formik';
 
+// EXISTING ISSUES
+// 1. Unable to get values from MuiCheckbox on submit;
+//    using formik <Field type="checkbox" /> instead while troubleshooting
+
 const Checkbox = (props) => {
   const [_field, meta] = useField({ ...props, type: 'checkbox' });
   const { altlabel, options, name } = props;

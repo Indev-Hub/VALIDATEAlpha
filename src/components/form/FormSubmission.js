@@ -1,6 +1,6 @@
 import React from 'react';
 import { API, graphqlOperation } from 'aws-amplify';
-import { createFormSubmission } from 'src/graphql/mutations';
+import { createFormSubmission } from '../../graphql/mutations';
 import { Grid } from '@material-ui/core';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
