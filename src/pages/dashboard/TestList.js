@@ -2,12 +2,15 @@
 import React, { useState, useEffect } from 'react';
 import {
   Box,
+  Container,
   Grid,
   IconButton,
   Paper,
   Typography,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import ControlPointDuplicateIcon
+  from '@material-ui/icons/ControlPointDuplicate';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import { API, graphqlOperation, Storage } from 'aws-amplify';
 import { listForms } from '../../graphql/queries';
@@ -16,19 +19,29 @@ import ConfirmDialog from '../../components/form/ConfirmDialog';
 import Controls from '../../components/form/controls/_controls';
 import FormSubmission from '../../components/form/FormSubmission';
 import Notification from '../../components/form/Notification';
+import FormCreate from '../../components/dashboard/forms/FormCreate';
+import useSettings from '../../hooks/useSettings';
 
+// Position 'delete' and 'duplicate' buttons
 const useStyles = makeStyles(() => ({
   deleteButton: {
     position: 'absolute',
     right: '20px',
-  }
+  },
+  duplicateButton: {
+    position: 'absolute',
+    right: '80px',
+  },
 }));
 
 const TestList = () => {
   const classes = useStyles();
+  const { settings } = useSettings();
 
+  // Set initial state of forms list, selected form, and other view states
   const [forms, setForms] = useState([]);
   const [selectedForm, setSelectedForm] = useState(null);
+  const [formDuplicate, setFormDuplicate] = useState(false);
   const [notify, setNotify] = useState({
     isOpen: false,
     message: '',
@@ -40,6 +53,7 @@ const TestList = () => {
     subtitle: ''
   })
 
+  // Fetch forms list on initial render and on delete (via 'notify' state)
   useEffect(() => {
     fetchForms();
   }, [notify]);
@@ -79,7 +93,47 @@ const TestList = () => {
     });
   };
 
-  if (!selectedForm) {
+  const handleFormDuplicate = (form) => {
+    setConfirmDialog({
+      ...confirmDialog,
+      isOpen: false,
+    });
+    setSelectedForm(form);
+    setFormDuplicate(true);
+  };
+
+  const handleListRefresh = () => {
+    fetchForms();
+    setSelectedForm(null);
+    setFormDuplicate(false);
+  }
+
+  if (formDuplicate) {
+    // Show FormCreate if duplicating from an existing form
+    return (
+      <Container maxWidth={settings.compact ? 'xl' : false}>
+        <Box sx={{ mt: 3 }}>
+          <FormCreate
+            formDuplicate={selectedForm}
+            handleListRefresh={handleListRefresh} />
+        </Box>
+      </Container>
+    )
+  } else if (selectedForm) {
+    // Show FormSubmission to display selected form when title is clicked
+    return (
+      <>
+        <Controls.Button
+          text="Return to list"
+          color="secondary"
+          fullWidth
+          onClick={() => handleFormSelection(null)}
+        />
+        <FormSubmission formDesign={selectedForm} displaySubmitButton={false} />
+      </>
+    );
+  } else {
+    // Show list of all forms
     return (
       <>
         <Box
@@ -118,9 +172,9 @@ const TestList = () => {
                       <Typography className="formTitle">
                         {form.description}
                       </Typography>
-                      <Typography className="formDescription">
+                      {/* <Typography className="formDescription">
                         {form.validations}
-                      </Typography>
+                      </Typography> */}
                     </Grid>
                     <IconButton
                       className={classes.deleteButton}
@@ -130,11 +184,26 @@ const TestList = () => {
                           title: 'Delete form',
                           subtitle: `Are you sure you want to delete this form? It will be permanently removed and 
                           this action cannot be undone.`,
+                          buttonText: 'Delete',
                           onConfirm: () => handleFormDelete(form.id),
                         });
                       }}
                     >
                       <DeleteForeverIcon fontSize="large" />
+                    </IconButton>
+                    <IconButton
+                      className={classes.duplicateButton}
+                      onClick={() => {
+                        setConfirmDialog({
+                          isOpen: true,
+                          title: 'Duplicate form',
+                          subtitle: `Proceeding will redirect you to the form creation page prepopulated with the currently selected form structure.`,
+                          buttonText: 'Duplicate',
+                          onConfirm: () => handleFormDuplicate(form),
+                        });
+                      }}
+                    >
+                      <ControlPointDuplicateIcon fontSize="large" />
                     </IconButton>
                   </Grid>
                 </Paper>
@@ -142,28 +211,18 @@ const TestList = () => {
             })
           }
         </Box>
+        {/* Notify of deletion success or failure */}
         <Notification
           notify={notify}
           setNotify={setNotify}
         />
+        {/* Prompt user to confirm before deleting form */}
         {confirmDialog.isOpen ? (
           <ConfirmDialog
             confirmDialog={confirmDialog}
             setConfirmDialog={setConfirmDialog}
           />
         ) : null}
-      </>
-    );
-  } else {
-    return (
-      <>
-        <Controls.Button
-          text="Return to list"
-          color="secondary"
-          fullWidth
-          onClick={() => handleFormSelection(null)}
-        />
-        <FormSubmission formDesign={selectedForm} displaySubmitButton={false} />
       </>
     );
   };

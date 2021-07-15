@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { API, Auth, graphqlOperation } from 'aws-amplify';
 import { createForm } from 'src/graphql/mutations';
 import { Formik, Form } from 'formik';
-import { uniqueId } from 'lodash';
+import { isNull, uniqueId } from 'lodash';
 import {
   Box,
   Button,
@@ -18,16 +19,21 @@ import Controls from 'src/components/form/controls/_controls';
 import FormSubmission from 'src/components/form/FormSubmission';
 import Notification from 'src/components/form/Notification';
 
-const FormCreate = () => {
-  const INPUT_CONTROLS = [
-    'Checkbox',
-    'Dropdown',
-    'Number',
-    'Radio Group',
-    'Rating',
-    'Switch',
-    'Text Input',
-  ]
+const INPUT_CONTROLS = [
+  'Checkbox',
+  'Dropdown',
+  'Number',
+  'Radio Group',
+  'Rating',
+  'Switch',
+  'Text Input',
+];
+
+const FormCreate = props => {
+  const navigate = useNavigate();
+
+  // This is used if duplicating from existing form in TestList
+  const { formDuplicate = null, handleListRefresh } = props;
 
   // Set state of upload success and failure notifications
   const [notify, setNotify] = useState({
@@ -37,10 +43,22 @@ const FormCreate = () => {
   })
 
   // Company part of form
-  const [ownerState, setOwnerState] = useState({
-    title: '',
-    description: '',
-  });
+  let initialOwnerState;
+  if (formDuplicate) {
+    // duplicating from existing form?
+    initialOwnerState = {
+      title: formDuplicate.title,
+      description: formDuplicate.description,
+    }
+  } else {
+    initialOwnerState = {
+      title: '',
+      description: '',
+    }
+  };
+
+  // Initialize owner state
+  const [ownerState, setOwnerState] = useState(initialOwnerState);
 
   // Update to company part of form
   const handleOwnerChange = (e) => setOwnerState({
@@ -55,10 +73,16 @@ const FormCreate = () => {
     options: [''],
   };
 
+  let initialInput;
+  if (formDuplicate) {
+    // duplicating from existing form?
+    initialInput = JSON.parse(formDuplicate.validations);
+  } else {
+    initialInput = [blankInput];
+  }
+
   // Initialize questions state
-  const [inputState, setInputState] = useState([
-    { ...blankInput },
-  ]);
+  const [inputState, setInputState] = useState(initialInput);
 
   // Add question to form and add the new question to our inputState array
   const addInput = () => {
@@ -67,42 +91,42 @@ const FormCreate = () => {
 
   // Remove question from mapped array
   const removeInput = (qstidx) => {
-    const updateState = [...inputState]; //make copy
+    const updateState = [...inputState]; // make copy
     updateState.splice(qstidx, 1);
     setInputState(updateState);
   };
 
   // Update question portion of form every time a field is modified
   const handleInputChange = (qstidx, e) => {
-    const updateState = [...inputState]; //make copy
+    const updateState = [...inputState]; // make copy
     updateState[qstidx].question = e.target.value;
     setInputState(updateState);
   };
 
   // Select answer type
   const handleSelectChange = (qstidx, e) => {
-    const updateState = [...inputState]; //make copy
+    const updateState = [...inputState]; // make copy
     updateState[qstidx].type = e.target.value;
     setInputState(updateState);
   };
 
   // Add answer option to form and add the new option to our inputState array
   const addOption = (qstidx) => {
-    const updateState = [...inputState]; //make copy
+    const updateState = [...inputState]; // make copy
     updateState[qstidx].options = [...updateState[qstidx].options, '']
     setInputState(updateState);
   };
 
   // Removes answer option from mapped array.
   const removeOption = (qstidx, optidx) => {
-    const updateState = [...inputState]; //make copy
+    const updateState = [...inputState]; // make copy
     updateState[qstidx].options.splice(optidx, 1);
     setInputState(updateState);
   };
 
   // Update answer option portion of form every time a field is modified
   const handleOptionChange = (qstidx, optidx, e) => {
-    const updatedOptions = [...inputState]; //make copy
+    const updatedOptions = [...inputState]; // make copy
     updatedOptions[qstidx].options[optidx] = e.target.value;
     setInputState(updatedOptions);
   };
@@ -172,6 +196,8 @@ const FormCreate = () => {
         type: 'success'
       });
       resetForm();
+      navigate("/dashboard/test-list"); // if submitted from TestCreate route
+      handleListRefresh(); // if submitted from TestList route
     } catch (error) {
       console.log('error uploading form', error);
       setNotify({
@@ -224,19 +250,19 @@ const FormCreate = () => {
                     </Grid>
                     <Grid item justifyContent="center" xs={1} md={1}>
                       <Button
-                          type="button"
-                          sx={{
-                            color: 'text.secondary',
-                            '&:hover': {
-                              color: 'text.light'
-                            }
-                          }}
-                          onClick={() => removeInput(qstidx)}
-                          id={`${qstidx}`}
-                        >
-                          <DeleteForever />
-                        </Button>
-                      </Grid>
+                        type="button"
+                        sx={{
+                          color: 'text.secondary',
+                          '&:hover': {
+                            color: 'text.light'
+                          }
+                        }}
+                        onClick={() => removeInput(qstidx)}
+                        id={`${qstidx}`}
+                      >
+                        <DeleteForever />
+                      </Button>
+                    </Grid>
                   </Grid>
                   <Grid container spacing={1} display="flex" sx={{ p: 2 }} row="true">
                     <Grid item xs={12} md={4}>
