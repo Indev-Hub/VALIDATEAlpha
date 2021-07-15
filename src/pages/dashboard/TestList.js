@@ -12,6 +12,7 @@ import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import { API, graphqlOperation, Storage } from 'aws-amplify';
 import { listForms } from '../../graphql/queries';
 import { deleteForm } from '../../graphql/mutations';
+import ConfirmDialog from '../../components/form/ConfirmDialog';
 import Controls from '../../components/form/controls/_controls';
 import FormSubmission from '../../components/form/FormSubmission';
 import Notification from '../../components/form/Notification';
@@ -33,6 +34,11 @@ const TestList = () => {
     message: '',
     type: ''
   });
+  const [confirmDialog, setConfirmDialog] = useState({
+    isOpen: false,
+    title: '',
+    subtitle: ''
+  })
 
   useEffect(() => {
     fetchForms();
@@ -61,14 +67,16 @@ const TestList = () => {
   };
 
   const handleFormDelete = (id) => {
-    if (window.confirm(`Delete this form? Action cannot be undone!`)) {
-      formDelete(id);
-      setNotify({
-        isOpen: true,
-        message: 'Deleted Successfully',
-        type: 'error'
-      });
-    };
+    setConfirmDialog({
+      ...confirmDialog,
+      isOpen: false,
+    });
+    formDelete(id);
+    setNotify({
+      isOpen: true,
+      message: 'Deleted Successfully',
+      type: 'error'
+    });
   };
 
   if (!selectedForm) {
@@ -115,9 +123,16 @@ const TestList = () => {
                       </Typography>
                     </Grid>
                     <IconButton
-                      type="button"
-                      onClick={() => handleFormDelete(form.id)}
                       className={classes.deleteButton}
+                      onClick={() => {
+                        setConfirmDialog({
+                          isOpen: true,
+                          title: 'Delete form',
+                          subtitle: `Are you sure you want to delete this form? It will be permanently removed and 
+                          this action cannot be undone.`,
+                          onConfirm: () => handleFormDelete(form.id),
+                        });
+                      }}
                     >
                       <DeleteForeverIcon fontSize="large" />
                     </IconButton>
@@ -131,6 +146,12 @@ const TestList = () => {
           notify={notify}
           setNotify={setNotify}
         />
+        {confirmDialog.isOpen ? (
+          <ConfirmDialog
+            confirmDialog={confirmDialog}
+            setConfirmDialog={setConfirmDialog}
+          />
+        ) : null}
       </>
     );
   } else {
