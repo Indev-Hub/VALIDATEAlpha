@@ -21,18 +21,30 @@ const SearchTemplate1 = (props) => {
     <Card>
       <Box
         style={{
-          backgroundImage: `url('https://source.unsplash.com/1900x900/?${form.title}')`,
+          backgroundColor: 'black',
+          background: `linear-gradient(90deg, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.3)), url('https://source.unsplash.com/1900x900/?${form.title}')`,
           backgroundSize: 'cover'
         }}
       >
         <Typography
-          variant="h4"
+          variant="h5"
           sx={{
-            p:2,
+            pl:2,
+            pt:1,
             color: 'white',
             textShadow: '#000000 4px 2px 6px'
           }}
-        >{form.title}</Typography>
+        >{form.title}
+        </Typography>
+        <Typography
+          sx={{
+            pl: 2,
+            pb: 1,
+            color: 'white',
+            textShadow: '#000000 4px 2px 6px'
+          }}
+        >{form.companyID}
+        </Typography>
       </Box>
       <Box
         sx={{ p:2 }}
