@@ -33,7 +33,7 @@ const useStyles = makeStyles(() => ({
     position: 'absolute',
     right: '80px',
   },
-  backButton: {
+  componentSpacing: {
     marginBottom: '40px',
   },
 }));
@@ -119,12 +119,19 @@ const TestList = () => {
       <Container maxWidth={settings.compact ? 'xl' : false}>
         <Box sx={{ mt: 3 }}>
           <Controls.Button
-            className={classes.backButton}
+            className={classes.componentSpacing}
             text="Return to forms list"
             color="secondary"
             fullWidth
             onClick={handleReturnToList}
           />
+          <Typography
+            className={classes.componentSpacing}
+            color="textPrimary"
+            variant="h5"
+          >
+            Create a new validation from an existing form
+          </Typography>
           <FormCreate
             formDuplicate={selectedForm}
             handleListRefresh={handleListRefresh} />
@@ -137,7 +144,7 @@ const TestList = () => {
       <Container maxWidth={settings.compact ? 'xl' : false}>
         <Box sx={{ mt: 3 }}>
           <Controls.Button
-            className={classes.backButton}
+            className={classes.componentSpacing}
             text="Return to forms list"
             color="secondary"
             fullWidth
@@ -187,9 +194,6 @@ const TestList = () => {
                       <Typography className="formTitle">
                         {form.description}
                       </Typography>
-                      {/* <Typography className="formDescription">
-                        {form.validations}
-                      </Typography> */}
                     </Grid>
                     <Tooltip title="Delete">
                       <IconButton
@@ -211,15 +215,7 @@ const TestList = () => {
                     <Tooltip title="Duplicate">
                       <IconButton
                         className={classes.duplicateButton}
-                        onClick={() => {
-                          setConfirmDialog({
-                            isOpen: true,
-                            title: 'Duplicate form',
-                            subtitle: `Proceeding will redirect you to the form creation page prepopulated with the currently selected form structure.`,
-                            buttonText: 'Duplicate',
-                            onConfirm: () => handleFormDuplicate(form),
-                          });
-                        }}
+                        onClick={() => handleFormDuplicate(form)}
                       >
                         <ControlPointDuplicateIcon fontSize="large" />
                       </IconButton>
