@@ -3,8 +3,9 @@ import { useState, useEffect } from 'react';
 // import { Link as RouterLink } from 'react-router-dom';
 import {
   Box,
-  // Button,
+  Button,
   Container,
+  Link,
   Typography
 } from '@material-ui/core';
 import { useTheme } from '@material-ui/core/styles';
@@ -14,9 +15,11 @@ import awsconfig from '../../aws-exports';
 // import FormSelect from '../form/FormSelect';
 // import FormCheckbox from '../form/FormCheckbox';
 import Logo from '../../images/VALIDATE PunchOut.png';
+import HomeLanding from './HomeLanding';
+import { ArrowCircleDown } from '@material-ui/icons';
 // import CreateFormDesign from '../form/CreateFormDesign';
-import UserList from '../user/UserList';
-import SubmissionList from '../submissions/submissionList';
+// import UserList from '../user/UserList';
+// import SubmissionList from '../submissions/submissionList';
 
 Amplify.configure(awsconfig);
 
@@ -90,10 +93,38 @@ const HomeHero = (props) => {
         </Box>
         <Box
           sx={{
-            backgroundColor: 'black'
+            backgroundColor: 'black',
+            display: 'flex',
+            flexDirection: 'column'
           }}
         >
-          <Typography variant="h5" sx={{ color: 'white', textAlign: 'center' }}>In Development Now</Typography>
+          <Link
+            href="#HomeLanding"
+            color="textSecondary"
+            textAlign="center"
+            sx={{
+              "&:hover": {
+                textDecoration: 'none',
+              }
+            }}
+        >
+            <Button
+              variant="contained"
+              sx={{
+                color: '#fff',
+                backgroundColor: '#000',
+                border: '2px solid #fff',
+                "&:hover": {
+                  color: '#000',
+                  backgroundColor: '#fff',
+                  textDecoration: 'none',
+                  border: '2px solid #000'
+                }
+              }}
+            >
+              In Development Now
+            </Button>
+          </Link>
         </Box>
       </Container>
       <Container
@@ -113,17 +144,21 @@ const HomeHero = (props) => {
       <Container
         maxWidth="100%"
         sx={{
-          backgroundColor: 'white',
+          backgroundColor: '#666',
           alignItems: 'center',
           display: 'flex',
           flexDirection: 'column',
+          py: 4,
           px: {
             md: '130px !important'
           }
         }}
       >
-        <UserList />
-        <SubmissionList />
+        <Box width="100%" id="HomeLanding">
+          <HomeLanding />
+        </Box>
+        {/* <UserList /> */}
+        {/* <SubmissionList /> */}
         {/* <CreateFormDesign width="760px" /> */}
       </Container>
     </Box>
