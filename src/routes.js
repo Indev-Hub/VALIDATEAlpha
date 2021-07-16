@@ -97,6 +97,7 @@ const Checkout = Loadable(lazy(() => import('./pages/Checkout')));
 const Contact = Loadable(lazy(() => import('./pages/Contact')));
 const Home = Loadable(lazy(() => import('./pages/Home')));
 const Pricing = Loadable(lazy(() => import('./pages/Pricing')));
+const SubmissionFormPage = Loadable(lazy(() => import('./pages/company/SubmissionFormPage')));
 
 const routes = [
   {
@@ -348,6 +349,10 @@ const routes = [
         ]
       }
     ]
+  },
+  {
+    path: 'form/:formId',
+    element: <SubmissionFormPage />
   },
   {
     path: 'docs',
