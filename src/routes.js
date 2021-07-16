@@ -351,10 +351,6 @@ const routes = [
     ]
   },
   {
-    path: 'form/:formId',
-    element: <SubmissionFormPage />
-  },
-  {
     path: 'docs',
     element: <DocsLayout />,
     children: [
@@ -380,6 +376,10 @@ const routes = [
       {
         path: '/',
         element: <Home />
+      },
+      {
+        path: 'form/:formId',
+        element: <SubmissionFormPage />
       },
       {
         path: 'browse',

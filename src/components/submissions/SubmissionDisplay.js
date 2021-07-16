@@ -42,7 +42,6 @@ const SubmissionDisplay = () => {
         )}
         {/* <FormSubmission formDesign = {formData} /> */}
         {console.log('after submission', formData)}
-        <Typography>Form Submission for Form {formId} </Typography>
       </Box>
     </>
   )
