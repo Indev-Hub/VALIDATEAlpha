@@ -64,8 +64,17 @@ const FormSubmission = props => {
 
   return (
     <React.Fragment>
-      <Grid container display="column" justifyContent="center" spacing={4} xs={10} md={10} lg={10} mx='auto' mt={10}>
-        <Grid item xs={4}>
+      <Grid
+        container
+        display="column"
+        justifyContent="center"
+        spacing={2}
+        xs={11}
+        md={10}
+        lg={10}
+        mx='auto'
+        my={2}>
+        <Grid item xs={12} md={4}>
           <Card
             sx={{
               p:4,
@@ -77,7 +86,7 @@ const FormSubmission = props => {
             <Typography>{formDesign.description}</Typography>
           </Card>
         </Grid>
-        <Grid item xs={8}>
+        <Grid item xs={12} md={8}>
         <Card
             sx={{
               p:4,

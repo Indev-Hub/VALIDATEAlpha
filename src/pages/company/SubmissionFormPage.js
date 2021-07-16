@@ -46,14 +46,18 @@ const SubmissionFormPage = () => {
       <Helmet>
         <title>Form Submission | VALIDATE</title>
       </Helmet>
-      <div>
+      <Box
+        sx={{
+          minHeight: '90%'
+        }}
+      >
         <SubmissionDisplay />
         {/* <HomeOverview />
         <HomeRoles />
         <HomeTestimonials />
         <HomeFeatures />
         <HomeClients /> */}
-      </div>
+      </Box>
     </>
   );
 };
