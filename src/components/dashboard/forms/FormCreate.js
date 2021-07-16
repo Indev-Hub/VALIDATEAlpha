@@ -50,11 +50,13 @@ const FormCreate = props => {
     initialOwnerState = {
       title: duplicateForm.title,
       description: duplicateForm.description,
+      isPrivate: duplicateForm.isPrivate,
     }
   } else {
     initialOwnerState = {
       title: '',
       description: '',
+      isPrivate: true,
     }
   };
 
@@ -65,6 +67,11 @@ const FormCreate = props => {
   const handleOwnerChange = (e) => setOwnerState({
     ...ownerState,
     [e.target.name]: e.target.value,
+  });
+
+  const handlePublicPrivateChange = (e) => setOwnerState({
+    ...ownerState,
+    [e.target.name]: e.target.checked,
   });
 
   // Validation questions part of form
@@ -142,7 +149,7 @@ const FormCreate = props => {
     }
 
     // Destructure form properties
-    const { title, description } = ownerState;
+    const { title, description, isPrivate } = ownerState;
     const formID = getRandomInt(1000, 9999);
     const compID = getRandomInt(1000, 9999);
 
@@ -152,6 +159,7 @@ const FormCreate = props => {
       companyID: `company-${compID}`, // companyName?
       title: title,
       description: description,
+      isPrivate: isPrivate,
       validations: JSON.stringify(inputState)
     };
 
@@ -179,7 +187,7 @@ const FormCreate = props => {
   //   ]);
   //   setFormPreview(null);
   // }
-  
+
   const uploadForm = async () => {
     // Get user attributes
     const { signInUserSession } = await Auth.currentAuthenticatedUser();
@@ -215,15 +223,33 @@ const FormCreate = props => {
       <Formik>
         <Form autoComplete="off">
           {/* Business info part of the form */}
-          <Controls.TextField
-            label="Form Name"
-            type="text"
-            name="title"
-            id="title"
-            value={ownerState.title}
-            onChange={handleOwnerChange}
-            fullWidth
-          />
+          <Grid container
+            alignItems="center"
+            justifyContent='space-between'
+          >
+            <Grid item xs={9}>
+              <Controls.TextField
+                label="Form Name"
+                type="text"
+                name="title"
+                id="title"
+                value={ownerState.title}
+                onChange={handleOwnerChange}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={2}>
+              <Controls.Switch
+                altlabel="Public or Private?"
+                label={ownerState.isPrivate ? "Private" : "Public"}
+                name="isPrivate"
+                id="isPrivate"
+                checked={ownerState.isPrivate}
+                value={ownerState.isPrivate ? "Private" : "Public"}
+                onChange={handlePublicPrivateChange}
+              />
+            </Grid>
+          </Grid>
           <Controls.TextField
             label="Form Description"
             type="text"

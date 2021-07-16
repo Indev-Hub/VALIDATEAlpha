@@ -209,7 +209,7 @@ const TestList = () => {
                       </Tooltip>
 
                       <Typography variant="h5" className="formTitle">
-                        {form.id}
+                        {form.id} - {form.isPrivate ? "Private Form" : "Public Form"}
                       </Typography>
 
                       <Typography className="formTitle">
@@ -259,7 +259,7 @@ const TestList = () => {
           notify={notify}
           setNotify={setNotify}
         />
-        
+
         {/* Prompt user to confirm before deleting form */}
         {confirmDialog.isOpen ? (
           <ConfirmDialog

@@ -78,19 +78,21 @@ const FormSubmission = props => {
         <Grid item xs={12} md={4}>
           <Card
             sx={{
-              p:4,
+              p: 4,
               width: '100%'
             }}
           >
             <Typography variant="h4">{formDesign.title}</Typography>
-            <Typography>{formDesign.companyID}</Typography>
+            <Typography>
+              {formDesign.companyID} - {formDesign.isPrivate ? "Private Form" : "Public Form"}
+            </Typography>
             <Typography>{formDesign.description}</Typography>
           </Card>
         </Grid>
         <Grid item xs={12} md={8}>
-        <Card
+          <Card
             sx={{
-              p:4,
+              p: 4,
               width: '100%'
             }}
           >
@@ -245,7 +247,7 @@ const FormSubmission = props => {
                 </Grid>
               </Form>
             </Formik>
-          </Card>  
+          </Card>
         </Grid>
       </Grid>
     </React.Fragment>
