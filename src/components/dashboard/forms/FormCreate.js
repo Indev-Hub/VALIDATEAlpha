@@ -33,7 +33,7 @@ const FormCreate = props => {
   const navigate = useNavigate();
 
   // This is used if duplicating from existing form in TestList
-  const { formDuplicate = null, handleListRefresh } = props;
+  const { duplicateForm = null, handleListRefresh } = props;
 
   // Set state of upload success and failure notifications
   const [notify, setNotify] = useState({
@@ -44,11 +44,11 @@ const FormCreate = props => {
 
   // Company part of form
   let initialOwnerState;
-  if (formDuplicate) {
+  if (duplicateForm) {
     // duplicating from existing form?
     initialOwnerState = {
-      title: formDuplicate.title,
-      description: formDuplicate.description,
+      title: duplicateForm.title,
+      description: duplicateForm.description,
     }
   } else {
     initialOwnerState = {
@@ -74,9 +74,9 @@ const FormCreate = props => {
   };
 
   let initialInput;
-  if (formDuplicate) {
+  if (duplicateForm) {
     // duplicating from existing form?
-    initialInput = JSON.parse(formDuplicate.validations);
+    initialInput = JSON.parse(duplicateForm.validations);
   } else {
     initialInput = [blankInput];
   }
@@ -167,17 +167,17 @@ const FormCreate = props => {
     setFormPreview(formDesign);
   };
 
-  // Reset form to initial state
-  const resetForm = () => {
-    setOwnerState({
-      title: '',
-      description: '',
-    });
-    setInputState([
-      { ...blankInput },
-    ]);
-    setFormPreview(null);
-  }
+  // // Reset form to initial state
+  // const resetForm = () => {
+  //   setOwnerState({
+  //     title: '',
+  //     description: '',
+  //   });
+  //   setInputState([
+  //     { ...blankInput },
+  //   ]);
+  //   setFormPreview(null);
+  // }
 
   const uploadForm = async () => {
     // Get user attributes
@@ -190,19 +190,20 @@ const FormCreate = props => {
     // console.log('formDesign = ', JSON.stringify(formDesignDataSet, null, 2));
     try {
       await API.graphql(graphqlOperation(createForm, { input: formDesignDataSet }));
-      setNotify({
-        isOpen: true,
-        message: 'Uploaded Successfully',
-        type: 'success'
-      });
-      resetForm();
+      // setNotify({
+      //   isOpen: true,
+      //   message: 'Uploaded Successfully',
+      //   type: 'success'
+      // });
+      // resetForm();
+      // await new Promise(res => { setTimeout(res, 3000); }); // to show notify
       navigate("/dashboard/test-list"); // if submitted from TestCreate route
       handleListRefresh(); // if submitted from TestList route
     } catch (error) {
       console.log('error uploading form', error);
       setNotify({
         isOpen: true,
-        message: `Upload Unsuccessful: ${error}`,
+        message: `Upload Failed: ${error}`,
         type: 'error'
       });
     }
