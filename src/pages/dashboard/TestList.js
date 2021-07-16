@@ -5,6 +5,7 @@ import {
   Container,
   Grid,
   IconButton,
+  Link,
   Paper,
   Tooltip,
   Typography,
@@ -192,20 +193,34 @@ const TestList = () => {
                     justify="center"
                   >
                     <Grid item xs={12}>
-                      <Typography
-                        variant="h4"
-                        className="formTitle"
-                        onClick={() => setSelectedForm(form)}
-                      >
-                        {form.title}
-                      </Typography>
+                      <Tooltip title="Preview form">
+                        <Typography
+                          variant="h4"
+                          className="formTitle"
+                          sx={{
+                            "&:hover": {
+                              cursor: 'pointer',
+                            }
+                          }}
+                          onClick={() => setSelectedForm(form)}
+                        >
+                          {form.title}
+                        </Typography>
+                      </Tooltip>
+
                       <Typography variant="h5" className="formTitle">
                         {form.id}
                       </Typography>
+
+                      <Typography className="formTitle">
+                        {`URL: https://validatehub.com/form/${form.id}`}
+                      </Typography>
+
                       <Typography className="formTitle">
                         {form.description}
                       </Typography>
                     </Grid>
+
                     <Tooltip title="Delete">
                       <IconButton
                         className={classes.deleteButton}
@@ -223,6 +238,7 @@ const TestList = () => {
                         <DeleteForeverIcon fontSize="large" />
                       </IconButton>
                     </Tooltip>
+
                     <Tooltip title="Duplicate">
                       <IconButton
                         className={classes.duplicateButton}
@@ -237,11 +253,13 @@ const TestList = () => {
             })
           }
         </Box>
+
         {/* Notify of deletion success or failure */}
         <Notification
           notify={notify}
           setNotify={setNotify}
         />
+        
         {/* Prompt user to confirm before deleting form */}
         {confirmDialog.isOpen ? (
           <ConfirmDialog
