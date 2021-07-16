@@ -40,10 +40,10 @@ const SearchMain = (props) => {
             item
             xs={4}
             key={index}
-            href={`/${form.id}`}
+            href={`/form/${form.id}`}
           >
             <Link
-              href={`/${form.id}`}
+              href={`/form/${form.id}`}
               sx={{
                 "&:hover": {
                   textDecoration: 'none',
