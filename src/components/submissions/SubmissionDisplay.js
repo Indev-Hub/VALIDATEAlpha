@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
-import { Button, Typography } from '@material-ui/core';
+import { Box, Button, Card, Grid, Typography } from '@material-ui/core';
 import FormSubmission from '../form/FormSubmission';
 import { getForm } from 'src/graphql/queries';
 import { listForms } from 'src/graphql/queries';
@@ -32,17 +32,18 @@ const SubmissionDisplay = () => {
 
   return (
     <>
-      {/* <Button variant="contained" onClick={getFormInfo}>load</Button> */}
-      {console.log('before submission', formData)}
-      {isLoading ? (
-        <Typography>Form is loading...</Typography>
-      ) : (
-        <FormSubmission formDesign = {formData} /> 
-      )}
-      {/* <FormSubmission formDesign = {formData} /> */}
-      {console.log('after submission', formData)}
-      <Typography>Form Submission for Form {formId} </Typography>
-
+      <Box>
+        {/* <Button variant="contained" onClick={getFormInfo}>load</Button> */}
+        {console.log('before submission', formData)}
+        {isLoading ? (
+          <Typography>Form is loading...</Typography>
+        ) : (
+          <FormSubmission formDesign = {formData} /> 
+        )}
+        {/* <FormSubmission formDesign = {formData} /> */}
+        {console.log('after submission', formData)}
+        <Typography>Form Submission for Form {formId} </Typography>
+      </Box>
     </>
   )
 }
