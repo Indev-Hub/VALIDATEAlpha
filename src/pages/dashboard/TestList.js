@@ -45,7 +45,7 @@ const TestList = () => {
   // Set initial state of forms list, selected form, and other view states
   const [forms, setForms] = useState([]);
   const [selectedForm, setSelectedForm] = useState(null);
-  const [formDuplicate, setFormDuplicate] = useState(false);
+  const [duplicateForm, setDuplicateForm] = useState(false);
   const [notify, setNotify] = useState({
     isOpen: false,
     message: '',
@@ -57,10 +57,10 @@ const TestList = () => {
     subtitle: ''
   })
 
-  // Fetch forms list on initial render and on delete (via 'notify' state)
+  // Fetch forms list on initial render
   useEffect(() => {
     fetchForms();
-  }, [notify]);
+  }, []);
 
   const fetchForms = async () => {
     try {
@@ -72,48 +72,59 @@ const TestList = () => {
     }
   };
 
+  // Delete a form
   const formDelete = async (id) => {
     try {
       await API.graphql(graphqlOperation(deleteForm, { input: { id: id } }));
+      setNotify({
+        isOpen: true,
+        message: 'Deleted Successfully',
+        type: 'success'
+      });
     } catch (error) {
+      setNotify({
+        isOpen: true,
+        message: `Failed to Delete: ${error}`,
+        type: 'error'
+      });
       console.log('error deleting form', error);
     }
   };
 
-  const handleFormDelete = (id) => {
-    setConfirmDialog({
-      ...confirmDialog,
-      isOpen: false,
-    });
+  const handleFormDelete = (id, idx) => {
+    // Delete from database with success/failure notification
     formDelete(id);
-    setNotify({
-      isOpen: true,
-      message: 'Deleted Successfully',
-      type: 'error'
-    });
-  };
-
-  const handleFormDuplicate = (form) => {
+    // Delete from 'forms' state (avoids extra fetchForms API call)
+    const newFormsList = [...forms];
+    newFormsList.splice(idx, 1);
+    setForms(newFormsList);
+    // Hide confirmation modal
     setConfirmDialog({
       ...confirmDialog,
       isOpen: false,
     });
-    setSelectedForm(form);
-    setFormDuplicate(true);
   };
 
+  // Set state for form duplication
+  const handleDuplicateForm = (form) => {
+    setSelectedForm(form);
+    setDuplicateForm(true);
+  };
+
+  // Refresh list after a new form saved from duplication
   const handleListRefresh = () => {
     fetchForms();
     setSelectedForm(null);
-    setFormDuplicate(false);
+    setDuplicateForm(false);
   }
 
+  // Go back to list from individual form or duplicate form creation views
   const handleReturnToList = () => {
     setSelectedForm(null);
-    setFormDuplicate(false);
+    setDuplicateForm(false);
   }
 
-  if (formDuplicate) {
+  if (duplicateForm) {
     // Show FormCreate if duplicating from an existing form
     return (
       <Container maxWidth={settings.compact ? 'xl' : false}>
@@ -133,7 +144,7 @@ const TestList = () => {
             Create a new validation from an existing form
           </Typography>
           <FormCreate
-            formDuplicate={selectedForm}
+            duplicateForm={selectedForm}
             handleListRefresh={handleListRefresh} />
         </Box>
       </Container>
@@ -205,7 +216,7 @@ const TestList = () => {
                             subtitle: `Are you sure you want to delete this form? It will be permanently removed and 
                           this action cannot be undone.`,
                             buttonText: 'Delete',
-                            onConfirm: () => handleFormDelete(form.id),
+                            onConfirm: () => handleFormDelete(form.id, idx),
                           });
                         }}
                       >
@@ -215,7 +226,7 @@ const TestList = () => {
                     <Tooltip title="Duplicate">
                       <IconButton
                         className={classes.duplicateButton}
-                        onClick={() => handleFormDuplicate(form)}
+                        onClick={() => handleDuplicateForm(form)}
                       >
                         <ControlPointDuplicateIcon fontSize="large" />
                       </IconButton>
