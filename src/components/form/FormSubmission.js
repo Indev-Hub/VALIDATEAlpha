@@ -4,6 +4,7 @@ import { createFormSubmission } from '../../graphql/mutations';
 import { Box, Card, Grid, Typography } from '@material-ui/core';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
+import PropTypes from 'prop-types';
 import Controls from './controls/_controls';
 
 const FormSubmission = props => {
@@ -249,6 +250,11 @@ const FormSubmission = props => {
       </Grid>
     </React.Fragment>
   );
+};
+
+FormSubmission.propTypes = {
+  formDesign: PropTypes.object,
+  displaySubmitButton: PropTypes.bool,
 };
 
 export default FormSubmission;

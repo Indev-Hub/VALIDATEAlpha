@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { API, Auth, graphqlOperation } from 'aws-amplify';
-import { createForm } from 'src/graphql/mutations';
+import { createForm } from '../../../graphql/mutations';
 import { Formik, Form } from 'formik';
 import { isNull, uniqueId } from 'lodash';
+import PropTypes from 'prop-types';
 import {
   Box,
   Button,
@@ -14,10 +15,10 @@ import {
   Typography
 } from '@material-ui/core';
 import { Close, DeleteForever } from '@material-ui/icons';
-import { Plus } from 'src/icons';
-import Controls from 'src/components/form/controls/_controls';
-import FormSubmission from 'src/components/form/FormSubmission';
-import Notification from 'src/components/form/Notification';
+import { Plus } from '../../../icons';
+import Controls from '../../form/controls/_controls';
+import FormSubmission from '../../form/FormSubmission';
+import Notification from '../../form/Notification';
 
 const INPUT_CONTROLS = [
   'Checkbox',
@@ -178,7 +179,7 @@ const FormCreate = props => {
   //   ]);
   //   setFormPreview(null);
   // }
-
+  
   const uploadForm = async () => {
     // Get user attributes
     const { signInUserSession } = await Auth.currentAuthenticatedUser();
@@ -403,6 +404,11 @@ const FormCreate = props => {
       />
     </>
   );
+};
+
+FormCreate.propTypes = {
+  duplicateForm: PropTypes.bool,
+  handleListRefresh: PropTypes.func,
 };
 
 export default FormCreate;
