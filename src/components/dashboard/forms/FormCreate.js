@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { API, Auth, graphqlOperation } from 'aws-amplify';
-import { createForm } from 'src/graphql/mutations';
+import { createForm } from '../../../graphql/mutations';
 import { Formik, Form } from 'formik';
-import { uniqueId } from 'lodash';
+import { isNull, uniqueId } from 'lodash';
+import PropTypes from 'prop-types';
 import {
   Box,
   Button,
@@ -13,21 +15,26 @@ import {
   Typography
 } from '@material-ui/core';
 import { Close, DeleteForever } from '@material-ui/icons';
-import { Plus } from 'src/icons';
-import Controls from 'src/components/form/controls/_controls';
-import FormSubmission from 'src/components/form/FormSubmission';
-import Notification from 'src/components/form/Notification';
+import { Plus } from '../../../icons';
+import Controls from '../../form/controls/_controls';
+import FormSubmission from '../../form/FormSubmission';
+import Notification from '../../form/Notification';
 
-const FormCreate = () => {
-  const INPUT_CONTROLS = [
-    'Checkbox',
-    'Dropdown',
-    'Number',
-    'Radio Group',
-    'Rating',
-    'Switch',
-    'Text Input',
-  ]
+const INPUT_CONTROLS = [
+  'Checkbox',
+  'Dropdown',
+  'Number',
+  'Radio Group',
+  'Rating',
+  'Switch',
+  'Text Input',
+];
+
+const FormCreate = props => {
+  const navigate = useNavigate();
+
+  // This is used if duplicating from existing form in TestList
+  const { duplicateForm = null, handleListRefresh } = props;
 
   // Set state of upload success and failure notifications
   const [notify, setNotify] = useState({
@@ -37,15 +44,34 @@ const FormCreate = () => {
   })
 
   // Company part of form
-  const [ownerState, setOwnerState] = useState({
-    title: '',
-    description: '',
-  });
+  let initialOwnerState;
+  if (duplicateForm) {
+    // duplicating from existing form?
+    initialOwnerState = {
+      title: duplicateForm.title,
+      description: duplicateForm.description,
+      isPrivate: duplicateForm.isPrivate,
+    }
+  } else {
+    initialOwnerState = {
+      title: '',
+      description: '',
+      isPrivate: true,
+    }
+  };
+
+  // Initialize owner state
+  const [ownerState, setOwnerState] = useState(initialOwnerState);
 
   // Update to company part of form
   const handleOwnerChange = (e) => setOwnerState({
     ...ownerState,
     [e.target.name]: e.target.value,
+  });
+
+  const handlePublicPrivateChange = (e) => setOwnerState({
+    ...ownerState,
+    [e.target.name]: e.target.checked,
   });
 
   // Validation questions part of form
@@ -55,10 +81,16 @@ const FormCreate = () => {
     options: [''],
   };
 
+  let initialInput;
+  if (duplicateForm) {
+    // duplicating from existing form?
+    initialInput = JSON.parse(duplicateForm.validations);
+  } else {
+    initialInput = [blankInput];
+  }
+
   // Initialize questions state
-  const [inputState, setInputState] = useState([
-    { ...blankInput },
-  ]);
+  const [inputState, setInputState] = useState(initialInput);
 
   // Add question to form and add the new question to our inputState array
   const addInput = () => {
@@ -67,42 +99,42 @@ const FormCreate = () => {
 
   // Remove question from mapped array
   const removeInput = (qstidx) => {
-    const updateState = [...inputState]; //make copy
+    const updateState = [...inputState]; // make copy
     updateState.splice(qstidx, 1);
     setInputState(updateState);
   };
 
   // Update question portion of form every time a field is modified
   const handleInputChange = (qstidx, e) => {
-    const updateState = [...inputState]; //make copy
+    const updateState = [...inputState]; // make copy
     updateState[qstidx].question = e.target.value;
     setInputState(updateState);
   };
 
   // Select answer type
   const handleSelectChange = (qstidx, e) => {
-    const updateState = [...inputState]; //make copy
+    const updateState = [...inputState]; // make copy
     updateState[qstidx].type = e.target.value;
     setInputState(updateState);
   };
 
   // Add answer option to form and add the new option to our inputState array
   const addOption = (qstidx) => {
-    const updateState = [...inputState]; //make copy
+    const updateState = [...inputState]; // make copy
     updateState[qstidx].options = [...updateState[qstidx].options, '']
     setInputState(updateState);
   };
 
   // Removes answer option from mapped array.
   const removeOption = (qstidx, optidx) => {
-    const updateState = [...inputState]; //make copy
+    const updateState = [...inputState]; // make copy
     updateState[qstidx].options.splice(optidx, 1);
     setInputState(updateState);
   };
 
   // Update answer option portion of form every time a field is modified
   const handleOptionChange = (qstidx, optidx, e) => {
-    const updatedOptions = [...inputState]; //make copy
+    const updatedOptions = [...inputState]; // make copy
     updatedOptions[qstidx].options[optidx] = e.target.value;
     setInputState(updatedOptions);
   };
@@ -117,7 +149,7 @@ const FormCreate = () => {
     }
 
     // Destructure form properties
-    const { title, description } = ownerState;
+    const { title, description, isPrivate } = ownerState;
     const formID = getRandomInt(1000, 9999);
     const compID = getRandomInt(1000, 9999);
 
@@ -127,6 +159,7 @@ const FormCreate = () => {
       companyID: `company-${compID}`, // companyName?
       title: title,
       description: description,
+      isPrivate: isPrivate,
       validations: JSON.stringify(inputState)
     };
 
@@ -143,17 +176,17 @@ const FormCreate = () => {
     setFormPreview(formDesign);
   };
 
-  // Reset form to initial state
-  const resetForm = () => {
-    setOwnerState({
-      title: '',
-      description: '',
-    });
-    setInputState([
-      { ...blankInput },
-    ]);
-    setFormPreview(null);
-  }
+  // // Reset form to initial state
+  // const resetForm = () => {
+  //   setOwnerState({
+  //     title: '',
+  //     description: '',
+  //   });
+  //   setInputState([
+  //     { ...blankInput },
+  //   ]);
+  //   setFormPreview(null);
+  // }
 
   const uploadForm = async () => {
     // Get user attributes
@@ -166,17 +199,20 @@ const FormCreate = () => {
     // console.log('formDesign = ', JSON.stringify(formDesignDataSet, null, 2));
     try {
       await API.graphql(graphqlOperation(createForm, { input: formDesignDataSet }));
-      setNotify({
-        isOpen: true,
-        message: 'Uploaded Successfully',
-        type: 'success'
-      });
-      resetForm();
+      // setNotify({
+      //   isOpen: true,
+      //   message: 'Uploaded Successfully',
+      //   type: 'success'
+      // });
+      // resetForm();
+      // await new Promise(res => { setTimeout(res, 3000); }); // to show notify
+      navigate("/dashboard/test-list"); // if submitted from TestCreate route
+      handleListRefresh(); // if submitted from TestList route
     } catch (error) {
       console.log('error uploading form', error);
       setNotify({
         isOpen: true,
-        message: `Upload Unsuccessful: ${error}`,
+        message: `Upload Failed: ${error}`,
         type: 'error'
       });
     }
@@ -187,15 +223,33 @@ const FormCreate = () => {
       <Formik>
         <Form autoComplete="off">
           {/* Business info part of the form */}
-          <Controls.TextField
-            label="Form Name"
-            type="text"
-            name="title"
-            id="title"
-            value={ownerState.title}
-            onChange={handleOwnerChange}
-            fullWidth
-          />
+          <Grid container
+            alignItems="center"
+            justifyContent='space-between'
+          >
+            <Grid item xs={9}>
+              <Controls.TextField
+                label="Form Name"
+                type="text"
+                name="title"
+                id="title"
+                value={ownerState.title}
+                onChange={handleOwnerChange}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={2}>
+              <Controls.Switch
+                altlabel="Public or Private?"
+                label={ownerState.isPrivate ? "Private" : "Public"}
+                name="isPrivate"
+                id="isPrivate"
+                checked={ownerState.isPrivate}
+                value={ownerState.isPrivate ? "Private" : "Public"}
+                onChange={handlePublicPrivateChange}
+              />
+            </Grid>
+          </Grid>
           <Controls.TextField
             label="Form Description"
             type="text"
@@ -224,19 +278,19 @@ const FormCreate = () => {
                     </Grid>
                     <Grid item justifyContent="center" xs={1} md={1}>
                       <Button
-                          type="button"
-                          sx={{
-                            color: 'text.secondary',
-                            '&:hover': {
-                              color: 'text.light'
-                            }
-                          }}
-                          onClick={() => removeInput(qstidx)}
-                          id={`${qstidx}`}
-                        >
-                          <DeleteForever />
-                        </Button>
-                      </Grid>
+                        type="button"
+                        sx={{
+                          color: 'text.secondary',
+                          '&:hover': {
+                            color: 'text.light'
+                          }
+                        }}
+                        onClick={() => removeInput(qstidx)}
+                        id={`${qstidx}`}
+                      >
+                        <DeleteForever />
+                      </Button>
+                    </Grid>
                   </Grid>
                   <Grid container spacing={1} display="flex" sx={{ p: 2 }} row="true">
                     <Grid item xs={12} md={4}>
@@ -376,6 +430,11 @@ const FormCreate = () => {
       />
     </>
   );
+};
+
+FormCreate.propTypes = {
+  duplicateForm: PropTypes.bool,
+  handleListRefresh: PropTypes.func,
 };
 
 export default FormCreate;

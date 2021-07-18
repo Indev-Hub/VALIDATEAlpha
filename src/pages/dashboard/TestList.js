@@ -1,83 +1,173 @@
 /* eslint-disable */
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
 import {
   Box,
+  Container,
+  Grid,
   IconButton,
+  Link,
   Paper,
+  Tooltip,
   Typography,
-} from '@material-ui/core'
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever'
-import { API, graphqlOperation, Storage } from 'aws-amplify'
-import { listForms } from '../../graphql/queries'
-import { deleteForm } from '../../graphql/mutations'
-import { Grid } from '@material-ui/core'
-import Controls from '../../components/form/controls/_controls'
-import FormSubmission from '../../components/form/FormSubmission'
-import Notification from '../../components/form/Notification'
-import ConfirmDialog from '../../components/form/ConfirmDialog'
+} from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import ControlPointDuplicateIcon
+  from '@material-ui/icons/ControlPointDuplicate';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import { API, graphqlOperation, Storage } from 'aws-amplify';
+import { listForms } from '../../graphql/queries';
+import { deleteForm } from '../../graphql/mutations';
+import ConfirmDialog from '../../components/form/ConfirmDialog';
+import Controls from '../../components/form/controls/_controls';
+import FormSubmission from '../../components/form/FormSubmission';
+import Notification from '../../components/form/Notification';
+import FormCreate from '../../components/dashboard/forms/FormCreate';
+import useSettings from '../../hooks/useSettings';
 
-
-// EXISTING ISSUES
-// 1. When a form is deleted, the list of remaining forms is 
-//    inconsistently re-rendered to reflect the change
-// 2. Custom confirmation dialog for form deletion throws an error
-//    "Uncaught TypeError: Cannot read property 'dark' of undefined"
+// Position 'delete' and 'duplicate' buttons
+const useStyles = makeStyles(() => ({
+  deleteButton: {
+    position: 'absolute',
+    right: '20px',
+  },
+  duplicateButton: {
+    position: 'absolute',
+    right: '80px',
+  },
+  componentSpacing: {
+    marginBottom: '40px',
+  },
+}));
 
 const TestList = () => {
+  const classes = useStyles();
+  const { settings } = useSettings();
+
+  // Set initial state of forms list, selected form, and other view states
   const [forms, setForms] = useState([]);
   const [selectedForm, setSelectedForm] = useState(null);
+  const [duplicateForm, setDuplicateForm] = useState(false);
   const [notify, setNotify] = useState({
     isOpen: false,
     message: '',
     type: ''
-  })
+  });
   const [confirmDialog, setConfirmDialog] = useState({
     isOpen: false,
     title: '',
     subtitle: ''
   })
 
+  // Fetch forms list on initial render
   useEffect(() => {
     fetchForms();
-  }, [])
+  }, []);
 
   const fetchForms = async () => {
     try {
       const formData = await API.graphql(graphqlOperation(listForms));
       const formList = formData.data.listForms.items;
-      console.log('form list', formList);
       setForms(formList);
     } catch (error) {
       console.log('error on fetching forms', error);
     }
-  }
-  const idx = 0;
+  };
 
+  // Delete a form
   const formDelete = async (id) => {
     try {
       await API.graphql(graphqlOperation(deleteForm, { input: { id: id } }));
-    } catch (error) {
-      console.log('error deleting form', error);
-    }
-  }
-
-  const handleFormSelection = (form) => {
-    setSelectedForm(form);
-  }
-
-  const handleFormDelete = (id) => {
-    if (window.confirm('Delete this form? (This cannot be undone).')) {
-      formDelete(id);
-      fetchForms();
       setNotify({
         isOpen: true,
         message: 'Deleted Successfully',
+        type: 'success'
+      });
+    } catch (error) {
+      setNotify({
+        isOpen: true,
+        message: `Failed to Delete: ${error}`,
         type: 'error'
       });
+      console.log('error deleting form', error);
     }
+  };
+
+  const handleFormDelete = (id, idx) => {
+    // Delete from database with success/failure notification
+    formDelete(id);
+    // Delete from 'forms' state (avoids extra fetchForms API call)
+    const newFormsList = [...forms];
+    newFormsList.splice(idx, 1);
+    setForms(newFormsList);
+    // Hide confirmation modal
+    setConfirmDialog({
+      ...confirmDialog,
+      isOpen: false,
+    });
+  };
+
+  // Set state for form duplication
+  const handleDuplicateForm = (form) => {
+    setSelectedForm(form);
+    setDuplicateForm(true);
+  };
+
+  // Refresh list after a new form saved from duplication
+  const handleListRefresh = () => {
+    fetchForms();
+    setSelectedForm(null);
+    setDuplicateForm(false);
   }
 
-  if (!selectedForm) {
+  // Go back to list from individual form or duplicate form creation views
+  const handleReturnToList = () => {
+    setSelectedForm(null);
+    setDuplicateForm(false);
+  }
+
+  if (duplicateForm) {
+    // Show FormCreate if duplicating from an existing form
+    return (
+      <Container maxWidth={settings.compact ? 'xl' : false}>
+        <Box sx={{ mt: 3 }}>
+          <Controls.Button
+            className={classes.componentSpacing}
+            text="Return to forms list"
+            color="secondary"
+            fullWidth
+            onClick={handleReturnToList}
+          />
+          <Typography
+            className={classes.componentSpacing}
+            color="textPrimary"
+            variant="h5"
+          >
+            Create a new validation from an existing form
+          </Typography>
+          <FormCreate
+            duplicateForm={selectedForm}
+            handleListRefresh={handleListRefresh} />
+        </Box>
+      </Container>
+    )
+  } else if (selectedForm) {
+    // Show FormSubmission to display selected form when title is clicked
+    return (
+      <Container maxWidth={settings.compact ? 'xl' : false}>
+        <Box sx={{ mt: 3 }}>
+          <Controls.Button
+            className={classes.componentSpacing}
+            text="Return to forms list"
+            color="secondary"
+            fullWidth
+            onClick={handleReturnToList}
+          />
+          <FormSubmission formDesign={selectedForm} displaySubmitButton={false} />
+        </Box>
+      </Container>
+    );
+  } else {
+    // Show list of all forms
     return (
       <>
         <Box
@@ -98,56 +188,88 @@ const TestList = () => {
                     container
                     display="flex"
                     className="formCard"
-                  // direction="column"
-                  // alignItems="left"
-                  // justify="center"
-
+                    direction="column"
+                    alignItems="left"
+                    justify="center"
                   >
-                    <Grid item xs>
-                      <Typography variant="h4" className="formTitle" onClick={() => handleFormSelection(form)}>{form.title}</Typography>
-                      <Typography variant="h5" className="formTitle">{form.id}</Typography>
-                      <Typography className="formTitle">{form.description}</Typography>
-                      <Typography className="formDescription">{form.validations}</Typography>
+                    <Grid item xs={12}>
+                      <Tooltip title="Preview form">
+                        <Typography
+                          variant="h4"
+                          className="formTitle"
+                          sx={{
+                            "&:hover": {
+                              cursor: 'pointer',
+                            }
+                          }}
+                          onClick={() => setSelectedForm(form)}
+                        >
+                          {form.title}
+                        </Typography>
+                      </Tooltip>
+
+                      <Typography variant="h5" className="formTitle">
+                        {form.id} - {form.isPrivate ? "Private Form" : "Public Form"}
+                      </Typography>
+
+                      <Typography className="formTitle">
+                        {`URL: https://validatehub.com/form/${form.id}`}
+                      </Typography>
+
+                      <Typography className="formTitle">
+                        {form.description}
+                      </Typography>
                     </Grid>
-                    <Grid item xs={1}>
+
+                    <Tooltip title="Delete">
                       <IconButton
-                        type="button"
+                        className={classes.deleteButton}
                         onClick={() => {
-                          // setConfirmDialog({
-                          //   isOpen: true,
-                          //   title: 'Delete this form?',
-                          //   subtitle: 'Warning: this cannot be undone!'
-                          // })
-                          handleFormDelete(form.id)
+                          setConfirmDialog({
+                            isOpen: true,
+                            title: 'Delete form',
+                            subtitle: `Are you sure you want to delete this form? It will be permanently removed and 
+                          this action cannot be undone.`,
+                            buttonText: 'Delete',
+                            onConfirm: () => handleFormDelete(form.id, idx),
+                          });
                         }}
                       >
                         <DeleteForeverIcon fontSize="large" />
                       </IconButton>
-                    </Grid>
+                    </Tooltip>
+
+                    <Tooltip title="Duplicate">
+                      <IconButton
+                        className={classes.duplicateButton}
+                        onClick={() => handleDuplicateForm(form)}
+                      >
+                        <ControlPointDuplicateIcon fontSize="large" />
+                      </IconButton>
+                    </Tooltip>
                   </Grid>
                 </Paper>
               )
             })
           }
         </Box>
+
+        {/* Notify of deletion success or failure */}
         <Notification
           notify={notify}
           setNotify={setNotify}
         />
-        <ConfirmDialog
-          confirmDialog={confirmDialog}
-          setConfirmDialog={setConfirmDialog}
-        />
+
+        {/* Prompt user to confirm before deleting form */}
+        {confirmDialog.isOpen ? (
+          <ConfirmDialog
+            confirmDialog={confirmDialog}
+            setConfirmDialog={setConfirmDialog}
+          />
+        ) : null}
       </>
-    )
-  } else {
-    return (
-      <>
-        <Controls.Button text="Return to list" color="secondary" fullWidth onClick={() => handleFormSelection(null)} />
-        <FormSubmission formDesign={selectedForm} displaySubmitButton={false} />
-      </>
-    )
-  }
-}
+    );
+  };
+};
 
 export default TestList;
