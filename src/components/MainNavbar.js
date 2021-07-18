@@ -18,15 +18,18 @@ import {
   // withAuthenticator
 } from '@aws-amplify/ui-react';
 import awsconfig from '../aws-exports';
+import useAuth from 'src/hooks/useAuth';
 import MenuIcon from '../icons/Menu';
 import Logo from '../images/IconBlack.png';
 import { Button } from '@material-ui/core';
 import { useEffect, useState } from 'react';
+import AccountPopover from './dashboard/AccountPopover';
 
 Amplify.configure(awsconfig);
 
 const MainNavbar = (props) => {
   const { onSidebarMobileOpen } = props;
+  const { isAuthenticated } = useAuth();
 
   const [loggedIn, setLoggedIn] = useState(false);
 
@@ -84,42 +87,37 @@ const MainNavbar = (props) => {
             to="/browse"
             underline="none"
             variant="body1"
+            sx={{
+              mx:1
+            }}
           >
             Browse Components
           </Link>
-          <Chip
-            color="primary"
-            label="NEW"
-            size="small"
-            sx={{
-              maxHeight: 20,
-              ml: 1,
-              mr: 2
-            }}
-          />
           <Link
             color="textSecondary"
             component={RouterLink}
             to="/docs"
             underline="none"
             variant="body1"
+            sx={{
+              mx:1
+            }}
           >
             Documentation
           </Link>
-			{loggedIn ? (
-				<Button variant="contained" onClick={AmplifySignOut}>
-					Sign Out
-				</Button>
-			) : (
-				<Link
-					component={RouterLink}
-					to="/authentication/login"
-				>
-					<Button variant = "contained" >
-						Sign In
-					</Button>
-				</Link>	
-			)}
+      { isAuthenticated === false ? (
+            <Link
+              color="text.reverse"
+              component={RouterLink}
+              to="/authentication/login"
+              underline="none"
+              variant="body1"
+            >
+              Login
+            </Link>
+          ) : (
+            <AccountPopover />
+          )}
         </Hidden>
       </Toolbar>
       <Divider />

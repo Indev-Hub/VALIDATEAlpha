@@ -20,16 +20,15 @@ const VerifyCodeAmplify = () => {
   return (
     <Formik
       initialValues={{
-        email: location.state?.username || '',
+        username: location.state?.username || '',
         code: ['', '', '', '', '', ''],
         submit: null
       }}
       validationSchema={Yup
         .object()
         .shape({
-          email: Yup
+          username: Yup
             .string()
-            .email('Must be a valid email')
             .max(255)
             .required('Email is required'),
           code: Yup
@@ -38,7 +37,8 @@ const VerifyCodeAmplify = () => {
         })}
       onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
         try {
-          await verifyCode(values.email, values.code.join(''));
+          console.log(values.username, values.code.join(''));
+          await verifyCode(values.username, values.code.join(''));
 
           navigate('/authentication/login');
         } catch (err) {

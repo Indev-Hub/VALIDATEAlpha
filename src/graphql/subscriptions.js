@@ -5,11 +5,12 @@ export const onCreateUser = /* GraphQL */ `
   subscription OnCreateUser {
     onCreateUser {
       id
-      name
+      username
+      email
       companies {
         items {
           id
-          title
+          name
           userID
           createdAt
           updatedAt
@@ -25,11 +26,12 @@ export const onUpdateUser = /* GraphQL */ `
   subscription OnUpdateUser {
     onUpdateUser {
       id
-      name
+      username
+      email
       companies {
         items {
           id
-          title
+          name
           userID
           createdAt
           updatedAt
@@ -45,11 +47,12 @@ export const onDeleteUser = /* GraphQL */ `
   subscription OnDeleteUser {
     onDeleteUser {
       id
-      name
+      username
+      email
       companies {
         items {
           id
-          title
+          name
           userID
           createdAt
           updatedAt
@@ -65,11 +68,12 @@ export const onCreateCompany = /* GraphQL */ `
   subscription OnCreateCompany {
     onCreateCompany {
       id
-      title
+      name
       userID
       user {
         id
-        name
+        username
+        email
         companies {
           nextToken
         }
@@ -80,6 +84,8 @@ export const onCreateCompany = /* GraphQL */ `
         items {
           id
           companyID
+          title
+          description
           validations
           createdAt
           updatedAt
@@ -95,11 +101,12 @@ export const onUpdateCompany = /* GraphQL */ `
   subscription OnUpdateCompany {
     onUpdateCompany {
       id
-      title
+      name
       userID
       user {
         id
-        name
+        username
+        email
         companies {
           nextToken
         }
@@ -110,6 +117,8 @@ export const onUpdateCompany = /* GraphQL */ `
         items {
           id
           companyID
+          title
+          description
           validations
           createdAt
           updatedAt
@@ -125,11 +134,12 @@ export const onDeleteCompany = /* GraphQL */ `
   subscription OnDeleteCompany {
     onDeleteCompany {
       id
-      title
+      name
       userID
       user {
         id
-        name
+        username
+        email
         companies {
           nextToken
         }
@@ -140,6 +150,8 @@ export const onDeleteCompany = /* GraphQL */ `
         items {
           id
           companyID
+          title
+          description
           validations
           createdAt
           updatedAt
@@ -156,13 +168,16 @@ export const onCreateForm = /* GraphQL */ `
     onCreateForm {
       id
       companyID
+      title
+      description
       company {
         id
-        title
+        name
         userID
         user {
           id
-          name
+          username
+          email
           createdAt
           updatedAt
         }
@@ -183,13 +198,16 @@ export const onUpdateForm = /* GraphQL */ `
     onUpdateForm {
       id
       companyID
+      title
+      description
       company {
         id
-        title
+        name
         userID
         user {
           id
-          name
+          username
+          email
           createdAt
           updatedAt
         }
@@ -210,13 +228,16 @@ export const onDeleteForm = /* GraphQL */ `
     onDeleteForm {
       id
       companyID
+      title
+      description
       company {
         id
-        title
+        name
         userID
         user {
           id
-          name
+          username
+          email
           createdAt
           updatedAt
         }
@@ -227,6 +248,87 @@ export const onDeleteForm = /* GraphQL */ `
         updatedAt
       }
       validations
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateFormSubmission = /* GraphQL */ `
+  subscription OnCreateFormSubmission {
+    onCreateFormSubmission {
+      id
+      formID
+      form {
+        id
+        companyID
+        title
+        description
+        company {
+          id
+          name
+          userID
+          createdAt
+          updatedAt
+        }
+        validations
+        createdAt
+        updatedAt
+      }
+      answers
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateFormSubmission = /* GraphQL */ `
+  subscription OnUpdateFormSubmission {
+    onUpdateFormSubmission {
+      id
+      formID
+      form {
+        id
+        companyID
+        title
+        description
+        company {
+          id
+          name
+          userID
+          createdAt
+          updatedAt
+        }
+        validations
+        createdAt
+        updatedAt
+      }
+      answers
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteFormSubmission = /* GraphQL */ `
+  subscription OnDeleteFormSubmission {
+    onDeleteFormSubmission {
+      id
+      formID
+      form {
+        id
+        companyID
+        title
+        description
+        company {
+          id
+          name
+          userID
+          createdAt
+          updatedAt
+        }
+        validations
+        createdAt
+        updatedAt
+      }
+      answers
       createdAt
       updatedAt
     }

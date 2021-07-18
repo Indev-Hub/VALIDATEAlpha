@@ -13,22 +13,22 @@ const LoginAmplify = (props) => {
   return (
     <Formik
       initialValues={{
-        email: '',
-        password: '',
+        email: 'demo@devias.io',
+        password: 'Password123!',
         submit: null
       }}
       validationSchema={Yup
         .object()
         .shape({
-          email: Yup
-            .string()
-            .email('Must be a valid email')
-            .max(255)
-            .required('Email is required')
+          // email: Yup
+          //   .string()
+          //   .email('Must be a valid email')
+          //   .max(255)
+          //   .required('Email is required')
         })}
       onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
         try {
-          await login(values.email, values.password);
+          await login(values.login, values.password);
 
           if (isMountedRef.current) {
             setStatus({ success: true });
@@ -40,7 +40,7 @@ const LoginAmplify = (props) => {
           if (err.code === 'UserNotConfirmedException') {
             navigate('/authentication/verify-code', {
               state: {
-                username: values.email
+                username: values.login
               }
             });
             return;
@@ -65,13 +65,13 @@ const LoginAmplify = (props) => {
             error={Boolean(touched.email && errors.email)}
             fullWidth
             helperText={touched.email && errors.email}
-            label="Email Address"
+            label="Email / Username"
             margin="normal"
-            name="email"
+            name="login"
             onBlur={handleBlur}
             onChange={handleChange}
-            type="email"
-            value={values.email}
+            type="text"
+            value={values.login}
             variant="outlined"
           />
           <TextField
@@ -105,6 +105,19 @@ const LoginAmplify = (props) => {
             >
               Log In
             </Button>
+          </Box>
+          <Box sx={{ mt: 3 }}>
+            <Alert severity="info">
+              <div>
+                You can use
+                {' '}
+                <b>demo@devias.io</b>
+                {' '}
+                and password
+                {' '}
+                <b>Password123!</b>
+              </div>
+            </Alert>
           </Box>
         </form>
       )}

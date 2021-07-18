@@ -8,11 +8,12 @@ export const createUser = /* GraphQL */ `
   ) {
     createUser(input: $input, condition: $condition) {
       id
-      name
+      username
+      email
       companies {
         items {
           id
-          title
+          name
           userID
           createdAt
           updatedAt
@@ -31,11 +32,12 @@ export const updateUser = /* GraphQL */ `
   ) {
     updateUser(input: $input, condition: $condition) {
       id
-      name
+      username
+      email
       companies {
         items {
           id
-          title
+          name
           userID
           createdAt
           updatedAt
@@ -54,11 +56,12 @@ export const deleteUser = /* GraphQL */ `
   ) {
     deleteUser(input: $input, condition: $condition) {
       id
-      name
+      username
+      email
       companies {
         items {
           id
-          title
+          name
           userID
           createdAt
           updatedAt
@@ -77,11 +80,12 @@ export const createCompany = /* GraphQL */ `
   ) {
     createCompany(input: $input, condition: $condition) {
       id
-      title
+      name
       userID
       user {
         id
-        name
+        username
+        email
         companies {
           nextToken
         }
@@ -92,6 +96,8 @@ export const createCompany = /* GraphQL */ `
         items {
           id
           companyID
+          title
+          description
           validations
           createdAt
           updatedAt
@@ -110,11 +116,12 @@ export const updateCompany = /* GraphQL */ `
   ) {
     updateCompany(input: $input, condition: $condition) {
       id
-      title
+      name
       userID
       user {
         id
-        name
+        username
+        email
         companies {
           nextToken
         }
@@ -125,6 +132,8 @@ export const updateCompany = /* GraphQL */ `
         items {
           id
           companyID
+          title
+          description
           validations
           createdAt
           updatedAt
@@ -143,11 +152,12 @@ export const deleteCompany = /* GraphQL */ `
   ) {
     deleteCompany(input: $input, condition: $condition) {
       id
-      title
+      name
       userID
       user {
         id
-        name
+        username
+        email
         companies {
           nextToken
         }
@@ -158,6 +168,8 @@ export const deleteCompany = /* GraphQL */ `
         items {
           id
           companyID
+          title
+          description
           validations
           createdAt
           updatedAt
@@ -177,13 +189,16 @@ export const createForm = /* GraphQL */ `
     createForm(input: $input, condition: $condition) {
       id
       companyID
+      title
+      description
       company {
         id
-        title
+        name
         userID
         user {
           id
-          name
+          username
+          email
           createdAt
           updatedAt
         }
@@ -207,13 +222,16 @@ export const updateForm = /* GraphQL */ `
     updateForm(input: $input, condition: $condition) {
       id
       companyID
+      title
+      description
       company {
         id
-        title
+        name
         userID
         user {
           id
-          name
+          username
+          email
           createdAt
           updatedAt
         }
@@ -237,13 +255,16 @@ export const deleteForm = /* GraphQL */ `
     deleteForm(input: $input, condition: $condition) {
       id
       companyID
+      title
+      description
       company {
         id
-        title
+        name
         userID
         user {
           id
-          name
+          username
+          email
           createdAt
           updatedAt
         }
@@ -254,6 +275,96 @@ export const deleteForm = /* GraphQL */ `
         updatedAt
       }
       validations
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createFormSubmission = /* GraphQL */ `
+  mutation CreateFormSubmission(
+    $input: CreateFormSubmissionInput!
+    $condition: ModelFormSubmissionConditionInput
+  ) {
+    createFormSubmission(input: $input, condition: $condition) {
+      id
+      formID
+      form {
+        id
+        companyID
+        title
+        description
+        company {
+          id
+          name
+          userID
+          createdAt
+          updatedAt
+        }
+        validations
+        createdAt
+        updatedAt
+      }
+      answers
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateFormSubmission = /* GraphQL */ `
+  mutation UpdateFormSubmission(
+    $input: UpdateFormSubmissionInput!
+    $condition: ModelFormSubmissionConditionInput
+  ) {
+    updateFormSubmission(input: $input, condition: $condition) {
+      id
+      formID
+      form {
+        id
+        companyID
+        title
+        description
+        company {
+          id
+          name
+          userID
+          createdAt
+          updatedAt
+        }
+        validations
+        createdAt
+        updatedAt
+      }
+      answers
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteFormSubmission = /* GraphQL */ `
+  mutation DeleteFormSubmission(
+    $input: DeleteFormSubmissionInput!
+    $condition: ModelFormSubmissionConditionInput
+  ) {
+    deleteFormSubmission(input: $input, condition: $condition) {
+      id
+      formID
+      form {
+        id
+        companyID
+        title
+        description
+        company {
+          id
+          name
+          userID
+          createdAt
+          updatedAt
+        }
+        validations
+        createdAt
+        updatedAt
+      }
+      answers
       createdAt
       updatedAt
     }
