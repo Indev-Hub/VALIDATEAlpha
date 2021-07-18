@@ -86,7 +86,7 @@ const ConfirmDialog = props => {
           variant="contained"
           onClick={confirmDialog.onConfirm}
         >
-          Delete
+          {confirmDialog.buttonText}
         </Button>
       </Box>
     </Dialog>
