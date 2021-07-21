@@ -50,12 +50,12 @@
         "GraphQLAPIIdOutput": "najad4q5bjfzrmh24fnoac7wd4",
         "GraphQLAPIEndpointOutput": "https://el45zb6obrdrhkjrag6nqdvdk4.appsync-api.us-west-2.amazonaws.com/graphql"
       },
-      "lastPushTimeStamp": "2021-06-30T17:08:00.553Z",
+      "lastPushTimeStamp": "2021-07-20T23:30:56.250Z",
       "providerMetadata": {
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-validatealpha-feat-33808-deployment/amplify-cfn-templates/api/cloudformation-template.json",
         "logicalId": "apivalidateAlphaAPI"
       },
-      "lastPushDirHash": "lo5LqQ8qzBRB4Q0TMwzdYxN55QY="
+      "lastPushDirHash": "Y2DbvZnclNRA7DFg/qvV79v2UAw="
     }
   }
 }

@@ -51,12 +51,14 @@ const FormCreate = props => {
       title: duplicateForm.title,
       description: duplicateForm.description,
       isPrivate: duplicateForm.isPrivate,
+      tags: duplicateForm.tags,
     }
   } else {
     initialOwnerState = {
       title: '',
       description: '',
       isPrivate: true,
+      tags: [''],
     }
   };
 
@@ -73,6 +75,25 @@ const FormCreate = props => {
     ...ownerState,
     [e.target.name]: e.target.checked,
   });
+
+  const addTag = () => {
+    setOwnerState({
+      ...ownerState,
+      tags: [...ownerState.tags, '']
+    })
+  };
+
+  const removeTag = (tagidx) => {
+    const updatedState = { ...ownerState }; // make copy
+    updatedState.tags.splice(tagidx, 1);
+    setOwnerState(updatedState);
+  };
+
+  const handleTagChange = (tagidx, e) => {
+    const updatedState = { ...ownerState }; // make copy
+    updatedState.tags[tagidx] = e.target.value;
+    setOwnerState(updatedState);
+  };
 
   // Validation questions part of form
   const blankInput = {
@@ -149,7 +170,7 @@ const FormCreate = props => {
     }
 
     // Destructure form properties
-    const { title, description, isPrivate } = ownerState;
+    const { title, description, isPrivate, tags } = ownerState;
     const formID = getRandomInt(1000, 9999);
     const compID = getRandomInt(1000, 9999);
 
@@ -160,7 +181,8 @@ const FormCreate = props => {
       title: title,
       description: description,
       isPrivate: isPrivate,
-      validations: JSON.stringify(inputState)
+      tags: JSON.stringify(tags),
+      validations: JSON.stringify(inputState),
     };
 
     return formDesignDataSet;
@@ -176,18 +198,6 @@ const FormCreate = props => {
     setFormPreview(formDesign);
   };
 
-  // // Reset form to initial state
-  // const resetForm = () => {
-  //   setOwnerState({
-  //     title: '',
-  //     description: '',
-  //   });
-  //   setInputState([
-  //     { ...blankInput },
-  //   ]);
-  //   setFormPreview(null);
-  // }
-
   const uploadForm = async () => {
     // Get user attributes
     const { signInUserSession } = await Auth.currentAuthenticatedUser();
@@ -196,16 +206,9 @@ const FormCreate = props => {
 
     // Output form data set
     const formDesignDataSet = createFormDesignDataSet();
-    // console.log('formDesign = ', JSON.stringify(formDesignDataSet, null, 2));
+    console.log('formDesign = ', JSON.stringify(formDesignDataSet, null, 2));
     try {
-      await API.graphql(graphqlOperation(createForm, { input: formDesignDataSet }));
-      // setNotify({
-      //   isOpen: true,
-      //   message: 'Uploaded Successfully',
-      //   type: 'success'
-      // });
-      // resetForm();
-      // await new Promise(res => { setTimeout(res, 3000); }); // to show notify
+      // await API.graphql(graphqlOperation(createForm, { input: formDesignDataSet }));
       navigate("/dashboard/test-list"); // if submitted from TestCreate route
       handleListRefresh(); // if submitted from TestList route
     } catch (error) {
@@ -250,135 +253,177 @@ const FormCreate = props => {
               />
             </Grid>
           </Grid>
-          <Controls.TextField
-            label="Form Description"
-            type="text"
-            name="description"
-            id="description"
-            value={ownerState.description}
-            onChange={handleOwnerChange}
-            fullWidth
-            sx={{
-              mt: 2
-            }}
-          />
+          <Grid container sx={{ mt: 2 }}>
+            <Grid item xs={12}>
+              <Controls.TextField
+                label="Form Description"
+                type="text"
+                name="description"
+                id="description"
+                value={ownerState.description}
+                onChange={handleOwnerChange}
+                fullWidth
+              />
+            </Grid>
+          </Grid>
+
+          <Grid
+            container
+            alignItems="center"
+            sx={{ mt: 2 }}
+          >
+            {/* Start mapping tags */}
+            {ownerState.tags.map((_tag, tagidx) => {
+              return (
+                <Box key={`tag-${tagidx}`} sx={{ my: 0 }}>
+                  <Grid container display="flex" sx={{ pb: 1 }}>
+                    <Grid item xs={8}>
+                      <Controls.TextField
+                        label={`Tag ${tagidx + 1}`}
+                        type="text"
+                        name={`tag-${tagidx + 1}`}
+                        data-idx={tagidx}
+                        id={`${tagidx}`}
+                        fullWidth
+                        className="tag"
+                        value={ownerState.tags[tagidx]}
+                        onChange={(e) => handleTagChange(tagidx, e)}
+                        fullWidth
+                      />
+                    </Grid>
+                    <Grid item>
+                      <IconButton
+                        type="button"
+                        id={`${tagidx}`}
+                        onClick={() => removeTag(tagidx)}
+                      >
+                        <Close />
+                      </IconButton>
+                    </Grid>
+                  </Grid>
+                </Box>
+              );
+            })}
+          </Grid>
+          <Button
+            type="button"
+            onClick={addTag}
+            variant="contained"
+            color="inherit"
+            sx={{ m: 1, pr: 3 }}
+            startIcon={<Plus />}
+          >
+            Add Tag
+          </Button>
 
           {/* Start mapping the validation questions */}
-          {
-            inputState.map((qst, qstidx) => {
-              const questionId = `question-${qstidx}`;
-              const typeId = `type-${qstidx}`;
-              const optionId = `option-${qstidx}`;
-              const deleteId = `delete-${qstidx}`;
-              return (
-                <Card key={`input-${qstidx}`} sx={{ my: 1 }}>
-                  <Grid container display="flex" sx={{ backgroundColor: 'black', p: 1, color: 'white' }}>
-                    <Grid item justifyContent="center" xs={10} md={11}>
-                      <Typography variant="h6" fullWidth align='center'>{`Question ${qstidx + 1}`}</Typography>
-                    </Grid>
-                    <Grid item justifyContent="center" xs={1} md={1}>
+          {inputState.map((_qst, qstidx) => {
+            const questionId = `question-${qstidx}`;
+            const typeId = `type-${qstidx}`;
+            return (
+              <Card key={`input-${qstidx}`} sx={{ my: 1 }}>
+                <Grid container display="flex" sx={{ backgroundColor: 'black', p: 1, color: 'white' }}>
+                  <Grid item justifyContent="center" xs={10} md={11}>
+                    <Typography variant="h6" fullWidth align='center'>{`Question ${qstidx + 1}`}</Typography>
+                  </Grid>
+                  <Grid item justifyContent="center" xs={1} md={1}>
+                    <Button
+                      type="button"
+                      id={`${qstidx}`}
+                      sx={{
+                        color: 'text.secondary',
+                        '&:hover': {
+                          color: 'text.light'
+                        }
+                      }}
+                      onClick={() => removeInput(qstidx)}
+                    >
+                      <DeleteForever />
+                    </Button>
+                  </Grid>
+                </Grid>
+                <Grid container spacing={1} display="flex" sx={{ p: 2 }} row="true">
+                  <Grid item xs={12} md={4}>
+                    <Box>
+                      <Controls.TextField
+                        label="Question"
+                        type="text"
+                        name={questionId}
+                        placeholder={`Question #${qstidx + 1}`}
+                        data-idx={qstidx}
+                        id="question"
+                        className="question"
+                        fullWidth
+                        value={inputState[qstidx].question}
+                        onChange={(e) => handleInputChange(qstidx, e)}
+                      />
+                    </Box>
+                  </Grid>
+                  <Grid item xs={12} md={4}>
+                    <Box>
+                      <Controls.Select
+                        label="Answer Type"
+                        name={typeId}
+                        inputlabel={`Question #${qstidx + 1} Answer Type`}
+                        data-idx={qstidx}
+                        id="type"
+                        className="type"
+                        value={inputState[qstidx].type}
+                        options={INPUT_CONTROLS}
+                        onChange={(e) => handleSelectChange(qstidx, e)}
+                      />
+                    </Box>
+                  </Grid>
+                  <Grid item xs={12} md={4}>
+                    <Box>
+                      {/* Start mapping the validation answer options */}
+                      {inputState[qstidx].options.map((_opt, optidx) => {
+                        return (
+                          <Box key={`input-${optidx}`} sx={{ my: 0 }}>
+                            <Grid container display="flex" sx={{ pb: 1 }}>
+                              <Grid item xs>
+                                <Controls.TextField
+                                  label={`Option ${optidx + 1}`}
+                                  type="text"
+                                  name={`option-${optidx + 1}`}
+                                  placeholder={`Option ${optidx + 1} for Question #${qstidx + 1}`}
+                                  data-idx={optidx}
+                                  id={`${optidx}`}
+                                  fullWidth
+                                  className="option"
+                                  value={inputState[qstidx].options[optidx]}
+                                  onChange={(e) => handleOptionChange(qstidx, optidx, e)}
+                                />
+                              </Grid>
+                              <Grid item xs={2}>
+                                <IconButton
+                                  type="button"
+                                  onClick={() => removeOption(qstidx, optidx)}
+                                  id={`${optidx}`}
+                                >
+                                  <Close />
+                                </IconButton>
+                              </Grid>
+                            </Grid>
+                          </Box>
+                        );
+                      })}
                       <Button
                         type="button"
-                        sx={{
-                          color: 'text.secondary',
-                          '&:hover': {
-                            color: 'text.light'
-                          }
-                        }}
-                        onClick={() => removeInput(qstidx)}
-                        id={`${qstidx}`}
+                        onClick={() => addOption(qstidx)}
+                        variant="contained"
+                        color="secondary"
+                        sx={{ m: 1, pr: 3 }}
+                        startIcon={<Plus />}
                       >
-                        <DeleteForever />
+                        Add Option
                       </Button>
-                    </Grid>
+                    </Box>
                   </Grid>
-                  <Grid container spacing={1} display="flex" sx={{ p: 2 }} row="true">
-                    <Grid item xs={12} md={4}>
-                      <Box>
-                        <Controls.TextField
-                          label="Question" // Typography label
-                          type="text"
-                          name={questionId}
-                          placeholder={`Question #${qstidx + 1}`}
-                          data-idx={qstidx}
-                          id="question"
-                          className="question"
-                          fullWidth
-                          value={inputState[qstidx].question}
-                          onChange={(e) => handleInputChange(qstidx, e)}
-                        />
-                      </Box>
-                    </Grid>
-                    <Grid item xs={12} md={4}>
-                      <Box>
-                        <Controls.Select
-                          label="Answer Type" // Typography label
-                          name={typeId}
-                          inputlabel={`Question #${qstidx + 1} Answer Type`}
-                          data-idx={qstidx}
-                          id="type"
-                          className="type"
-                          value={inputState[qstidx].type}
-                          options={INPUT_CONTROLS}
-                          onChange={(e) => handleSelectChange(qstidx, e)}
-                        />
-                      </Box>
-                    </Grid>
-                    <Grid item xs={12} md={4}>
-                      <Box>
-                        {/* Start mapping the validation answer options */}
-                        {
-                          inputState[qstidx].options.map((opt, optidx) => {
-                            const optionId = `option-${optidx}`;
-                            const deleteId = `delete-${optidx}`;
-                            return (
-                              <Box key={`input-${optidx}`} sx={{ my: 0 }}>
-                                <Grid container display="flex" sx={{ pb: 1 }}>
-                                  <Grid item xs>
-                                    <Controls.TextField
-                                      label={`Option ${optidx + 1}`} // Typography label
-                                      type="text"
-                                      name={`option-${optidx + 1}`}
-                                      placeholder={`Option ${optidx + 1} for Question #${qstidx + 1}`}
-                                      data-idx={optidx}
-                                      id={`${optidx}`}
-                                      fullWidth
-                                      className="option"
-                                      value={inputState[qstidx].options[optidx]}
-                                      onChange={(e) => handleOptionChange(qstidx, optidx, e)}
-                                    />
-                                  </Grid>
-                                  <Grid item xs={2}>
-                                    <IconButton
-                                      type="button"
-                                      onClick={() => removeOption(qstidx, optidx)}
-                                      id={`${optidx}`}
-                                    >
-                                      <Close />
-                                    </IconButton>
-                                  </Grid>
-                                </Grid>
-                              </Box>
-                            );
-                          })
-                        }
-                        <Button
-                          type="button"
-                          onClick={() => addOption(qstidx)}
-                          variant="contained"
-                          color="secondary"
-                          sx={{ m: 1, pr: 3 }}
-                          startIcon={<Plus />}
-                        >
-                          Add Option
-                        </Button>
-                      </Box>
-                    </Grid>
-                  </Grid>
-                </Card>
-              );
-            })
-          }
+                </Grid>
+              </Card>
+            );
+          })}
           <Button
             type="button"
             onClick={addInput}
@@ -411,19 +456,16 @@ const FormCreate = props => {
         </Form>
       </Formik >
 
-      {
-        formPreview ? (
-          <div>
-            <br />
-            <br />
-            <Paper mt={4} elevation={3}>
-              <Box p={4}>
-                <FormSubmission formDesign={formPreview} displaySubmitButton={false} />
-              </Box>
-            </Paper>
-          </div >
-        ) : null
-      }
+      {formPreview ? (
+        <Paper elevation={3} sx={{ mt: 2 }}>
+          <Box p={4}>
+            <FormSubmission
+              formDesign={formPreview}
+              displaySubmitButton={false}
+            />
+          </Box>
+        </Paper>
+      ) : null}
       <Notification
         notify={notify}
         setNotify={setNotify}

@@ -18,6 +18,7 @@ type Form @model @key(name: "byCompany", fields: ["companyID"]) {
   companyID: ID!
   title: String
   description: String
+  isPrivate: Boolean
   company: Company @connection(fields: ["companyID"])
   validations: AWSJSON
 }
