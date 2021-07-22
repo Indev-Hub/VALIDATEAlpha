@@ -8,6 +8,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import { Close, DeleteForever } from '@material-ui/icons';
+import PropTypes from 'prop-types';
 import { Plus } from '../../../icons';
 import Controls from '../../form/controls/_controls';
 
@@ -240,6 +241,14 @@ const FormQuestions = props => {
       </Button>
     </React.Fragment>
   );
+};
+
+FormQuestions.propTypes = {
+  questionsState: PropTypes.array,
+  setQuestionsState: PropTypes.func,
+  blankQuestion: PropTypes.object,
+  previewForm: PropTypes.func,
+  uploadForm: PropTypes.func,
 };
 
 export default FormQuestions;

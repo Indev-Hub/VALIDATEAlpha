@@ -6,6 +6,7 @@ import {
   IconButton,
 } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
+import PropTypes from 'prop-types';
 import { Plus } from '../../../icons';
 import Controls from '../../form/controls/_controls';
 
@@ -143,6 +144,11 @@ const FormDetails = props => {
       </Button>
     </React.Fragment>
   );
+};
+
+FormDetails.propTypes = {
+  detailsState: PropTypes.object,
+  setDetailsState: PropTypes.func,
 };
 
 export default FormDetails;
