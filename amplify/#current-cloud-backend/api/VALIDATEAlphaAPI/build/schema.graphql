@@ -24,6 +24,7 @@ type Form {
   description: String
   isPrivate: Boolean
   company: Company
+  tags: AWSJSON
   validations: AWSJSON
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
@@ -257,6 +258,7 @@ input ModelFormFilterInput {
   title: ModelStringInput
   description: ModelStringInput
   isPrivate: ModelBooleanInput
+  tags: ModelStringInput
   validations: ModelStringInput
   and: [ModelFormFilterInput]
   or: [ModelFormFilterInput]
@@ -269,6 +271,7 @@ input CreateFormInput {
   title: String
   description: String
   isPrivate: Boolean
+  tags: AWSJSON
   validations: AWSJSON
 }
 
@@ -278,6 +281,7 @@ input UpdateFormInput {
   title: String
   description: String
   isPrivate: Boolean
+  tags: AWSJSON
   validations: AWSJSON
 }
 
@@ -290,6 +294,7 @@ input ModelFormConditionInput {
   title: ModelStringInput
   description: ModelStringInput
   isPrivate: ModelBooleanInput
+  tags: ModelStringInput
   validations: ModelStringInput
   and: [ModelFormConditionInput]
   or: [ModelFormConditionInput]

@@ -146,6 +146,7 @@ export const listForms = /* GraphQL */ `
         companyID
         title
         description
+        isPrivate
         company {
           id
           name
@@ -153,6 +154,7 @@ export const listForms = /* GraphQL */ `
           createdAt
           updatedAt
         }
+        tags
         validations
         createdAt
         updatedAt

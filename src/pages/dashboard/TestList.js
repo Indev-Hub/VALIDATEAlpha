@@ -5,7 +5,6 @@ import {
   Container,
   Grid,
   IconButton,
-  Link,
   Paper,
   Tooltip,
   Typography,
@@ -68,6 +67,7 @@ const TestList = () => {
       const formData = await API.graphql(graphqlOperation(listForms));
       const formList = formData.data.listForms.items;
       setForms(formList);
+      console.log("formList", formList);
     } catch (error) {
       console.log('error on fetching forms', error);
     }
@@ -145,7 +145,7 @@ const TestList = () => {
             Create a new validation from an existing form
           </Typography>
           <FormCreate
-            duplicateForm={selectedForm}
+            selectedForm={selectedForm}
             handleListRefresh={handleListRefresh} />
         </Box>
       </Container>
@@ -169,7 +169,7 @@ const TestList = () => {
   } else {
     // Show list of all forms
     return (
-      <>
+      <React.Fragment>
         <Box
           width="100%"
           alignItems="center"
@@ -228,8 +228,7 @@ const TestList = () => {
                           setConfirmDialog({
                             isOpen: true,
                             title: 'Delete form',
-                            subtitle: `Are you sure you want to delete this form? It will be permanently removed and 
-                          this action cannot be undone.`,
+                            subtitle: `Are you sure you want to delete this form? It will be permanently removed and this action cannot be undone.`,
                             buttonText: 'Delete',
                             onConfirm: () => handleFormDelete(form.id, idx),
                           });
@@ -267,7 +266,7 @@ const TestList = () => {
             setConfirmDialog={setConfirmDialog}
           />
         ) : null}
-      </>
+      </React.Fragment>
     );
   };
 };
