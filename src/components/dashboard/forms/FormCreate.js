@@ -6,6 +6,7 @@ import { Formik, Form } from 'formik';
 import { isNull, uniqueId } from 'lodash';
 import PropTypes from 'prop-types';
 import { Box, Paper } from '@material-ui/core';
+import useAuth from '../../../hooks/useAuth';
 import FormSubmission from '../../form/FormSubmission';
 import Notification from '../../form/Notification';
 import FormDetails from './FormDetails';
@@ -13,6 +14,7 @@ import FormQuestions from './FormQuestions';
 
 const FormCreate = props => {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   // This is used if duplicating from existing form in TestList
   const { selectedForm = null, handleListRefresh } = props;
@@ -78,8 +80,8 @@ const FormCreate = props => {
 
     // The input data to be sent in our createForm request 
     const formDesignDataSet = {
-      id: `form-${formID}`, // formNumber?
-      companyID: `company-${compID}`, // companyName?
+      id: `form-${formID}`,
+      companyID: user.email, // to filter list; change to user.company once a companyID association has been made with user
       title: title,
       description: description,
       isPrivate: isPrivate,
