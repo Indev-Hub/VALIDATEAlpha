@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { API, graphqlOperation } from 'aws-amplify';
 import { createFormSubmission } from '../../graphql/mutations';
 import { Box, Card, Grid, Typography } from '@material-ui/core';
@@ -6,6 +6,7 @@ import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import PropTypes from 'prop-types';
 import Controls from './controls/_controls';
+import Notification from './Notification';
 
 const FormSubmission = props => {
   // Destructure formDesign (=FormCreate form object) and other props
@@ -13,6 +14,13 @@ const FormSubmission = props => {
 
   // Form Design variables
   const marginUp = 2;
+
+  // Set state of upload success and failure notifications
+  const [notify, setNotify] = useState({
+    isOpen: false,
+    message: '',
+    type: ''
+  })
 
   // Format structure for form submission
   const submitStructure = {
@@ -111,24 +119,33 @@ const FormSubmission = props => {
                   formSubmission.answers[questionNum]['answer'] = values[questionNum];
                 });
 
-                // // Preview output via window alert and console
-                alert(JSON.stringify(formSubmission, null, 2));
-
-
                 // Stringify 'answers' collection for single DynamoDB field
                 formSubmission.answers = JSON.stringify(formSubmission.answers);
 
-                console.log(
-                  'formSubmission:',
-                  JSON.stringify(formSubmission, null, 2)
-                );
+                // console.log(
+                //   'formSubmission:',
+                //   JSON.stringify(formSubmission, null, 2)
+                // );
 
-                // // POST to DynamoDB
-                // await API.graphql(graphqlOperation(
-                //   createFormSubmission,
-                //   { input: formSubmission }
-                // ));
-
+                // POST to DynamoDB
+                try {
+                  await API.graphql(graphqlOperation(
+                    createFormSubmission,
+                    { input: formSubmission }
+                  ));
+                  setNotify({
+                    isOpen: true,
+                    message: `Submitted Successfully`,
+                    type: 'success'
+                  });
+                } catch (error) {
+                  console.log('error submitting form', error);
+                  setNotify({
+                    isOpen: true,
+                    message: `Submission Failed: ${error}`,
+                    type: 'error'
+                  });
+                }
                 setSubmitting(false);
               }}
             >
@@ -233,7 +250,7 @@ const FormSubmission = props => {
                         default:
                           return (
                             <div key={index}>
-                              <h3>Unable to match answer type '{question.type}'.</h3>
+                              <h3>Please select an answer type for question {index + 1}.</h3>
                             </div>
                           );
                       }
@@ -250,6 +267,10 @@ const FormSubmission = props => {
           </Card>
         </Grid>
       </Grid>
+      <Notification
+        notify={notify}
+        setNotify={setNotify}
+      />
     </React.Fragment>
   );
 };
