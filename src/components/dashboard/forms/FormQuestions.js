@@ -19,6 +19,7 @@ const INPUT_CONTROLS = [
   'Dropdown',
   'Number',
   'Radio Group',
+  'Radio Images',
   'Rating',
   'Switch',
   'Text Input',

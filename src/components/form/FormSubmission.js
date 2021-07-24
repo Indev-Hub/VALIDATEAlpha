@@ -208,6 +208,19 @@ const FormSubmission = props => {
                             </Box>
                           );
                           break;
+                        case 'Radio Images':
+                          return (
+                            <Box mt={marginUp}>
+                              <Controls.RadioImages
+                                key={index}
+                                id={`q${index + 1}`}
+                                name={`q${index + 1}`}
+                                altlabel={question.question}
+                                options={question.options}
+                              />
+                            </Box>
+                          );
+                          break;
                         case 'Rating':
                           return (
                             <Box mt={marginUp}>
