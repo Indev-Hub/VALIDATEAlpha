@@ -9,8 +9,7 @@
       "UnauthRoleName": "amplify-validatealpha-feat-33808-unauthRole",
       "StackName": "amplify-validatealpha-feat-33808",
       "StackId": "arn:aws:cloudformation:us-west-2:207069825571:stack/amplify-validatealpha-feat-33808/1a08ca40-d8c6-11eb-a513-0a58752105fd",
-      "AmplifyAppId": "d3diibklg9s1w0",
-      "AuthTriggerTemplateURL": ""
+      "AmplifyAppId": "d3diibklg9s1w0"
     }
   },
   "auth": {
@@ -50,12 +49,11 @@
         "GraphQLAPIIdOutput": "najad4q5bjfzrmh24fnoac7wd4",
         "GraphQLAPIEndpointOutput": "https://el45zb6obrdrhkjrag6nqdvdk4.appsync-api.us-west-2.amazonaws.com/graphql"
       },
-      "lastPushTimeStamp": "2021-06-30T17:08:00.553Z",
+      "lastPushTimeStamp": "2021-07-22T00:55:23.508Z",
       "providerMetadata": {
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-validatealpha-feat-33808-deployment/amplify-cfn-templates/api/cloudformation-template.json",
         "logicalId": "apivalidateAlphaAPI"
-      },
-      "lastPushDirHash": "lo5LqQ8qzBRB4Q0TMwzdYxN55QY="
+      }
     }
   }
 }
