@@ -170,7 +170,7 @@ const FormSubmission = props => {
                                 id={`q${index + 1}`}
                                 name={`q${index + 1}`}
                                 altlabel={question.question}
-                                options={randomizeOptions(index)}
+                                options={question.randomize ? randomizeOptions(index) : question.options}
                               />
                             </Box>
                           );
@@ -183,7 +183,7 @@ const FormSubmission = props => {
                                 id={`q${index + 1}`}
                                 name={`q${index + 1}`}
                                 altlabel={question.question}
-                                options={question.options}
+                                options={question.randomize ? randomizeOptions(index) : question.options}
                               />
                             </Box>
                           );
@@ -211,7 +211,7 @@ const FormSubmission = props => {
                                 id={`q${index + 1}`}
                                 name={`q${index + 1}`}
                                 altlabel={question.question}
-                                options={question.options}
+                                options={question.randomize ? randomizeOptions(index) : question.options}
                               />
                             </Box>
                           );
@@ -224,7 +224,7 @@ const FormSubmission = props => {
                                 id={`q${index + 1}`}
                                 name={`q${index + 1}`}
                                 altlabel={question.question}
-                                options={question.options}
+                                options={question.randomize ? randomizeOptions(index) : question.options}
                               />
                             </Box>
                           );

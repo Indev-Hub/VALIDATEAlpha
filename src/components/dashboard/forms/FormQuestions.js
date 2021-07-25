@@ -64,6 +64,14 @@ const FormQuestions = props => {
     setQuestionsState(updatedState);
   };
 
+    // Update answer type when selected
+    const handleRandomChange = (qstidx, e) => {
+      const updatedState = [...questionsState]; // make copy
+      updatedState[qstidx].randomize = e.target.checked;
+      console.log('random true/false', updatedState[qstidx].randomize)
+      setQuestionsState(updatedState);
+    };
+
   // Add answer option to form and add the new option to our questionsState
   const addOption = (qstidx) => {
     const updatedState = [...questionsState]; // make copy
@@ -146,7 +154,7 @@ const FormQuestions = props => {
                 color: 'white'
               }}
             >
-              <Grid item justifyContent="center" xs={10} md={11}>
+              <Grid item justifyContent="center" xs={10} sm={11}>
                 <Typography
                   variant="h6"
                   fullWidth
@@ -155,7 +163,7 @@ const FormQuestions = props => {
                   {`Question ${qstidx + 1}`}
                 </Typography>
               </Grid>
-              <Grid item justifyContent="center" xs={1} md={1}>
+              <Grid item justifyContent="center" xs={2} sm={1}>
                 <Button
                   type="button"
                   id={`${qstidx}`}
@@ -189,6 +197,7 @@ const FormQuestions = props => {
                     id="question"
                     className="question"
                     fullWidth
+                    multiline={false}
                     value={questionsState[qstidx].question}
                     onChange={(e) => handleQuestionInput(qstidx, e)}
                   />
@@ -210,8 +219,12 @@ const FormQuestions = props => {
                     <FormControlLabel
                       control={<Switch onClick={() => toggleImages(qstidx)} name="useImages" />}
                       label="Use images as answers"
-
                     />
+                    <FormControlLabel
+                      control={<Switch value={questionsState[qstidx].randomize} onChange={(e) => handleRandomChange(qstidx, e)} name="randomizeOptions" />}
+                      label="Randomize answers"
+                    />
+                    {console.log('array', questionsState)}
                 </Box>
               </Grid>
               <Grid item xs={12} md={4}>

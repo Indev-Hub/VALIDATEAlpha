@@ -98,6 +98,8 @@ export const createCompany = /* GraphQL */ `
           companyID
           title
           description
+          isPrivate
+          tags
           validations
           createdAt
           updatedAt
@@ -134,6 +136,8 @@ export const updateCompany = /* GraphQL */ `
           companyID
           title
           description
+          isPrivate
+          tags
           validations
           createdAt
           updatedAt
@@ -170,6 +174,8 @@ export const deleteCompany = /* GraphQL */ `
           companyID
           title
           description
+          isPrivate
+          tags
           validations
           createdAt
           updatedAt
@@ -191,6 +197,7 @@ export const createForm = /* GraphQL */ `
       companyID
       title
       description
+      isPrivate
       company {
         id
         name
@@ -208,6 +215,7 @@ export const createForm = /* GraphQL */ `
         createdAt
         updatedAt
       }
+      tags
       validations
       createdAt
       updatedAt
@@ -224,6 +232,7 @@ export const updateForm = /* GraphQL */ `
       companyID
       title
       description
+      isPrivate
       company {
         id
         name
@@ -241,6 +250,7 @@ export const updateForm = /* GraphQL */ `
         createdAt
         updatedAt
       }
+      tags
       validations
       createdAt
       updatedAt
@@ -257,6 +267,7 @@ export const deleteForm = /* GraphQL */ `
       companyID
       title
       description
+      isPrivate
       company {
         id
         name
@@ -274,6 +285,7 @@ export const deleteForm = /* GraphQL */ `
         createdAt
         updatedAt
       }
+      tags
       validations
       createdAt
       updatedAt
@@ -293,6 +305,7 @@ export const createFormSubmission = /* GraphQL */ `
         companyID
         title
         description
+        isPrivate
         company {
           id
           name
@@ -300,6 +313,7 @@ export const createFormSubmission = /* GraphQL */ `
           createdAt
           updatedAt
         }
+        tags
         validations
         createdAt
         updatedAt
@@ -323,6 +337,7 @@ export const updateFormSubmission = /* GraphQL */ `
         companyID
         title
         description
+        isPrivate
         company {
           id
           name
@@ -330,6 +345,7 @@ export const updateFormSubmission = /* GraphQL */ `
           createdAt
           updatedAt
         }
+        tags
         validations
         createdAt
         updatedAt
@@ -353,6 +369,7 @@ export const deleteFormSubmission = /* GraphQL */ `
         companyID
         title
         description
+        isPrivate
         company {
           id
           name
@@ -360,6 +377,7 @@ export const deleteFormSubmission = /* GraphQL */ `
           createdAt
           updatedAt
         }
+        tags
         validations
         createdAt
         updatedAt
