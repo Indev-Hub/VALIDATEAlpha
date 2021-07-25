@@ -34,13 +34,15 @@ const FormCreate = props => {
       title: selectedForm.title,
       description: selectedForm.description,
       isPrivate: selectedForm.isPrivate,
+      randomize: selectedForm.randomize,
       tags: JSON.parse(selectedForm.tags),
     }
   } else {
     initialDetails = {
       title: '',
       description: '',
-      isPrivate: true,
+      isPrivate: false,
+      randomize: '',
       tags: [''],
     }
   };
@@ -51,6 +53,8 @@ const FormCreate = props => {
   const blankQuestion = {
     question: '',
     type: '',
+    images: false,
+    randomize: '',
     options: [''],
   };
 
@@ -74,7 +78,7 @@ const FormCreate = props => {
     }
 
     // Deconstruct form properties
-    const { title, description, isPrivate, tags } = detailsState;
+    const { title, description, isPrivate, randomize, tags  } = detailsState;
     const formID = getRandomInt(1000, 9999);
     const compID = getRandomInt(1000, 9999);
 
@@ -85,6 +89,7 @@ const FormCreate = props => {
       title: title,
       description: description,
       isPrivate: isPrivate,
+      randomize: randomize,
       tags: JSON.stringify(tags),
       validations: JSON.stringify(questionsState),
     };
@@ -109,6 +114,9 @@ const FormCreate = props => {
     const formDesignDataSet = createFormDesignDataSet();
     console.log('formDesign = ', JSON.stringify(formDesignDataSet, null, 2));
     try {
+
+      // const { key } = await Storage.put(`${uuid()}.mp3`, mp3Data, { contentType: 'image' });
+
       await API.graphql(graphqlOperation(
         createForm, { input: formDesignDataSet }
       ));

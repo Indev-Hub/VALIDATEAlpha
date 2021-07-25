@@ -5,6 +5,7 @@ import {
   FormControlLabel,
   FormGroup,
   FormHelperText,
+  Grid,
   Typography
 } from '@material-ui/core';
 import { Field, useField } from 'formik';
@@ -24,15 +25,15 @@ const Checkbox = (props) => {
         {options.map((option, index) => {
           const id = `${option.id}opt${index + 1}`;
           return (
-            <label key={id}>
+            <Grid container key={id} display="flex" alignItems="center" mt={1}>
               <Field
                 type='checkbox'
                 id={id}
                 name={name}
                 value={option}
               />
-              {option}
-            </label>
+              <Typography pl={1.5}>{option}</Typography>
+            </Grid>
           )
         })}
       </div>

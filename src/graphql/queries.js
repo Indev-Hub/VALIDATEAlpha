@@ -65,6 +65,8 @@ export const getCompany = /* GraphQL */ `
           companyID
           title
           description
+          isPrivate
+          tags
           validations
           createdAt
           updatedAt
@@ -111,6 +113,7 @@ export const getForm = /* GraphQL */ `
       companyID
       title
       description
+      isPrivate
       company {
         id
         name
@@ -128,6 +131,7 @@ export const getForm = /* GraphQL */ `
         createdAt
         updatedAt
       }
+      tags
       validations
       createdAt
       updatedAt
@@ -173,6 +177,7 @@ export const getFormSubmission = /* GraphQL */ `
         companyID
         title
         description
+        isPrivate
         company {
           id
           name
@@ -180,6 +185,7 @@ export const getFormSubmission = /* GraphQL */ `
           createdAt
           updatedAt
         }
+        tags
         validations
         createdAt
         updatedAt
@@ -205,6 +211,8 @@ export const listFormSubmissions = /* GraphQL */ `
           companyID
           title
           description
+          isPrivate
+          tags
           validations
           createdAt
           updatedAt

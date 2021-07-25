@@ -6,11 +6,12 @@ import {
 import { useField } from 'formik';
 
 const TextField = props => {
-  const [field, meta] = useField(props);
+  const [field, meta, multiline, maxRows] = useField(props);
   const config = {
     ...field,
     ...props,
     variant: 'outlined',
+    multiline: multiline
   };
 
   if (meta && meta.touched && meta.error) {
