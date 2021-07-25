@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { API, graphqlOperation } from 'aws-amplify';
 import { createFormSubmission } from '../../graphql/mutations';
-import { Box, Card, Grid, Typography } from '@material-ui/core';
+import { Alert, Box, Card, Grid, Typography } from '@material-ui/core';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import PropTypes from 'prop-types';
@@ -38,6 +38,14 @@ const FormSubmission = props => {
       answer: '',
     }
   };
+
+  // Randomize options for display
+  const randomizeOptions = (index) => {
+    let rando = questions[index].options;
+    const randoSort = rando.sort(() => Math.random() - 0.5);
+    console.log('Random Array Sorting:', randoSort);
+    return randoSort;
+  }
 
   // Create initial field values (answer types) for Formik
   const initialValues = {};
@@ -162,7 +170,7 @@ const FormSubmission = props => {
                                 id={`q${index + 1}`}
                                 name={`q${index + 1}`}
                                 altlabel={question.question}
-                                options={question.options}
+                                options={randomizeOptions(index)}
                               />
                             </Box>
                           );
@@ -262,9 +270,9 @@ const FormSubmission = props => {
                           break;
                         default:
                           return (
-                            <div key={index}>
-                              <h3>Please select an answer type for question {index + 1}.</h3>
-                            </div>
+                            <Box key={index} mb={1}>
+                              <Alert severity="error">Please select an answer type for question {index + 1}</Alert>
+                            </Box>
                           );
                       }
                     })}

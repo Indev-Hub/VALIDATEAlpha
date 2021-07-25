@@ -1,16 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Button,
   Card,
+  FormControlLabel,
   Grid,
   IconButton,
+  Switch,
   Typography,
 } from '@material-ui/core';
 import { Close, DeleteForever } from '@material-ui/icons';
 import PropTypes from 'prop-types';
 import { Plus } from '../../../icons';
 import Controls from '../../form/controls/_controls';
+import FileDropzone from 'src/components/FileDropzone';
 
 // VALIDATION QUESTIONS SECTION OF FormCreate.js
 
@@ -80,6 +83,51 @@ const FormQuestions = props => {
     const updatedState = [...questionsState]; // make copy
     updatedState[qstidx].options[optidx] = e.target.value;
     setQuestionsState(updatedState);
+  };
+
+  // vv  UPLOAD IMAGES  vv
+  // Set images state
+  const [images, setImages] = useState([]);
+
+  // Set new images state when items are dropped into dropzone
+  const handleDrop = (newImages) => {
+    setImages((prevImages) => [...prevImages, ...newImages]);
+  };
+
+  // Remove specific image from dropzone
+  const handleRemove = (file) => {
+    setImages((prevImages) => prevImages.filter((_file) => _file.path
+      !== file.path));
+  };
+
+  // Remove all images from dropzone
+  const handleRemoveAll = () => {
+    setImages([]);
+  };
+
+  // Sets whether images are being added to options and displays dropzone if true
+  const [isImage, setIsImage] = useState([]);
+
+  // Update image state array
+  const toggleImages = async (qstidx) => {
+    // Check if the current index already exists in the array
+    if (isImage.includes(qstidx)) {
+      // Duplicate existing isImage array and return only the items that DO NOT match the current index.
+      // When setIsImage operates below it effectively removes the current index from the array.
+      const removeImageOption = isImage.filter(items => { return items !== qstidx });
+      
+      // Replace isImage array with modified array (without current index)
+      setIsImage(removeImageOption);
+      console.log('image check true:', isImage, qstidx) // Can be removed if everything is understood and working correctly
+      return;
+    }
+
+    // If the above "if" check comes back false then we add the index to the isImage array
+    setIsImage([
+      ...isImage,
+      qstidx
+    ]);
+    console.log('image check false:', isImage, qstidx) // Can be removed if everything is understood and working correctly
   };
 
   return (
@@ -159,10 +207,30 @@ const FormQuestions = props => {
                     options={INPUT_CONTROLS}
                     onChange={(e) => handleSelectChange(qstidx, e)}
                   />
+                    <FormControlLabel
+                      control={<Switch onClick={() => toggleImages(qstidx)} name="useImages" />}
+                      label="Use images as answers"
+
+                    />
                 </Box>
               </Grid>
               <Grid item xs={12} md={4}>
                 <Box>
+                  {isImage.includes(qstidx) ?
+                    (
+                      <Box mb={1}>
+                        <FileDropzone
+                          accept="image/*"
+                          files={images}
+                          onDrop={handleDrop}
+                          onRemove={handleRemove}
+                          onRemoveAll={handleRemoveAll}
+                        />
+                      </Box>                        
+                    ) : (
+                      null
+                    )
+                  }
                   {/* Start mapping the validation answer options */}
                   {questionsState[qstidx].options.map((_opt, optidx) => {
                     return (

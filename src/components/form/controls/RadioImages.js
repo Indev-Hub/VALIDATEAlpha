@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Box,
   FormControl,
   FormControlLabel,
   FormHelperText,
@@ -42,12 +43,17 @@ const RadioImages = ({
           {options.map((option, index) => {
             const id = `${option.id}opt${index + 1}`;
             return (
-              <FormControlLabel
-                key={id}
-                value={option}
-                control={<Radio />}
-                label={option}
-              />)
+              <Box display="column" align="center" mb={2}>
+                <img src="https://source.unsplash.com/random" alt="test-image" width="100%" />
+                <FormControlLabel
+                  key={id}
+                  value={option}
+                  control={<Radio />}
+                  label={option}
+                >
+                </FormControlLabel>
+              </Box>  
+            )
           })}
         </MuiRadioGroup>
       </FormControl>
