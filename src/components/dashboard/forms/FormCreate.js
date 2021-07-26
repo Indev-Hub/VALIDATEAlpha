@@ -89,7 +89,6 @@ const FormCreate = props => {
       title: title,
       description: description,
       isPrivate: isPrivate,
-      randomize: randomize,
       tags: JSON.stringify(tags),
       validations: JSON.stringify(questionsState),
     };
