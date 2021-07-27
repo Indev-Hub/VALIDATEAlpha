@@ -2,6 +2,7 @@ import React from 'react'
 import Chart from 'react-apexcharts';
 import { Box, Card, Grid, Typography } from '@material-ui/core';
 import { alpha, useTheme } from '@material-ui/core/styles';
+import { jsonParse } from './jsonModifier';
 
 // const BarChart = () => {
 //   const theme = useTheme();
@@ -96,7 +97,22 @@ import { alpha, useTheme } from '@material-ui/core/styles';
 // };
 
 const AnalyticsGraphBar = (props) => {
+  const { answers } = props;
+  console.log('result from prop analytics', answers)
+  const pAnswers = answers.replace(/\\"/g, '"')
+  console.log('replace string escapes', pAnswers)
+
   const theme = useTheme();
+
+  const barData =
+    {
+      'q1': 'What answer?',
+      'a1': {'title': 'Seattle', 'count': 20},
+      'a2': {'title': 'New Jersey', 'count': 5},
+      'a3': {'title': 'Memphis', 'count': 3},
+      'a4': {'title': 'New York', 'count': 24},
+      'a5': {'title': 'Georgia', 'count': 11}
+    }
 
   const chart = {
     options: {
@@ -154,24 +170,27 @@ const AnalyticsGraphBar = (props) => {
         show: true
       }
     },
+    // This is where we have to find out how to add the "answer" to the x axis and the "count"
+    // (how many times that answer was selected) to the y axis. I believe it will be a prop passed
+    // in from AnalyticsSubmissions.js where this component will be placed.
     series: [
       {
         data: [
           {
-            x: 'pic 1',
-            y: 10
+            x: barData.a1.title,
+            y: barData.a1.count
           },
           {
-            x: 'pic 2',
-            y: 35
+            x: barData.a2.title,
+            y: barData.a2.count
           },
           {
-            x: 'pic 3',
-            y: 50
+            x: barData.a3.title,
+            y: barData.a3.count
           },
           {
-            x: 'pic 4',
-            y: 3
+            x: barData.a4.title,
+            y: barData.a4.count
           }
         ]
       }

@@ -26,6 +26,7 @@ const AnalyticsSubmissions = () => {
     getSubmissionAnalytics();
   }, [isLoading]);
   
+  // Standard GET for the submissions with the same formID as entered in the url parameter "submissionId"
   const getSubmissionInfo = async () => {
     try {
       const getSubmissionData = await API.graphql(graphqlOperation(queries.listFormSubmissions, { filter: {formID: {eq: submissionId}} })); 
@@ -40,24 +41,22 @@ const AnalyticsSubmissions = () => {
     }
   };
 
+  // LINQ function to return an array made up of only the answers object from the submissionData array above
   const getSubmissionAnalytics = async () => {
     if (isLoading === false) {
-      const numb = "form-5705";
       const result = Enumerable.from(submissionData)
       // .groupBy(g => ( g.answers ))
-
-      .select(s => ({
-        answers: s.answers
+      .select(s => ([
+        s.answers
       //   // max: s.max(m => m.cost),
       //   // min: s.min(m => m.cost),
       //   // avg: s.average(m => m.cost),
       //   // count: s.count(),
       //   // sum: s.sum(s => s.cost)
-      }))
+      ]))
       .toArray()
-      const newResult = jsonParse(result);
       // console.log('parsed:', newResult)
-      setResultOne(JSON.parse(result)); 
+      setResultOne(result); 
     };
   };
 
@@ -75,6 +74,7 @@ const AnalyticsSubmissions = () => {
                 <Typography>
                   {result.answers}
                 </Typography>
+                <AnalyticsGraphBar fullData = {submissionData} answers = {resultOne} />
                 {/* {result.answers.question.map(answer => (
                   <Typography>
                     {answer}
@@ -85,6 +85,7 @@ const AnalyticsSubmissions = () => {
             ))}
             {/* {console.log('data:', submissionData, 'answers:', resultOne)} */}
             <AnalyticsGraphBar fullData = {submissionData} answers = {resultOne} />
+            {console.log('resultOne', resultOne)}
           </>
         )}
       </Box>
