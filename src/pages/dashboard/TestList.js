@@ -1,10 +1,12 @@
 /* eslint-disable */
 import React, { useState, useEffect } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import {
   Box,
   Container,
   Grid,
   IconButton,
+  Link,
   Paper,
   Tooltip,
   Typography,
@@ -200,6 +202,13 @@ const TestList = () => {
                     >
                       <Grid item xs={12}>
                         <Tooltip title="Preview form">
+                        <Link
+                          color="text.reverse"
+                          component={RouterLink}
+                          to={`/dashboard/form-analytics/${form.id}`}
+                          underline="none"
+                          variant="body1"
+                        >
                           <Typography
                             variant="h4"
                             className="formTitle"
@@ -208,10 +217,11 @@ const TestList = () => {
                                 cursor: 'pointer',
                               }
                             }}
-                            onClick={() => setSelectedForm(form)}
+                            // onClick={() => setSelectedForm(form)}
                           >
                             {form.title}
                           </Typography>
+                        </Link>
                         </Tooltip>
 
                         <Typography variant="h5" className="formTitle">

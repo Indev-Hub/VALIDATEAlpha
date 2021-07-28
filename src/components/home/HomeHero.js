@@ -128,20 +128,6 @@ const HomeHero = (props) => {
         </Box>
       </Container>
       <Container
-        maxWidth="false"
-        sx={{
-          height: '100vh',
-          alignItems: 'center',
-          display: 'flex',
-          flexDirection: 'column',
-          px: {
-            md: '130px !important'
-          }
-        }}
-      >
-        <Typography variant="h2" sx={{ color: 'white' }}>TESTING STAGE BELOW</Typography>
-      </Container>
-      <Container
         maxWidth="100%"
         sx={{
           backgroundColor: '#666',
