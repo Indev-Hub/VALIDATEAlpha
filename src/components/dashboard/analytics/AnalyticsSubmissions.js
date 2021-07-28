@@ -40,26 +40,38 @@ const AnalyticsSubmissions = () => {
   // Reduce submissionData array to the answers key and create new array submissionAnswers from it
   const submissionAnswers = [...new Set(submissionData.map(it => it.answers))];
   console.log('submissionAnswers', submissionAnswers);
+
+  // Clean up the response so it is JSON readable
   const cleanAnswers = JSON.stringify(submissionAnswers).replace(/\\"/g, '\"').replace(/\"\{/g, "\{").replace(/\}\"/g, "\}");
   console.log('cleanAnswers', cleanAnswers);
 
-  // This parsedAnswers has been combined into the counts function below
-  // and is no longer needed...just keeping a bit for documentation
+  // Parse the new clean response data
   const parsedAnswers = JSON.parse(cleanAnswers);
   console.log('parsedAnswers', parsedAnswers);
 
+  // Map out the answers for q1. This is just used for testing purposes now.
   const mappedAnswers = parsedAnswers.map(ans => (
     ans.q1
   ))
   console.log('mappedAnswers', mappedAnswers)
 
-  // Count the number of each answer for questions
-  let countAnswers = parsedAnswers.reduce((acc, curr)=>{
-    const ans = curr.q2.answer;
-    acc[ans] = (acc[ans] || 0) + 1;
-    return acc;
-  }, {});
-  console.log('countAnswers', countAnswers);
+  // Create an array for the questions in each form
+  // const questionArray = Object.entries(parsedAnswers).map(([key, value]) => (value))
+  // console.log('questionArray', questionArray[0].q2.question)
+
+  const questionArray = parsedAnswers[0];
+  console.log('questionArray', questionArray)
+
+  // Count the number of each answer for questions. This function has been moved to AnalyticsBarGraph
+  // ------------------------------------------------------------------------------------------------
+  // let countAnswers = parsedAnswers.reduce((acc, curr)=>{
+  //   const ans = curr.q2.answer;
+  //   acc[ans] = (acc[ans] || 0) + 1;
+  //   return acc;
+  // }, {});
+  // console.log('countAnswers', countAnswers);
+
+  // const questionList = parsedAnswers.reduce(acc)
 
 
   return (
@@ -70,19 +82,20 @@ const AnalyticsSubmissions = () => {
             <Typography>Submissions is loading...</Typography>
           </>
         ) : (
-          // <>
-          //   {submissionData.map((result, idx) => (
+          <>
+            {Object.values(parsedAnswers[0]).map(result => (
               <Grid container spacing={2}>
                 <Grid item mt={3} xs>
-                  <AnalyticsGraphBar fullData = {submissionData} question={parsedAnswers[0].q1.question} answers={parsedAnswers} />
+                  <AnalyticsGraphBar fullData = {submissionData} question={result.question} answers={parsedAnswers} />
+                  {console.log('title', result.question)}
                 </Grid>
-                <Grid item mt={3} xs>
+                {/* <Grid item mt={3} xs>
                   <AnalyticsGraphBar fullData = {submissionData} question={parsedAnswers[0].q2.question} answers={parsedAnswers} />
-                </Grid>
+                </Grid> */}
               </Grid>
-          //   ))}
+            ))}
         
-          // </>
+          </>
         )}
       </Box>
     </>
