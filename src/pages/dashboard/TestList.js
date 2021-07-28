@@ -24,6 +24,8 @@ import Notification from '../../components/form/Notification';
 import FormCreate from '../../components/dashboard/forms/FormCreate';
 import useSettings from '../../hooks/useSettings';
 
+import FormSubmissionsList from '../../components/form/FormSubmissionsList';
+
 // Position 'delete' and 'duplicate' buttons
 const useStyles = makeStyles(() => ({
   deleteButton: {
@@ -165,6 +167,7 @@ const TestList = () => {
             onClick={handleReturnToList}
           />
           <FormSubmission formDesign={selectedForm} displaySubmitButton={false} />
+          <FormSubmissionsList id={selectedForm.id} />
         </Box>
       </Container>
     );
