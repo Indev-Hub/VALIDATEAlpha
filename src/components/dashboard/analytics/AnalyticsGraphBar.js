@@ -97,12 +97,22 @@ import { jsonParse } from './jsonModifier';
 // };
 
 const AnalyticsGraphBar = (props) => {
-  const { answers } = props;
-  console.log('result from prop analytics', answers)
-  const pAnswers = answers.replace(/\\"/g, '"')
-  console.log('replace string escapes', pAnswers)
+  const { fullData, question, answers } = props;
+  // console.log('result from prop analytics', answers)
 
   const theme = useTheme();
+
+  // Count the number of each answer for questions
+  let countAnswers = answers.reduce((acc, curr)=>{
+    const ans = curr.q2.answer;
+    acc[ans] = (acc[ans] || 0) + 1;
+    return acc;
+  }, {});
+  console.log('countAnswers', countAnswers);
+
+  const answerArray = Object.entries(countAnswers).map(([key, value]) => ({[key]: value}))
+  console.log('answerArray', answerArray);
+
 
   const barData =
     {
@@ -177,73 +187,55 @@ const AnalyticsGraphBar = (props) => {
       {
         data: [
           {
-            x: barData.a1.title,
-            y: barData.a1.count
+            x: Object.keys(answerArray[0]),
+            y: Object.values(answerArray[0])
           },
           {
-            x: barData.a2.title,
-            y: barData.a2.count
+            x: Object.keys(answerArray[1]),
+            y: Object.values(answerArray[1])
           },
           {
-            x: barData.a3.title,
-            y: barData.a3.count
-          },
-          {
-            x: barData.a4.title,
-            y: barData.a4.count
+            x: Object.keys(answerArray[2]),
+            y: Object.values(answerArray[2])
           }
         ]
       }
     ]
   };
 
-
-
   return (
-    <Grid
-      container
-      spacing={2}
+    <Card
+      sx={{
+        p:4
+      }}
     >
-    <Grid
-        item
-        md={12}
-        sm={12}
-        xs={12}
+      <Grid
+        container
+        spacing={2}
       >
-        <Card>
-          <Box
-            sx={{
-              alignItems: 'center',
-              display: 'flex',
-              justifyContent: 'space-between',
-              p: 3
-            }}
+        <Grid
+          item
+          md={12}
+          sm={12}
+          xs={12}
+        >
+          <Typography
+            color="textPrimary"
+            variant="h5"
           >
-            <div>
-              <Typography
-                color="textPrimary"
-                variant="subtitle2"
-              >
-                Conversions
-              </Typography>
-              <Typography
-                color="textPrimary"
-                sx={{ mt: 1 }}
-                variant="h5"
-              >
-                131,3K
-              </Typography>
-            </div>
-            <Chart
-              type="bar"
-              width="500"
-              height="250"
-              {...chart}
-            />
-          </Box>
-        </Card>
+            {question}
+          </Typography>
+        </Grid>
+        <Grid item xs={8}>
+          <Chart
+            type="bar"
+            width="100%"
+            height="250"
+            {...chart}
+          />
+        </Grid>
       </Grid>
-    </Grid>
+    </Card>
   )
 }
 
