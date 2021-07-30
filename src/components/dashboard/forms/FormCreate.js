@@ -51,6 +51,7 @@ const FormCreate = props => {
 
   // Initialize questions state
   const blankQuestion = {
+    questionId: 1,
     question: '',
     type: '',
     images: false,
@@ -78,7 +79,7 @@ const FormCreate = props => {
     }
 
     // Deconstruct form properties
-    const { title, description, isPrivate, randomize, tags  } = detailsState;
+    const { title, description, isPrivate, randomize, tags } = detailsState;
     const formID = getRandomInt(1000, 9999);
     const compID = getRandomInt(1000, 9999);
 

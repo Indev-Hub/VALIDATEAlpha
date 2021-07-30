@@ -38,9 +38,17 @@ const FormQuestions = props => {
     uploadForm,
   } = props;
 
+  const [questionId, setQuestionId] = useState(1);
+
   // Add question to form and add the new question to questionsState array
   const addQuestion = () => {
-    setQuestionsState([...questionsState, { ...blankQuestion }]);
+    const newId = questionId + 1;
+    setQuestionId(newId);
+    setQuestionsState([
+      ...questionsState,
+      { ...blankQuestion, questionId: newId }
+    ]);
+    console.log("questionsState:", questionsState);
   };
 
   // Remove question from mapped array
@@ -64,13 +72,13 @@ const FormQuestions = props => {
     setQuestionsState(updatedState);
   };
 
-    // Update answer type when selected
-    const handleRandomChange = (qstidx, e) => {
-      const updatedState = [...questionsState]; // make copy
-      updatedState[qstidx].randomize = e.target.checked;
-      console.log('random true/false', updatedState[qstidx].randomize)
-      setQuestionsState(updatedState);
-    };
+  // Update answer type when selected
+  const handleRandomChange = (qstidx, e) => {
+    const updatedState = [...questionsState]; // make copy
+    updatedState[qstidx].randomize = e.target.checked;
+    console.log('random true/false', updatedState[qstidx].randomize)
+    setQuestionsState(updatedState);
+  };
 
   // Add answer option to form and add the new option to our questionsState
   const addOption = (qstidx) => {
@@ -123,7 +131,7 @@ const FormQuestions = props => {
       // Duplicate existing isImage array and return only the items that DO NOT match the current index.
       // When setIsImage operates below it effectively removes the current index from the array.
       const removeImageOption = isImage.filter(items => { return items !== qstidx });
-      
+
       // Replace isImage array with modified array (without current index)
       setIsImage(removeImageOption);
       console.log('image check true:', isImage, qstidx) // Can be removed if everything is understood and working correctly
@@ -216,15 +224,15 @@ const FormQuestions = props => {
                     options={INPUT_CONTROLS}
                     onChange={(e) => handleSelectChange(qstidx, e)}
                   />
-                    <FormControlLabel
-                      control={<Switch onClick={() => toggleImages(qstidx)} name="useImages" />}
-                      label="Use images as answers"
-                    />
-                    <FormControlLabel
-                      control={<Switch value={questionsState[qstidx].randomize} onChange={(e) => handleRandomChange(qstidx, e)} name="randomizeOptions" />}
-                      label="Randomize answers"
-                    />
-                    {console.log('array', questionsState)}
+                  <FormControlLabel
+                    control={<Switch onClick={() => toggleImages(qstidx)} name="useImages" />}
+                    label="Use images as answers"
+                  />
+                  <FormControlLabel
+                    control={<Switch value={questionsState[qstidx].randomize} onChange={(e) => handleRandomChange(qstidx, e)} name="randomizeOptions" />}
+                    label="Randomize answers"
+                  />
+                  {console.log('array', questionsState)}
                 </Box>
               </Grid>
               <Grid item xs={12} md={4}>
@@ -239,7 +247,7 @@ const FormQuestions = props => {
                           onRemove={handleRemove}
                           onRemoveAll={handleRemoveAll}
                         />
-                      </Box>                        
+                      </Box>
                     ) : (
                       null
                     )

@@ -33,8 +33,9 @@ const FormSubmission = props => {
 
   // Add question-answer pair, with question value, for each set of answers
   for (let i = 0; i < questions.length; i++) {
-    submitStructure.answers[`q${i + 1}`] = {
+    submitStructure.answers[questions[i].questionId] = {
       question: questions[i].question,
+      answerType: questions[i].type,
       answer: '',
     }
   };
@@ -49,8 +50,8 @@ const FormSubmission = props => {
 
   // Create initial field values (answer types) for Formik
   const initialValues = {};
-  questions.forEach((input, index) => {
-    const name = `q${index + 1}`
+  questions.forEach(input => {
+    const name = `q${input.questionId}`
     if (input.type === 'Checkbox') {
       initialValues[name] = [];
     } else if (input.type === 'Rating') {
@@ -64,8 +65,8 @@ const FormSubmission = props => {
 
   // Create Formik/Yup validation schema
   const validationSchema = {};
-  questions.forEach((input, index) => {
-    const name = `q${index + 1}`
+  questions.forEach(input => {
+    const name = `q${input.questionId}`
     if (input.type === 'Checkbox') {
       validationSchema[name] = Yup.array()
         .min(1, 'Please select one or more items.');
@@ -123,8 +124,8 @@ const FormSubmission = props => {
               onSubmit={async (values, { setSubmitting }) => {
                 // Add user input values into question-answer submission structure
                 let formSubmission = { ...submitStructure };
-                Object.keys(formSubmission.answers).forEach(questionNum => {
-                  formSubmission.answers[questionNum]['answer'] = values[questionNum];
+                Object.keys(formSubmission.answers).forEach(questionId => {
+                  formSubmission.answers[questionId]['answer'] = values[`q${questionId}`];
                 });
 
                 // Stringify 'answers' collection for single DynamoDB field
@@ -167,8 +168,8 @@ const FormSubmission = props => {
                             <Box mt={marginUp}>
                               <Controls.Checkbox
                                 key={index}
-                                id={`q${index + 1}`}
-                                name={`q${index + 1}`}
+                                id={`q${question.questionId}`}
+                                name={`q${question.questionId}`}
                                 altlabel={question.question}
                                 options={question.randomize ? randomizeOptions(index) : question.options}
                               />
@@ -180,8 +181,8 @@ const FormSubmission = props => {
                             <Box mt={marginUp}>
                               <Controls.Select
                                 key={index}
-                                id={`q${index + 1}`}
-                                name={`q${index + 1}`}
+                                id={`q${question.questionId}`}
+                                name={`q${question.questionId}`}
                                 altlabel={question.question}
                                 options={question.randomize ? randomizeOptions(index) : question.options}
                               />
@@ -193,8 +194,8 @@ const FormSubmission = props => {
                             <Box mt={marginUp}>
                               <Controls.TextField
                                 key={index}
-                                id={`q${index + 1}`}
-                                name={`q${index + 1}`}
+                                id={`q${question.questionId}`}
+                                name={`q${question.questionId}`}
                                 altlabel={question.question}
                                 fullWidth
                                 type="number"
@@ -208,8 +209,8 @@ const FormSubmission = props => {
                             <Box mt={marginUp}>
                               <Controls.RadioGroup
                                 key={index}
-                                id={`q${index + 1}`}
-                                name={`q${index + 1}`}
+                                id={`q${question.questionId}`}
+                                name={`q${question.questionId}`}
                                 altlabel={question.question}
                                 options={question.randomize ? randomizeOptions(index) : question.options}
                               />
@@ -221,8 +222,8 @@ const FormSubmission = props => {
                             <Box mt={marginUp}>
                               <Controls.RadioImages
                                 key={index}
-                                id={`q${index + 1}`}
-                                name={`q${index + 1}`}
+                                id={`q${question.questionId}`}
+                                name={`q${question.questionId}`}
                                 altlabel={question.question}
                                 options={question.randomize ? randomizeOptions(index) : question.options}
                               />
@@ -234,8 +235,8 @@ const FormSubmission = props => {
                             <Box mt={marginUp}>
                               <Controls.Rating
                                 key={index}
-                                id={`q${index + 1}`}
-                                name={`q${index + 1}`}
+                                id={`q${question.questionId}`}
+                                name={`q${question.questionId}`}
                                 altlabel={question.question}
                               />
                             </Box>
@@ -246,8 +247,8 @@ const FormSubmission = props => {
                             <Box mt={marginUp}>
                               <Controls.Switch
                                 key={index}
-                                id={`q${index + 1}`}
-                                name={`q${index + 1}`}
+                                id={`q${question.questionId}`}
+                                name={`q${question.questionId}`}
                                 altlabel={question.question}
                                 label={question.options}
                               />
@@ -259,8 +260,8 @@ const FormSubmission = props => {
                             <Box mt={marginUp}>
                               <Controls.TextField
                                 key={index}
-                                id={`q${index + 1}`}
-                                name={`q${index + 1}`}
+                                id={`q${question.questionId}`}
+                                name={`q${question.questionId}`}
                                 altlabel={question.question}
                                 type="text"
                                 placeholder="Type your answer"
@@ -271,7 +272,7 @@ const FormSubmission = props => {
                         default:
                           return (
                             <Box key={index} mb={1}>
-                              <Alert severity="error">Please select an answer type for question {index + 1}</Alert>
+                              <Alert severity="error">Please select an answer type for this question</Alert>
                             </Box>
                           );
                       }
