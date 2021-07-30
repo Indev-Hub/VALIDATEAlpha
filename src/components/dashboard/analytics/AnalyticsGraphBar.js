@@ -1,129 +1,42 @@
 import React from 'react'
 import Chart from 'react-apexcharts';
-import { Box, Card, Grid, Typography } from '@material-ui/core';
-import { alpha, useTheme } from '@material-ui/core/styles';
-import { jsonParse } from './jsonModifier';
+import { Card, Grid, Typography } from '@material-ui/core';
+import { useTheme } from '@material-ui/core/styles';
 
-// const BarChart = () => {
-//   const theme = useTheme();
-
-//   const chart = {
-//     options: {
-//       chart: {
-//         background: 'transparent',
-//         toolbar: {
-//           show: false
-//         },
-//         zoom: {
-//           enabled: true
-//         }
-//       },
-//       colors: ['#7783DB'],
-//       dataLabels: {
-//         enabled: false
-//       },
-//       grid: {
-//         show: false
-//       },
-//       states: {
-//         normal: {
-//           active: {
-//             filter: {
-//               type: 'none'
-//             }
-//           },
-//           filter: {
-//             type: 'none',
-//             value: 0
-//           }
-//         }
-//       },
-//       stroke: {
-//         width: 0
-//       },
-//       theme: {
-//         mode: theme.palette.mode
-//       },
-//       tooltip: {
-//         enabled: true
-//       },
-//       xaxis: {
-//         type: 'category',
-//         axisBorder: {
-//           show: false
-//         },
-//         axisTicks: {
-//           show: false
-//         },
-//         labels: {
-//           show: true
-//         }
-//       },
-//       yaxis: {
-//         show: true
-//       }
-//     },
-//     series: [
-//       {
-//         data: [
-//           {
-//             x: 'pic 1',
-//             y: 10
-//           },
-//           {
-//             x: 'pic 2',
-//             y: 35
-//           },
-//           {
-//             x: 'pic 3',
-//             y: 50
-//           },
-//           {
-//             x: 'pic 4',
-//             y: 3
-//           }
-//         ]
-//       }
-//     ]
-//   };
-
-//   return (
-//     <Chart
-//       type="bar"
-//       width="100%"
-//       {...chart}
-//     />
-//   );
-// };
-
-const AnalyticsGraphBar = (props) => {
-  const { fullData, question, answers } = props;
-  // console.log('result from prop analytics', answers)
-
+const AnalyticsGraphBar = props => {
   const theme = useTheme();
+  const { question, answerOptions, answerType, aggregatedAnswers } = props;
 
-  // Count the number of each answer for questions
-  let countAnswers = answers.reduce((acc, curr)=>{
-    const ans = curr.q2.answer;
-    acc[ans] = (acc[ans] || 0) + 1;
-    return acc;
-  }, {});
-  console.log('countAnswers', countAnswers);
+  // Answer types dictate how chart values are calculated
+  const countTypes = ['Checkbox', 'Dropdown', 'Radio Group', 'Switch']
+  const avgTypes = ['Rating', 'Number']
 
-  const answerArray = Object.entries(countAnswers).map(([key, value]) => ({[key]: value}))
-  console.log('answerArray', answerArray);
+  // Tally answers into {answerOption: count/avg} pairs based on type
+  let talliedAnswers = {};
+  if (countTypes.includes(answerType)) {
+    answerOptions.forEach(option => {
+      talliedAnswers[option] = 0;
+    });
+    aggregatedAnswers.forEach(answer => {
+      talliedAnswers[answer]++;
+    });
+  } else if (avgTypes.includes(answerType)) {
+    const summedAnswers = aggregatedAnswers.reduce((acc, curr) => parseInt(acc) + parseInt(curr), 0);
+    talliedAnswers["Average Response"] = summedAnswers / aggregatedAnswers.length;
+  }
 
+  // Create x-axis categories and y-axis values from talliedAnswers
+  let chartData = [];
+  for (const answerOption in talliedAnswers) {
+    chartData.push(
+      {
+        x: answerOption,
+        y: talliedAnswers[answerOption],
+      }
+    );
+  };
 
-  const barData =
-    {
-      'q1': 'What answer?',
-      'a1': {'title': 'Seattle', 'count': 20},
-      'a2': {'title': 'New Jersey', 'count': 5},
-      'a3': {'title': 'Memphis', 'count': 3},
-      'a4': {'title': 'New York', 'count': 24},
-      'a5': {'title': 'Georgia', 'count': 11}
-    }
-
+  // Configure chart; pass chartData to data in series property
   const chart = {
     options: {
       chart: {
@@ -180,33 +93,18 @@ const AnalyticsGraphBar = (props) => {
         show: true
       }
     },
-    // This is where we have to find out how to add the "answer" to the x axis and the "count"
-    // (how many times that answer was selected) to the y axis. I believe it will be a prop passed
-    // in from AnalyticsSubmissions.js where this component will be placed.
     series: [
       {
-        data: [
-          {
-            x: Object.keys(answerArray[0]),
-            y: Object.values(answerArray[0])
-          },
-          {
-            x: Object.keys(answerArray[1]),
-            y: Object.values(answerArray[1])
-          },
-          {
-            x: Object.keys(answerArray[2]),
-            y: Object.values(answerArray[2])
-          }
-        ]
+        data: [...chartData]
       }
     ]
   };
 
+  // Render single chart component
   return (
     <Card
       sx={{
-        p:4
+        p: 4
       }}
     >
       <Grid
@@ -239,4 +137,4 @@ const AnalyticsGraphBar = (props) => {
   )
 }
 
-export default AnalyticsGraphBar
+export default AnalyticsGraphBar;
