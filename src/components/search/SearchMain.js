@@ -26,7 +26,7 @@ const SearchMain = (props) => {
     try {
       const formData = await API.graphql(graphqlOperation(listForms));
       const formList = formData.data.listForms.items;
-      console.log('form list', formList);
+      // console.log('form list', formList);
       setForms(formList);
     } catch (error) {
       console.log('error on fetching forms', error);
@@ -35,27 +35,33 @@ const SearchMain = (props) => {
 
   return (
     <Grid container spacing={2} xs={12}>
-      {forms.map((form, index) => (
-          <Grid
-            item
-            xs={4}
-            key={index}
-            href={`/form/${form.id}`}
-          >
-            <Link
+      {forms.map((form, index) => {
+        if (!form.isPrivate) {
+          return (
+            <Grid
+              item
+              xs={12}
+              sm={6}
+              md={4}
+              key={index}
               href={`/form/${form.id}`}
-              sx={{
-                "&:hover": {
-                  textDecoration: 'none',
-                }
-              }}
             >
-              <SearchTemplate1 form={form} index={index} />
-            </Link>
-            {console.log('form id:', form.id)}
-          </Grid>
-      ))}
-    </Grid>      
+              <Link
+                href={`/form/${form.id}`}
+                sx={{
+                  "&:hover": {
+                    textDecoration: 'none',
+                  }
+                }}
+              >
+                <SearchTemplate1 form={form} index={index} />
+              </Link>
+              {/* {console.log('form id:', form.id)} */}
+            </Grid>
+          )
+        }
+      })}
+    </Grid>
   )
 }
 

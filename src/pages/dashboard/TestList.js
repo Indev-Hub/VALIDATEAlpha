@@ -1,5 +1,6 @@
 /* eslint-disable */
 import React, { useState, useEffect } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import {
   Box,
   Container,
@@ -17,12 +18,15 @@ import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import { API, graphqlOperation, Storage } from 'aws-amplify';
 import { listForms } from '../../graphql/queries';
 import { deleteForm } from '../../graphql/mutations';
+import useAuth from '../../hooks/useAuth';
 import ConfirmDialog from '../../components/form/ConfirmDialog';
 import Controls from '../../components/form/controls/_controls';
 import FormSubmission from '../../components/form/FormSubmission';
 import Notification from '../../components/form/Notification';
 import FormCreate from '../../components/dashboard/forms/FormCreate';
 import useSettings from '../../hooks/useSettings';
+
+import FormSubmissionsList from '../../components/form/FormSubmissionsList';
 
 // Position 'delete' and 'duplicate' buttons
 const useStyles = makeStyles(() => ({
@@ -42,6 +46,7 @@ const useStyles = makeStyles(() => ({
 const TestList = () => {
   const classes = useStyles();
   const { settings } = useSettings();
+  const { user } = useAuth();
 
   // Set initial state of forms list, selected form, and other view states
   const [forms, setForms] = useState([]);
@@ -68,6 +73,7 @@ const TestList = () => {
       const formData = await API.graphql(graphqlOperation(listForms));
       const formList = formData.data.listForms.items;
       setForms(formList);
+      console.log("formList", formList);
     } catch (error) {
       console.log('error on fetching forms', error);
     }
@@ -145,7 +151,7 @@ const TestList = () => {
             Create a new validation from an existing form
           </Typography>
           <FormCreate
-            duplicateForm={selectedForm}
+            selectedForm={selectedForm}
             handleListRefresh={handleListRefresh} />
         </Box>
       </Container>
@@ -163,13 +169,14 @@ const TestList = () => {
             onClick={handleReturnToList}
           />
           <FormSubmission formDesign={selectedForm} displaySubmitButton={false} />
+          <FormSubmissionsList id={selectedForm.id} />
         </Box>
       </Container>
     );
   } else {
     // Show list of all forms
     return (
-      <>
+      <React.Fragment>
         <Box
           width="100%"
           alignItems="center"
@@ -178,78 +185,87 @@ const TestList = () => {
         >
           {
             forms.map((form, idx) => {
-              return (
-                <Paper
-                  variant="outlined"
-                  sx={{ py: 2, px: 5, m: 1 }}
-                  key={`form_${idx}`}
-                >
-                  <Grid
-                    container
-                    display="flex"
-                    className="formCard"
-                    direction="column"
-                    alignItems="left"
-                    justify="center"
+              if (form.companyID === user.email) { // display only forms created by user (update email to companyID once that association to user is made)
+                return (
+                  <Paper
+                    variant="outlined"
+                    sx={{ py: 2, px: 5, m: 1 }}
+                    key={`form_${idx}`}
                   >
-                    <Grid item xs={12}>
-                      <Tooltip title="Preview form">
-                        <Typography
-                          variant="h4"
-                          className="formTitle"
-                          sx={{
-                            "&:hover": {
-                              cursor: 'pointer',
-                            }
-                          }}
-                          onClick={() => setSelectedForm(form)}
+                    <Grid
+                      container
+                      display="flex"
+                      className="formCard"
+                      direction="column"
+                      alignItems="left"
+                      justify="center"
+                    >
+                      <Grid item xs={12}>
+                        <Tooltip title="Preview form">
+                        <Link
+                          color="text.reverse"
+                          component={RouterLink}
+                          to={`/dashboard/form-analytics/${form.id}`}
+                          underline="none"
+                          variant="body1"
                         >
-                          {form.title}
+                          <Typography
+                            variant="h4"
+                            className="formTitle"
+                            sx={{
+                              "&:hover": {
+                                cursor: 'pointer',
+                              }
+                            }}
+                            // onClick={() => setSelectedForm(form)}
+                          >
+                            {form.title}
+                          </Typography>
+                        </Link>
+                        </Tooltip>
+
+                        <Typography variant="h5" className="formTitle">
+                          {form.id} - {form.isPrivate ? "Private Form" : "Public Form"}
                         </Typography>
+
+                        <Typography className="formTitle">
+                          {`URL: https://validatehub.com/form/${form.id}`}
+                        </Typography>
+
+                        <Typography className="formTitle">
+                          {form.description}
+                        </Typography>
+                      </Grid>
+
+                      <Tooltip title="Delete">
+                        <IconButton
+                          className={classes.deleteButton}
+                          onClick={() => {
+                            setConfirmDialog({
+                              isOpen: true,
+                              title: 'Delete form',
+                              subtitle: `Are you sure you want to delete this form? It will be permanently removed and this action cannot be undone.`,
+                              buttonText: 'Delete',
+                              onConfirm: () => handleFormDelete(form.id, idx),
+                            });
+                          }}
+                        >
+                          <DeleteForeverIcon fontSize="large" />
+                        </IconButton>
                       </Tooltip>
 
-                      <Typography variant="h5" className="formTitle">
-                        {form.id} - {form.isPrivate ? "Private Form" : "Public Form"}
-                      </Typography>
-
-                      <Typography className="formTitle">
-                        {`URL: https://validatehub.com/form/${form.id}`}
-                      </Typography>
-
-                      <Typography className="formTitle">
-                        {form.description}
-                      </Typography>
+                      <Tooltip title="Duplicate">
+                        <IconButton
+                          className={classes.duplicateButton}
+                          onClick={() => handleDuplicateForm(form)}
+                        >
+                          <ControlPointDuplicateIcon fontSize="large" />
+                        </IconButton>
+                      </Tooltip>
                     </Grid>
-
-                    <Tooltip title="Delete">
-                      <IconButton
-                        className={classes.deleteButton}
-                        onClick={() => {
-                          setConfirmDialog({
-                            isOpen: true,
-                            title: 'Delete form',
-                            subtitle: `Are you sure you want to delete this form? It will be permanently removed and 
-                          this action cannot be undone.`,
-                            buttonText: 'Delete',
-                            onConfirm: () => handleFormDelete(form.id, idx),
-                          });
-                        }}
-                      >
-                        <DeleteForeverIcon fontSize="large" />
-                      </IconButton>
-                    </Tooltip>
-
-                    <Tooltip title="Duplicate">
-                      <IconButton
-                        className={classes.duplicateButton}
-                        onClick={() => handleDuplicateForm(form)}
-                      >
-                        <ControlPointDuplicateIcon fontSize="large" />
-                      </IconButton>
-                    </Tooltip>
-                  </Grid>
-                </Paper>
-              )
+                  </Paper>
+                )
+              }
             })
           }
         </Box>
@@ -267,7 +283,7 @@ const TestList = () => {
             setConfirmDialog={setConfirmDialog}
           />
         ) : null}
-      </>
+      </React.Fragment>
     );
   };
 };

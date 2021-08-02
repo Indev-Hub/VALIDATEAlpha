@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { API, graphqlOperation } from 'aws-amplify';
 import { createFormSubmission } from '../../graphql/mutations';
-import { Box, Card, Grid, Typography } from '@material-ui/core';
+import { Alert, Box, Card, Grid, Typography } from '@material-ui/core';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import PropTypes from 'prop-types';
 import Controls from './controls/_controls';
+import Notification from './Notification';
 
 const FormSubmission = props => {
   // Destructure formDesign (=FormCreate form object) and other props
@@ -13,6 +14,13 @@ const FormSubmission = props => {
 
   // Form Design variables
   const marginUp = 2;
+
+  // Set state of upload success and failure notifications
+  const [notify, setNotify] = useState({
+    isOpen: false,
+    message: '',
+    type: ''
+  })
 
   // Format structure for form submission
   const submitStructure = {
@@ -25,16 +33,25 @@ const FormSubmission = props => {
 
   // Add question-answer pair, with question value, for each set of answers
   for (let i = 0; i < questions.length; i++) {
-    submitStructure.answers[`q${i + 1}`] = {
+    submitStructure.answers[questions[i].questionId] = {
       question: questions[i].question,
+      answerType: questions[i].type,
       answer: '',
     }
   };
 
+  // Randomize options for display
+  const randomizeOptions = (index) => {
+    let rando = questions[index].options;
+    const randoSort = rando.sort(() => Math.random() - 0.5);
+    console.log('Random Array Sorting:', randoSort);
+    return randoSort;
+  }
+
   // Create initial field values (answer types) for Formik
   const initialValues = {};
-  questions.forEach((input, index) => {
-    const name = `q${index + 1}`
+  questions.forEach(input => {
+    const name = `q${input.questionId}`
     if (input.type === 'Checkbox') {
       initialValues[name] = [];
     } else if (input.type === 'Rating') {
@@ -48,8 +65,8 @@ const FormSubmission = props => {
 
   // Create Formik/Yup validation schema
   const validationSchema = {};
-  questions.forEach((input, index) => {
-    const name = `q${index + 1}`
+  questions.forEach(input => {
+    const name = `q${input.questionId}`
     if (input.type === 'Checkbox') {
       validationSchema[name] = Yup.array()
         .min(1, 'Please select one or more items.');
@@ -107,28 +124,37 @@ const FormSubmission = props => {
               onSubmit={async (values, { setSubmitting }) => {
                 // Add user input values into question-answer submission structure
                 let formSubmission = { ...submitStructure };
-                Object.keys(formSubmission.answers).forEach(questionNum => {
-                  formSubmission.answers[questionNum]['answer'] = values[questionNum];
+                Object.keys(formSubmission.answers).forEach(questionId => {
+                  formSubmission.answers[questionId]['answer'] = values[`q${questionId}`];
                 });
-
-                // // Preview output via window alert and console
-                alert(JSON.stringify(formSubmission, null, 2));
-
 
                 // Stringify 'answers' collection for single DynamoDB field
                 formSubmission.answers = JSON.stringify(formSubmission.answers);
 
-                console.log(
-                  'formSubmission:',
-                  JSON.stringify(formSubmission, null, 2)
-                );
+                // console.log(
+                //   'formSubmission:',
+                //   JSON.stringify(formSubmission, null, 2)
+                // );
 
-                // // POST to DynamoDB
-                // await API.graphql(graphqlOperation(
-                //   createFormSubmission,
-                //   { input: formSubmission }
-                // ));
-
+                // POST to DynamoDB
+                try {
+                  await API.graphql(graphqlOperation(
+                    createFormSubmission,
+                    { input: formSubmission }
+                  ));
+                  setNotify({
+                    isOpen: true,
+                    message: `Submitted Successfully`,
+                    type: 'success'
+                  });
+                } catch (error) {
+                  console.log('error submitting form', error);
+                  setNotify({
+                    isOpen: true,
+                    message: `Submission Failed: ${error}`,
+                    type: 'error'
+                  });
+                }
                 setSubmitting(false);
               }}
             >
@@ -142,10 +168,10 @@ const FormSubmission = props => {
                             <Box mt={marginUp}>
                               <Controls.Checkbox
                                 key={index}
-                                id={`q${index + 1}`}
-                                name={`q${index + 1}`}
+                                id={`q${question.questionId}`}
+                                name={`q${question.questionId}`}
                                 altlabel={question.question}
-                                options={question.options}
+                                options={question.randomize ? randomizeOptions(index) : question.options}
                               />
                             </Box>
                           );
@@ -155,10 +181,10 @@ const FormSubmission = props => {
                             <Box mt={marginUp}>
                               <Controls.Select
                                 key={index}
-                                id={`q${index + 1}`}
-                                name={`q${index + 1}`}
+                                id={`q${question.questionId}`}
+                                name={`q${question.questionId}`}
                                 altlabel={question.question}
-                                options={question.options}
+                                options={question.randomize ? randomizeOptions(index) : question.options}
                               />
                             </Box>
                           );
@@ -168,8 +194,8 @@ const FormSubmission = props => {
                             <Box mt={marginUp}>
                               <Controls.TextField
                                 key={index}
-                                id={`q${index + 1}`}
-                                name={`q${index + 1}`}
+                                id={`q${question.questionId}`}
+                                name={`q${question.questionId}`}
                                 altlabel={question.question}
                                 fullWidth
                                 type="number"
@@ -183,10 +209,23 @@ const FormSubmission = props => {
                             <Box mt={marginUp}>
                               <Controls.RadioGroup
                                 key={index}
-                                id={`q${index + 1}`}
-                                name={`q${index + 1}`}
+                                id={`q${question.questionId}`}
+                                name={`q${question.questionId}`}
                                 altlabel={question.question}
-                                options={question.options}
+                                options={question.randomize ? randomizeOptions(index) : question.options}
+                              />
+                            </Box>
+                          );
+                          break;
+                        case 'Radio Images':
+                          return (
+                            <Box mt={marginUp}>
+                              <Controls.RadioImages
+                                key={index}
+                                id={`q${question.questionId}`}
+                                name={`q${question.questionId}`}
+                                altlabel={question.question}
+                                options={question.randomize ? randomizeOptions(index) : question.options}
                               />
                             </Box>
                           );
@@ -196,8 +235,8 @@ const FormSubmission = props => {
                             <Box mt={marginUp}>
                               <Controls.Rating
                                 key={index}
-                                id={`q${index + 1}`}
-                                name={`q${index + 1}`}
+                                id={`q${question.questionId}`}
+                                name={`q${question.questionId}`}
                                 altlabel={question.question}
                               />
                             </Box>
@@ -208,8 +247,8 @@ const FormSubmission = props => {
                             <Box mt={marginUp}>
                               <Controls.Switch
                                 key={index}
-                                id={`q${index + 1}`}
-                                name={`q${index + 1}`}
+                                id={`q${question.questionId}`}
+                                name={`q${question.questionId}`}
                                 altlabel={question.question}
                                 label={question.options}
                               />
@@ -221,8 +260,8 @@ const FormSubmission = props => {
                             <Box mt={marginUp}>
                               <Controls.TextField
                                 key={index}
-                                id={`q${index + 1}`}
-                                name={`q${index + 1}`}
+                                id={`q${question.questionId}`}
+                                name={`q${question.questionId}`}
                                 altlabel={question.question}
                                 type="text"
                                 placeholder="Type your answer"
@@ -232,9 +271,9 @@ const FormSubmission = props => {
                           break;
                         default:
                           return (
-                            <div key={index}>
-                              <h3>Unable to match answer type '{question.type}'.</h3>
-                            </div>
+                            <Box key={index} mb={1}>
+                              <Alert severity="error">Please select an answer type for this question</Alert>
+                            </Box>
                           );
                       }
                     })}
@@ -250,6 +289,10 @@ const FormSubmission = props => {
           </Card>
         </Grid>
       </Grid>
+      <Notification
+        notify={notify}
+        setNotify={setNotify}
+      />
     </React.Fragment>
   );
 };

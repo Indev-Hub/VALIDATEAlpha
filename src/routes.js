@@ -98,6 +98,8 @@ const Contact = Loadable(lazy(() => import('./pages/Contact')));
 const Home = Loadable(lazy(() => import('./pages/Home')));
 const Pricing = Loadable(lazy(() => import('./pages/Pricing')));
 const SubmissionFormPage = Loadable(lazy(() => import('./pages/company/SubmissionFormPage')));
+const FormSubmissionWidget = Loadable(lazy(() => import('./pages/widgets/FormSubmissionWidget')));
+const FormAnalytics = Loadable(lazy(() => import('./pages/dashboard/FormAnalytics')));
 
 const routes = [
   {
@@ -164,6 +166,15 @@ const routes = [
     element: <Contact />
   },
   {
+    path: 'widget',
+    children: [
+      {
+        path: 'submissions/:formId',
+        element: <FormSubmissionWidget />
+      }
+    ]
+  },
+  {
     path: 'dashboard',
     element: (
       <AuthGuard>
@@ -182,6 +193,10 @@ const routes = [
       {
         path: 'analytics',
         element: <Analytics />
+      },
+      {
+        path: 'form-analytics/:submissionId',
+        element: <FormAnalytics />
       },
       {
         path: 'test-create',

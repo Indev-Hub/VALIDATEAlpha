@@ -16,11 +16,11 @@ import { Publish } from '@material-ui/icons';
 import { Formik } from 'formik';
 
 const CreateFormDesign = ({ onUpload }) => {
-	const [createFormData, setcreateFormData] = useState({});
-    const [formatData, setformatData] = useState();
+  const [createFormData, setcreateFormData] = useState({});
+  const [formatData, setformatData] = useState();
 
 	const uploadVideo = async () => {
-		//Get user attributes
+		// Get user attributes
 		const { signInUserSession } = await Auth.currentAuthenticatedUser();
 		const userName = signInUserSession.accessToken.payload.username;
 		const userId = signInUserSession.accessToken.payload.sub
@@ -28,7 +28,7 @@ const CreateFormDesign = ({ onUpload }) => {
 		console.log('user name', userName);
 		console.log('user id', userId);
 
-        //Upload the video
+    // Upload the form
 		const videoId = uniqueId("formID-");
 		console.log('unique id', videoId)
         console.log('createFormData', createFormData);
