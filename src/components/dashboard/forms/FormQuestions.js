@@ -13,7 +13,9 @@ import { Close, DeleteForever } from '@material-ui/icons';
 import PropTypes from 'prop-types';
 import { Plus } from '../../../icons';
 import Controls from '../../form/controls/_controls';
-import FileDropzone from 'src/components/FileDropzone';
+// import FileDropzone from 'src/components/FileDropzone';
+import UploadMultiplePreview from '../../test/UploadMultiplePreview';
+
 
 // VALIDATION QUESTIONS SECTION OF FormCreate.js
 
@@ -29,7 +31,7 @@ const INPUT_CONTROLS = [
 ];
 
 const FormQuestions = props => {
-  // Deconstruct state props from FormCreate.js
+  // Deconstruct state props from FormCreate
   const {
     questionsState,
     setQuestionsState,
@@ -38,6 +40,7 @@ const FormQuestions = props => {
     uploadForm,
   } = props;
 
+  // Add question ID state for UploadMultiplePreview (RadioImages options)
   const [questionId, setQuestionId] = useState(1);
 
   // Add question to form and add the new question to questionsState array
@@ -84,6 +87,14 @@ const FormQuestions = props => {
   const addOption = (qstidx) => {
     const updatedState = [...questionsState]; // make copy
     updatedState[qstidx].options = [...updatedState[qstidx].options, '']
+    setQuestionsState(updatedState);
+  };
+
+  // Update options for Radio Images after image files are selected;
+  // function is passed to UploadeMultiplePreview
+  const updateRadioImagesOptions = (qstidx, imgUrlArray) => {
+    const updatedState = [...questionsState];
+    updatedState[qstidx].options = [...imgUrlArray]
     setQuestionsState(updatedState);
   };
 
@@ -240,12 +251,16 @@ const FormQuestions = props => {
                   {isImage.includes(qstidx) ?
                     (
                       <Box mb={1}>
-                        <FileDropzone
+                        {/* <FileDropzone
                           accept="image/*"
                           files={images}
                           onDrop={handleDrop}
                           onRemove={handleRemove}
                           onRemoveAll={handleRemoveAll}
+                        /> */}
+                        <UploadMultiplePreview
+                          questionIdx={qstidx}
+                          updateRadioImagesOptions={updateRadioImagesOptions}
                         />
                       </Box>
                     ) : (
