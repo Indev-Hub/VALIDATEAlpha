@@ -201,7 +201,7 @@ const TestList = () => {
                       justify="center"
                     >
                       <Grid item xs={12}>
-                        <Tooltip title="Preview form">
+                        {/* <Tooltip title="Preview form"> */}
                         <Link
                           color="text.reverse"
                           component={RouterLink}
@@ -222,7 +222,7 @@ const TestList = () => {
                             {form.title}
                           </Typography>
                         </Link>
-                        </Tooltip>
+                        {/* </Tooltip> */}
 
                         <Typography variant="h5" className="formTitle">
                           {form.id} - {form.isPrivate ? "Private Form" : "Public Form"}
