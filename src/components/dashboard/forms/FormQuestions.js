@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Card,
+  Dialog,
   FormControlLabel,
   Grid,
   IconButton,
@@ -13,11 +14,9 @@ import { Close, DeleteForever } from '@material-ui/icons';
 import PropTypes from 'prop-types';
 import { Plus } from '../../../icons';
 import Controls from '../../form/controls/_controls';
-// import FileDropzone from 'src/components/FileDropzone';
 import UploadMultiplePreview from '../../test/UploadMultiplePreview';
 
-
-// VALIDATION QUESTIONS SECTION OF FormCreate.js
+// VALIDATION QUESTIONS SECTION OF FormCreate
 
 const INPUT_CONTROLS = [
   'Checkbox',
@@ -33,6 +32,7 @@ const INPUT_CONTROLS = [
 const FormQuestions = props => {
   // Deconstruct state props from FormCreate
   const {
+    formId,
     questionsState,
     setQuestionsState,
     blankQuestion,
@@ -51,7 +51,6 @@ const FormQuestions = props => {
       ...questionsState,
       { ...blankQuestion, questionId: newId }
     ]);
-    console.log("questionsState:", questionsState);
   };
 
   // Remove question from mapped array
@@ -79,7 +78,6 @@ const FormQuestions = props => {
   const handleRandomChange = (qstidx, e) => {
     const updatedState = [...questionsState]; // make copy
     updatedState[qstidx].randomize = e.target.checked;
-    console.log('random true/false', updatedState[qstidx].randomize)
     setQuestionsState(updatedState);
   };
 
@@ -112,27 +110,8 @@ const FormQuestions = props => {
     setQuestionsState(updatedState);
   };
 
-  // vv  UPLOAD IMAGES  vv
-  // Set images state
-  const [images, setImages] = useState([]);
-
-  // Set new images state when items are dropped into dropzone
-  const handleDrop = (newImages) => {
-    setImages((prevImages) => [...prevImages, ...newImages]);
-  };
-
-  // Remove specific image from dropzone
-  const handleRemove = (file) => {
-    setImages((prevImages) => prevImages.filter((_file) => _file.path
-      !== file.path));
-  };
-
-  // Remove all images from dropzone
-  const handleRemoveAll = () => {
-    setImages([]);
-  };
-
-  // Sets whether images are being added to options and displays dropzone if true
+  // UPLOAD RADIO IMAGES ANSWER OPTIONS
+  // Sets whether images are being added to options and displays dialog if true
   const [isImage, setIsImage] = useState([]);
 
   // Update image state array
@@ -250,19 +229,19 @@ const FormQuestions = props => {
                 <Box>
                   {isImage.includes(qstidx) ?
                     (
-                      <Box mb={1}>
-                        {/* <FileDropzone
-                          accept="image/*"
-                          files={images}
-                          onDrop={handleDrop}
-                          onRemove={handleRemove}
-                          onRemoveAll={handleRemoveAll}
-                        /> */}
-                        <UploadMultiplePreview
-                          questionIdx={qstidx}
-                          updateRadioImagesOptions={updateRadioImagesOptions}
-                        />
-                      </Box>
+                      <Dialog
+                        open={() => toggleImages(qstidx)}
+                        fullWidth='true'
+                      >
+                        <Box mb={1}>
+                          <UploadMultiplePreview
+                            formId={formId}
+                            questionIdx={qstidx}
+                            toggleDialog={toggleImages}
+                            updateRadioImagesOptions={updateRadioImagesOptions}
+                          />
+                        </Box>
+                      </Dialog>
                     ) : (
                       null
                     )
@@ -349,6 +328,7 @@ const FormQuestions = props => {
 };
 
 FormQuestions.propTypes = {
+  formId: PropTypes.string,
   questionsState: PropTypes.array,
   setQuestionsState: PropTypes.func,
   blankQuestion: PropTypes.object,
