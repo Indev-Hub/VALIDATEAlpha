@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { API, Auth, graphqlOperation } from 'aws-amplify';
 import { createForm } from '../../../graphql/mutations';
 import { Formik, Form } from 'formik';
-import { isNull, uniqueId } from 'lodash';
 import PropTypes from 'prop-types';
 import { Box, Paper } from '@material-ui/core';
+import { v4 as uuidv4 } from 'uuid';
 import useAuth from '../../../hooks/useAuth';
 import FormSubmission from '../../form/FormSubmission';
 import Notification from '../../form/Notification';
@@ -18,6 +18,9 @@ const FormCreate = props => {
 
   // This is used if duplicating from existing form in TestList
   const { selectedForm = null, handleListRefresh } = props;
+
+  // Create unique form id (also passed through to UploadMultiplePreview)
+  const formId = `form-${uuidv4()}`;
 
   // Set state of upload success and failure notifications
   const [notify, setNotify] = useState({
@@ -80,12 +83,12 @@ const FormCreate = props => {
 
     // Deconstruct form properties
     const { title, description, isPrivate, randomize, tags } = detailsState;
-    const formID = getRandomInt(1000, 9999);
+    // const formID = getRandomInt(1000, 9999); // replaced by uuid for UploadMulitplePreview (form subdirectory in S3)
     const compID = getRandomInt(1000, 9999);
 
     // The input data to be sent in our createForm request 
     const formDesignDataSet = {
-      id: `form-${formID}`,
+      id: `${formId}`,
       companyID: user.email, // to filter list; change to user.company once a companyID association has been made with user
       title: title,
       description: description,
@@ -112,11 +115,12 @@ const FormCreate = props => {
 
     // Get form design schema and output to DynamoDB
     const formDesignDataSet = createFormDesignDataSet();
-    console.log('formDesign = ', JSON.stringify(formDesignDataSet, null, 2));
+
+    console.log(
+      'FormCreate#uploadForm', JSON.stringify(formDesignDataSet, null, 2)
+    );
+    
     try {
-
-      // const { key } = await Storage.put(`${uuid()}.mp3`, mp3Data, { contentType: 'image' });
-
       await API.graphql(graphqlOperation(
         createForm, { input: formDesignDataSet }
       ));
@@ -144,6 +148,7 @@ const FormCreate = props => {
           />
           {/* Start mapping the validation questions */}
           <FormQuestions
+            formId={formId}
             questionsState={questionsState}
             setQuestionsState={setQuestionsState}
             blankQuestion={blankQuestion}
