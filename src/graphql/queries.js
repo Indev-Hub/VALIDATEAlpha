@@ -12,10 +12,32 @@ export const getUser = /* GraphQL */ `
           id
           name
           userID
+          description
+          tags
           createdAt
           updatedAt
         }
         nextToken
+      }
+      demographics {
+        id
+        userID
+        firstName
+        lastName
+        birthday
+        sex
+        gender
+        household
+        maritalStatus
+        city
+        state
+        country
+        income
+        homeowner
+        education
+        profession
+        createdAt
+        updatedAt
       }
       createdAt
       updatedAt
@@ -36,6 +58,26 @@ export const listUsers = /* GraphQL */ `
         companies {
           nextToken
         }
+        demographics {
+          id
+          userID
+          firstName
+          lastName
+          birthday
+          sex
+          gender
+          household
+          maritalStatus
+          city
+          state
+          country
+          income
+          homeowner
+          education
+          profession
+          createdAt
+          updatedAt
+        }
         createdAt
         updatedAt
       }
@@ -49,12 +91,32 @@ export const getCompany = /* GraphQL */ `
       id
       name
       userID
-      user {
+      manager {
         id
         username
         email
         companies {
           nextToken
+        }
+        demographics {
+          id
+          userID
+          firstName
+          lastName
+          birthday
+          sex
+          gender
+          household
+          maritalStatus
+          city
+          state
+          country
+          income
+          homeowner
+          education
+          profession
+          createdAt
+          updatedAt
         }
         createdAt
         updatedAt
@@ -73,6 +135,8 @@ export const getCompany = /* GraphQL */ `
         }
         nextToken
       }
+      description
+      tags
       createdAt
       updatedAt
     }
@@ -89,7 +153,7 @@ export const listCompanys = /* GraphQL */ `
         id
         name
         userID
-        user {
+        manager {
           id
           username
           email
@@ -99,6 +163,8 @@ export const listCompanys = /* GraphQL */ `
         forms {
           nextToken
         }
+        description
+        tags
         createdAt
         updatedAt
       }
@@ -118,7 +184,7 @@ export const getForm = /* GraphQL */ `
         id
         name
         userID
-        user {
+        manager {
           id
           username
           email
@@ -128,6 +194,8 @@ export const getForm = /* GraphQL */ `
         forms {
           nextToken
         }
+        description
+        tags
         createdAt
         updatedAt
       }
@@ -155,6 +223,8 @@ export const listForms = /* GraphQL */ `
           id
           name
           userID
+          description
+          tags
           createdAt
           updatedAt
         }
@@ -182,6 +252,8 @@ export const getFormSubmission = /* GraphQL */ `
           id
           name
           userID
+          description
+          tags
           createdAt
           updatedAt
         }
@@ -218,6 +290,61 @@ export const listFormSubmissions = /* GraphQL */ `
           updatedAt
         }
         answers
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const getDemographics = /* GraphQL */ `
+  query GetDemographics($id: ID!) {
+    getDemographics(id: $id) {
+      id
+      userID
+      firstName
+      lastName
+      birthday
+      sex
+      gender
+      household
+      maritalStatus
+      city
+      state
+      country
+      income
+      homeowner
+      education
+      profession
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listDemographicss = /* GraphQL */ `
+  query ListDemographicss(
+    $filter: ModelDemographicsFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listDemographicss(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        userID
+        firstName
+        lastName
+        birthday
+        sex
+        gender
+        household
+        maritalStatus
+        city
+        state
+        country
+        income
+        homeowner
+        education
+        profession
         createdAt
         updatedAt
       }

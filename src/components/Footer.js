@@ -32,7 +32,7 @@ const Footer = (props) => (
             pt: 2
           }}
         >
-          <img src={Logo} alt="VALIDATE Logo" width="100px" />
+          <img src={Logo} alt="VALIDATE Logo" width="50px" />
         </Box>
         <Typography
           color="text.light"

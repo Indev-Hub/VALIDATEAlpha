@@ -1,4 +1,5 @@
 import React from 'react';
+import { AmplifyS3Image } from "@aws-amplify/ui-react";
 import {
   Box,
   FormControl,
@@ -31,7 +32,6 @@ const RadioImages = ({
 
   if (meta && meta.touched && meta.error) {
     config.error = true;
-    // config.helperText = meta.error;
   }
 
   return (
@@ -44,15 +44,14 @@ const RadioImages = ({
             const id = `${option.id}opt${index + 1}`;
             return (
               <Box display="column" align="center" mb={2}>
-                <img src="https://source.unsplash.com/random" alt="test-image" width="100%" />
+                <AmplifyS3Image imgKey={option} />
                 <FormControlLabel
                   key={id}
                   value={option}
                   control={<Radio />}
-                  label={option}
                 >
                 </FormControlLabel>
-              </Box>  
+              </Box>
             )
           })}
         </MuiRadioGroup>

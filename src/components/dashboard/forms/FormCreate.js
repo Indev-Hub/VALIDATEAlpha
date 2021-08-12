@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { API, Auth, graphqlOperation } from 'aws-amplify';
 import { createForm } from '../../../graphql/mutations';
+import { getUser } from 'src/graphql/queries';
 import { Formik, Form } from 'formik';
-import { isNull, uniqueId } from 'lodash';
 import PropTypes from 'prop-types';
 import { Box, Paper } from '@material-ui/core';
+import { v4 as uuidv4 } from 'uuid';
 import useAuth from '../../../hooks/useAuth';
 import FormSubmission from '../../form/FormSubmission';
 import Notification from '../../form/Notification';
@@ -18,6 +19,9 @@ const FormCreate = props => {
 
   // This is used if duplicating from existing form in TestList
   const { selectedForm = null, handleListRefresh } = props;
+
+  // Create unique form id (also passed through to UploadMultiplePreview)
+  const formId = `form-${uuidv4()}`;
 
   // Set state of upload success and failure notifications
   const [notify, setNotify] = useState({
@@ -33,6 +37,7 @@ const FormCreate = props => {
     initialDetails = {
       title: selectedForm.title,
       description: selectedForm.description,
+      companyID: selectedForm.companyID,
       isPrivate: selectedForm.isPrivate,
       randomize: selectedForm.randomize,
       tags: JSON.parse(selectedForm.tags),
@@ -41,6 +46,7 @@ const FormCreate = props => {
     initialDetails = {
       title: '',
       description: '',
+      companyID: [''],
       isPrivate: false,
       randomize: '',
       tags: [''],
@@ -48,6 +54,7 @@ const FormCreate = props => {
   };
 
   const [detailsState, setDetailsState] = useState(initialDetails);
+  console.log('Details State', detailsState)
 
   // Initialize questions state
   const blankQuestion = {
@@ -69,6 +76,11 @@ const FormCreate = props => {
 
   const [questionsState, setQuestionsState] = useState(initialQuestions);
 
+
+  //==================================//
+  //           CREATE FORM            //
+  //==================================//
+
   // Construct data object to be used as output for DB and prop for form preview
   const createFormDesignDataSet = () => {
     // Create random number for ID (temp solution for unique ID — will add company name and form number later on)
@@ -79,14 +91,14 @@ const FormCreate = props => {
     }
 
     // Deconstruct form properties
-    const { title, description, isPrivate, randomize, tags } = detailsState;
-    const formID = getRandomInt(1000, 9999);
+    const { title, companyID, description, isPrivate, randomize, tags } = detailsState;
+    // const formID = getRandomInt(1000, 9999); // replaced by uuid for UploadMulitplePreview (form subdirectory in S3)
     const compID = getRandomInt(1000, 9999);
 
     // The input data to be sent in our createForm request 
     const formDesignDataSet = {
-      id: `form-${formID}`,
-      companyID: user.email, // to filter list; change to user.company once a companyID association has been made with user
+      id: formId,
+      companyID: companyID, // to filter list; change to user.company once a companyID association has been made with user
       title: title,
       description: description,
       isPrivate: isPrivate,
@@ -96,6 +108,10 @@ const FormCreate = props => {
 
     return formDesignDataSet;
   };
+
+  //==================================//
+  //           FORM PREVIEW           //
+  //==================================//
 
   // Form preview
   const [formPreview, setFormPreview] = useState(null);
@@ -112,11 +128,12 @@ const FormCreate = props => {
 
     // Get form design schema and output to DynamoDB
     const formDesignDataSet = createFormDesignDataSet();
-    console.log('formDesign = ', JSON.stringify(formDesignDataSet, null, 2));
+
+    console.log(
+      'FormCreate#uploadForm', JSON.stringify(formDesignDataSet, null, 2)
+    );
+    
     try {
-
-      // const { key } = await Storage.put(`${uuid()}.mp3`, mp3Data, { contentType: 'image' });
-
       await API.graphql(graphqlOperation(
         createForm, { input: formDesignDataSet }
       ));
@@ -127,11 +144,37 @@ const FormCreate = props => {
       console.log('error uploading form', error);
       setNotify({
         isOpen: true,
-        message: `Upload Failed: ${error}`,
+        message: `Upload Failed: ${JSON.stringify(error)}`,
         type: 'error'
       });
     }
   };
+
+  //==================================//
+  //      USER TABLE INFORMATION      //
+  //==================================//
+
+  // Set state for User table
+  const [userData, setUserData] = useState();
+
+  // Load User table data
+  useEffect(() => {
+    getUserTable();
+  }, [])
+
+  // API call to get User table data
+  const getUserTable = async () => {
+    try {
+      const userData = await API.graphql(graphqlOperation(getUser, { id: user.id }));
+      const userList = userData.data.getUser;
+      setUserData(userList);
+      console.log('user info', userList);
+      console.log('user sub', user.id)
+    } catch (error) {
+      console.log('error on fetching user table', error);
+    }
+  };
+  
 
   return (
     <React.Fragment>
@@ -139,11 +182,13 @@ const FormCreate = props => {
         <Form autoComplete="off">
           {/* Company details part of the form */}
           <FormDetails
+            userData={userData}
             detailsState={detailsState}
             setDetailsState={setDetailsState}
           />
           {/* Start mapping the validation questions */}
           <FormQuestions
+            formId={formId}
             questionsState={questionsState}
             setQuestionsState={setQuestionsState}
             blankQuestion={blankQuestion}
