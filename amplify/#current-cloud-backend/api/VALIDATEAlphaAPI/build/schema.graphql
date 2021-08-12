@@ -3,6 +3,7 @@ type User {
   username: String!
   email: String
   companies(filter: ModelCompanyFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelCompanyConnection
+  demographics: Demographics
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
 }
@@ -11,8 +12,10 @@ type Company {
   id: ID!
   name: String!
   userID: ID!
-  user: User
+  manager: User
   forms(filter: ModelFormFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelFormConnection
+  description: String
+  tags: AWSJSON
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
 }
@@ -35,6 +38,27 @@ type FormSubmission {
   formID: ID!
   form: Form
   answers: AWSJSON
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type Demographics {
+  id: ID!
+  userID: ID!
+  firstName: String
+  lastName: String
+  birthday: String
+  sex: String
+  gender: String
+  household: String
+  maritalStatus: String
+  city: String
+  state: String
+  country: String
+  income: String
+  homeowner: String
+  education: String
+  profession: String
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
 }
@@ -153,18 +177,22 @@ type Query {
   listForms(filter: ModelFormFilterInput, limit: Int, nextToken: String): ModelFormConnection
   getFormSubmission(id: ID!): FormSubmission
   listFormSubmissions(filter: ModelFormSubmissionFilterInput, limit: Int, nextToken: String): ModelFormSubmissionConnection
+  getDemographics(id: ID!): Demographics
+  listDemographicss(filter: ModelDemographicsFilterInput, limit: Int, nextToken: String): ModelDemographicsConnection
 }
 
 input CreateUserInput {
   id: ID
   username: String!
   email: String
+  userDemographicsId: ID
 }
 
 input UpdateUserInput {
   id: ID!
   username: String
   email: String
+  userDemographicsId: ID
 }
 
 input DeleteUserInput {
@@ -184,6 +212,9 @@ type Mutation {
   createFormSubmission(input: CreateFormSubmissionInput!, condition: ModelFormSubmissionConditionInput): FormSubmission
   updateFormSubmission(input: UpdateFormSubmissionInput!, condition: ModelFormSubmissionConditionInput): FormSubmission
   deleteFormSubmission(input: DeleteFormSubmissionInput!, condition: ModelFormSubmissionConditionInput): FormSubmission
+  createDemographics(input: CreateDemographicsInput!, condition: ModelDemographicsConditionInput): Demographics
+  updateDemographics(input: UpdateDemographicsInput!, condition: ModelDemographicsConditionInput): Demographics
+  deleteDemographics(input: DeleteDemographicsInput!, condition: ModelDemographicsConditionInput): Demographics
 }
 
 input ModelUserConditionInput {
@@ -207,6 +238,9 @@ type Subscription {
   onCreateFormSubmission: FormSubmission @aws_subscribe(mutations: ["createFormSubmission"])
   onUpdateFormSubmission: FormSubmission @aws_subscribe(mutations: ["updateFormSubmission"])
   onDeleteFormSubmission: FormSubmission @aws_subscribe(mutations: ["deleteFormSubmission"])
+  onCreateDemographics: Demographics @aws_subscribe(mutations: ["createDemographics"])
+  onUpdateDemographics: Demographics @aws_subscribe(mutations: ["updateDemographics"])
+  onDeleteDemographics: Demographics @aws_subscribe(mutations: ["deleteDemographics"])
 }
 
 type ModelCompanyConnection {
@@ -218,6 +252,8 @@ input ModelCompanyFilterInput {
   id: ModelIDInput
   name: ModelStringInput
   userID: ModelIDInput
+  description: ModelStringInput
+  tags: ModelStringInput
   and: [ModelCompanyFilterInput]
   or: [ModelCompanyFilterInput]
   not: ModelCompanyFilterInput
@@ -227,12 +263,18 @@ input CreateCompanyInput {
   id: ID
   name: String!
   userID: ID!
+  description: String
+  tags: AWSJSON
+  companyManagerId: ID
 }
 
 input UpdateCompanyInput {
   id: ID!
   name: String
   userID: ID
+  description: String
+  tags: AWSJSON
+  companyManagerId: ID
 }
 
 input DeleteCompanyInput {
@@ -242,6 +284,8 @@ input DeleteCompanyInput {
 input ModelCompanyConditionInput {
   name: ModelStringInput
   userID: ModelIDInput
+  description: ModelStringInput
+  tags: ModelStringInput
   and: [ModelCompanyConditionInput]
   or: [ModelCompanyConditionInput]
   not: ModelCompanyConditionInput
@@ -337,4 +381,94 @@ input ModelFormSubmissionConditionInput {
   and: [ModelFormSubmissionConditionInput]
   or: [ModelFormSubmissionConditionInput]
   not: ModelFormSubmissionConditionInput
+}
+
+type ModelDemographicsConnection {
+  items: [Demographics]
+  nextToken: String
+}
+
+input ModelDemographicsFilterInput {
+  id: ModelIDInput
+  userID: ModelIDInput
+  firstName: ModelStringInput
+  lastName: ModelStringInput
+  birthday: ModelStringInput
+  sex: ModelStringInput
+  gender: ModelStringInput
+  household: ModelStringInput
+  maritalStatus: ModelStringInput
+  city: ModelStringInput
+  state: ModelStringInput
+  country: ModelStringInput
+  income: ModelStringInput
+  homeowner: ModelStringInput
+  education: ModelStringInput
+  profession: ModelStringInput
+  and: [ModelDemographicsFilterInput]
+  or: [ModelDemographicsFilterInput]
+  not: ModelDemographicsFilterInput
+}
+
+input CreateDemographicsInput {
+  id: ID
+  userID: ID!
+  firstName: String
+  lastName: String
+  birthday: String
+  sex: String
+  gender: String
+  household: String
+  maritalStatus: String
+  city: String
+  state: String
+  country: String
+  income: String
+  homeowner: String
+  education: String
+  profession: String
+}
+
+input UpdateDemographicsInput {
+  id: ID!
+  userID: ID
+  firstName: String
+  lastName: String
+  birthday: String
+  sex: String
+  gender: String
+  household: String
+  maritalStatus: String
+  city: String
+  state: String
+  country: String
+  income: String
+  homeowner: String
+  education: String
+  profession: String
+}
+
+input DeleteDemographicsInput {
+  id: ID!
+}
+
+input ModelDemographicsConditionInput {
+  userID: ModelIDInput
+  firstName: ModelStringInput
+  lastName: ModelStringInput
+  birthday: ModelStringInput
+  sex: ModelStringInput
+  gender: ModelStringInput
+  household: ModelStringInput
+  maritalStatus: ModelStringInput
+  city: ModelStringInput
+  state: ModelStringInput
+  country: ModelStringInput
+  income: ModelStringInput
+  homeowner: ModelStringInput
+  education: ModelStringInput
+  profession: ModelStringInput
+  and: [ModelDemographicsConditionInput]
+  or: [ModelDemographicsConditionInput]
+  not: ModelDemographicsConditionInput
 }

@@ -131,7 +131,7 @@
                         "AttributeType": "S"
                     },
                     {
-                        "AttributeName": "userID",
+                        "AttributeName": "companyManagerId",
                         "AttributeType": "S"
                     }
                 ],
@@ -185,10 +185,10 @@
                 },
                 "GlobalSecondaryIndexes": [
                     {
-                        "IndexName": "byUser",
+                        "IndexName": "gsi-userCompanies",
                         "KeySchema": [
                             {
-                                "AttributeName": "userID",
+                                "AttributeName": "companyManagerId",
                                 "KeyType": "HASH"
                             }
                         ],
