@@ -185,7 +185,8 @@ const TestList = () => {
         >
           {
             forms.map((form, idx) => {
-              if (form.companyID === user.email) { // display only forms created by user (update email to companyID once that association to user is made)
+              console.log('user companies', user.companies)
+              if (form.companyID === user.id) { // display only forms created by user (update email to companyID once that association to user is made)
                 return (
                   <Paper
                     variant="outlined"
@@ -201,7 +202,7 @@ const TestList = () => {
                       justify="center"
                     >
                       <Grid item xs={12}>
-                        <Tooltip title="Preview form">
+                        {/* <Tooltip title="Preview form"> */}
                         <Link
                           color="text.reverse"
                           component={RouterLink}
@@ -222,7 +223,7 @@ const TestList = () => {
                             {form.title}
                           </Typography>
                         </Link>
-                        </Tooltip>
+                        {/* </Tooltip> */}
 
                         <Typography variant="h5" className="formTitle">
                           {form.id} - {form.isPrivate ? "Private Form" : "Public Form"}

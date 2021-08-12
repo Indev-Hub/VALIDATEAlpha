@@ -100,7 +100,7 @@ const FileDropzone = (props) => {
               color="textPrimary"
               variant="body1"
             >
-              {`Drop file${(maxFiles && maxFiles === 1) ? '' : 's'}`}
+              {`Drop file${(maxFiles && maxFiles === 1) ? '' : 's'} or`}
               {' '}
               <Link
                 color="primary"
@@ -109,7 +109,7 @@ const FileDropzone = (props) => {
                 browse
               </Link>
               {' '}
-              thorough your machine
+              through your machine
             </Typography>
           </Box>
         </Box>
