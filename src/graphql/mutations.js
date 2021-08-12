@@ -15,10 +15,32 @@ export const createUser = /* GraphQL */ `
           id
           name
           userID
+          description
+          tags
           createdAt
           updatedAt
         }
         nextToken
+      }
+      demographics {
+        id
+        userID
+        firstName
+        lastName
+        birthday
+        sex
+        gender
+        household
+        maritalStatus
+        city
+        state
+        country
+        income
+        homeowner
+        education
+        profession
+        createdAt
+        updatedAt
       }
       createdAt
       updatedAt
@@ -39,10 +61,32 @@ export const updateUser = /* GraphQL */ `
           id
           name
           userID
+          description
+          tags
           createdAt
           updatedAt
         }
         nextToken
+      }
+      demographics {
+        id
+        userID
+        firstName
+        lastName
+        birthday
+        sex
+        gender
+        household
+        maritalStatus
+        city
+        state
+        country
+        income
+        homeowner
+        education
+        profession
+        createdAt
+        updatedAt
       }
       createdAt
       updatedAt
@@ -63,10 +107,32 @@ export const deleteUser = /* GraphQL */ `
           id
           name
           userID
+          description
+          tags
           createdAt
           updatedAt
         }
         nextToken
+      }
+      demographics {
+        id
+        userID
+        firstName
+        lastName
+        birthday
+        sex
+        gender
+        household
+        maritalStatus
+        city
+        state
+        country
+        income
+        homeowner
+        education
+        profession
+        createdAt
+        updatedAt
       }
       createdAt
       updatedAt
@@ -82,12 +148,32 @@ export const createCompany = /* GraphQL */ `
       id
       name
       userID
-      user {
+      manager {
         id
         username
         email
         companies {
           nextToken
+        }
+        demographics {
+          id
+          userID
+          firstName
+          lastName
+          birthday
+          sex
+          gender
+          household
+          maritalStatus
+          city
+          state
+          country
+          income
+          homeowner
+          education
+          profession
+          createdAt
+          updatedAt
         }
         createdAt
         updatedAt
@@ -106,6 +192,8 @@ export const createCompany = /* GraphQL */ `
         }
         nextToken
       }
+      description
+      tags
       createdAt
       updatedAt
     }
@@ -120,12 +208,32 @@ export const updateCompany = /* GraphQL */ `
       id
       name
       userID
-      user {
+      manager {
         id
         username
         email
         companies {
           nextToken
+        }
+        demographics {
+          id
+          userID
+          firstName
+          lastName
+          birthday
+          sex
+          gender
+          household
+          maritalStatus
+          city
+          state
+          country
+          income
+          homeowner
+          education
+          profession
+          createdAt
+          updatedAt
         }
         createdAt
         updatedAt
@@ -144,6 +252,8 @@ export const updateCompany = /* GraphQL */ `
         }
         nextToken
       }
+      description
+      tags
       createdAt
       updatedAt
     }
@@ -158,12 +268,32 @@ export const deleteCompany = /* GraphQL */ `
       id
       name
       userID
-      user {
+      manager {
         id
         username
         email
         companies {
           nextToken
+        }
+        demographics {
+          id
+          userID
+          firstName
+          lastName
+          birthday
+          sex
+          gender
+          household
+          maritalStatus
+          city
+          state
+          country
+          income
+          homeowner
+          education
+          profession
+          createdAt
+          updatedAt
         }
         createdAt
         updatedAt
@@ -182,6 +312,8 @@ export const deleteCompany = /* GraphQL */ `
         }
         nextToken
       }
+      description
+      tags
       createdAt
       updatedAt
     }
@@ -202,7 +334,7 @@ export const createForm = /* GraphQL */ `
         id
         name
         userID
-        user {
+        manager {
           id
           username
           email
@@ -212,6 +344,8 @@ export const createForm = /* GraphQL */ `
         forms {
           nextToken
         }
+        description
+        tags
         createdAt
         updatedAt
       }
@@ -237,7 +371,7 @@ export const updateForm = /* GraphQL */ `
         id
         name
         userID
-        user {
+        manager {
           id
           username
           email
@@ -247,6 +381,8 @@ export const updateForm = /* GraphQL */ `
         forms {
           nextToken
         }
+        description
+        tags
         createdAt
         updatedAt
       }
@@ -272,7 +408,7 @@ export const deleteForm = /* GraphQL */ `
         id
         name
         userID
-        user {
+        manager {
           id
           username
           email
@@ -282,6 +418,8 @@ export const deleteForm = /* GraphQL */ `
         forms {
           nextToken
         }
+        description
+        tags
         createdAt
         updatedAt
       }
@@ -310,6 +448,8 @@ export const createFormSubmission = /* GraphQL */ `
           id
           name
           userID
+          description
+          tags
           createdAt
           updatedAt
         }
@@ -342,6 +482,8 @@ export const updateFormSubmission = /* GraphQL */ `
           id
           name
           userID
+          description
+          tags
           createdAt
           updatedAt
         }
@@ -374,6 +516,8 @@ export const deleteFormSubmission = /* GraphQL */ `
           id
           name
           userID
+          description
+          tags
           createdAt
           updatedAt
         }
@@ -383,6 +527,87 @@ export const deleteFormSubmission = /* GraphQL */ `
         updatedAt
       }
       answers
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createDemographics = /* GraphQL */ `
+  mutation CreateDemographics(
+    $input: CreateDemographicsInput!
+    $condition: ModelDemographicsConditionInput
+  ) {
+    createDemographics(input: $input, condition: $condition) {
+      id
+      userID
+      firstName
+      lastName
+      birthday
+      sex
+      gender
+      household
+      maritalStatus
+      city
+      state
+      country
+      income
+      homeowner
+      education
+      profession
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateDemographics = /* GraphQL */ `
+  mutation UpdateDemographics(
+    $input: UpdateDemographicsInput!
+    $condition: ModelDemographicsConditionInput
+  ) {
+    updateDemographics(input: $input, condition: $condition) {
+      id
+      userID
+      firstName
+      lastName
+      birthday
+      sex
+      gender
+      household
+      maritalStatus
+      city
+      state
+      country
+      income
+      homeowner
+      education
+      profession
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteDemographics = /* GraphQL */ `
+  mutation DeleteDemographics(
+    $input: DeleteDemographicsInput!
+    $condition: ModelDemographicsConditionInput
+  ) {
+    deleteDemographics(input: $input, condition: $condition) {
+      id
+      userID
+      firstName
+      lastName
+      birthday
+      sex
+      gender
+      household
+      maritalStatus
+      city
+      state
+      country
+      income
+      homeowner
+      education
+      profession
       createdAt
       updatedAt
     }

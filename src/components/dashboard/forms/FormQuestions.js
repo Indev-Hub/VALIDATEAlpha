@@ -222,7 +222,6 @@ const FormQuestions = props => {
                     control={<Switch value={questionsState[qstidx].randomize} onChange={(e) => handleRandomChange(qstidx, e)} name="randomizeOptions" />}
                     label="Randomize answers"
                   />
-                  {console.log('array', questionsState)}
                 </Box>
               </Grid>
               <Grid item xs={12} md={4}>

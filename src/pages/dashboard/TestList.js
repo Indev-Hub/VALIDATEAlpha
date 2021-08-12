@@ -185,7 +185,8 @@ const TestList = () => {
         >
           {
             forms.map((form, idx) => {
-              if (form.companyID === user.email) { // display only forms created by user (update email to companyID once that association to user is made)
+              console.log('user companies', user.companies)
+              if (form.companyID === user.id) { // display only forms created by user (update email to companyID once that association to user is made)
                 return (
                   <Paper
                     variant="outlined"

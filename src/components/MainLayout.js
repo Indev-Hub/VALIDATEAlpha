@@ -8,7 +8,6 @@ import MainSidebar from './MainSidebar';
 
 const MainLayoutRoot = experimentalStyled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
-  height: '100%',
   paddingTop: 64
 }));
 

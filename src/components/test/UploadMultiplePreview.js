@@ -37,7 +37,7 @@ const UploadMultiplePreview = props => {
 
   // Upload images to S3
   const handleUpload = async (file, path) => {
-    // await Storage.put(path, file, { contentType: 'image' });
+    await Storage.put(path, file, { contentType: 'image' });
   }
 
   // Set state for image preview

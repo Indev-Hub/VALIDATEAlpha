@@ -50,12 +50,12 @@
         "GraphQLAPIIdOutput": "najad4q5bjfzrmh24fnoac7wd4",
         "GraphQLAPIEndpointOutput": "https://el45zb6obrdrhkjrag6nqdvdk4.appsync-api.us-west-2.amazonaws.com/graphql"
       },
-      "lastPushTimeStamp": "2021-07-25T06:31:16.492Z",
+      "lastPushTimeStamp": "2021-08-12T19:47:20.179Z",
       "providerMetadata": {
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-validatealpha-feat-33808-deployment/amplify-cfn-templates/api/cloudformation-template.json",
         "logicalId": "apivalidateAlphaAPI"
       },
-      "lastPushDirHash": "qW7eC+p6pEY2DlfTYb5V2EPNg7A="
+      "lastPushDirHash": "Gd39us/R6KxpnNYBePsHsB3EglM="
     }
   },
   "storage": {
@@ -66,7 +66,7 @@
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-validatealpha-feat-33808-deployment/amplify-cfn-templates/storage/s3-cloudformation-template.json",
         "logicalId": "storageFormContent"
       },
-      "lastPushTimeStamp": "2021-07-25T06:31:14.914Z",
+      "lastPushTimeStamp": "2021-08-12T19:37:03.555Z",
       "output": {
         "BucketName": "form-content33808-feat",
         "Region": "us-west-2"
