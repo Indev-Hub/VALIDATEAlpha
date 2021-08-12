@@ -50,7 +50,7 @@
         "GraphQLAPIIdOutput": "najad4q5bjfzrmh24fnoac7wd4",
         "GraphQLAPIEndpointOutput": "https://el45zb6obrdrhkjrag6nqdvdk4.appsync-api.us-west-2.amazonaws.com/graphql"
       },
-      "lastPushTimeStamp": "2021-08-12T11:26:32.571Z",
+      "lastPushTimeStamp": "2021-08-12T19:47:20.179Z",
       "providerMetadata": {
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-validatealpha-feat-33808-deployment/amplify-cfn-templates/api/cloudformation-template.json",
         "logicalId": "apivalidateAlphaAPI"
@@ -66,7 +66,7 @@
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-validatealpha-feat-33808-deployment/amplify-cfn-templates/storage/s3-cloudformation-template.json",
         "logicalId": "storageFormContent"
       },
-      "lastPushTimeStamp": "2021-08-12T11:16:55.450Z",
+      "lastPushTimeStamp": "2021-08-12T19:37:03.555Z",
       "output": {
         "BucketName": "form-content33808-feat",
         "Region": "us-west-2"
