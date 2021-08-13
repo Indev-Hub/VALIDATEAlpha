@@ -139,7 +139,7 @@ const FormCreate = props => {
       ));
       // Refresh if submitted from TestList page (i.e., starting from duplicate)
       // or redirect to TestList page if submitted from TestCreate route
-      selectedForm ? handleListRefresh() : navigate("/dashboard/test-list");
+      selectedForm ? handleListRefresh() : navigate("/dashboard/form-collection");
     } catch (error) {
       console.log('error uploading form', error);
       setNotify({
