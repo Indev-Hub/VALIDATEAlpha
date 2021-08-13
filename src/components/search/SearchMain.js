@@ -1,21 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import {
-  Box,
-  Button,
-  Card,
-  Container,
-  Grid,
-  Link,
-  Paper,
-  Typography
-} from '@material-ui/core';
+import { Grid, Link, } from '@material-ui/core';
 import { listForms } from 'src/graphql/queries';
 import { API, graphqlOperation } from 'aws-amplify';
-import SearchTemplate1 from './SearchTemplate1';
+import SearchForms from './SearchForms';
 
-const SearchMain = (props) => {
-  const { type } = props;
-
+const SearchMain = () => {
   const [forms, setForms] = useState([]);
 
   useEffect(() => {
@@ -26,7 +15,6 @@ const SearchMain = (props) => {
     try {
       const formData = await API.graphql(graphqlOperation(listForms));
       const formList = formData.data.listForms.items;
-      // console.log('form list', formList);
       setForms(formList);
     } catch (error) {
       console.log('error on fetching forms', error);
@@ -54,9 +42,8 @@ const SearchMain = (props) => {
                   }
                 }}
               >
-                <SearchTemplate1 form={form} index={index} />
+                <SearchForms form={form} index={index} />
               </Link>
-              {/* {console.log('form id:', form.id)} */}
             </Grid>
           )
         }
