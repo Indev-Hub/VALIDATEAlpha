@@ -102,7 +102,7 @@ const Pricing = Loadable(lazy(() => import('./pages/Pricing')));
 const SubmissionFormPage = Loadable(lazy(() => import('./pages/company/SubmissionFormPage')));
 const FormSubmissionWidget = Loadable(lazy(() => import('./pages/widgets/FormSubmissionWidget')));
 const FormAnalytics = Loadable(lazy(() => import('./pages/dashboard/FormAnalytics')));
-const UploadMultiplePreview = Loadable(lazy(() => import('./components/test/UploadMultiplePreview')));
+const UploadMultiplePreview = Loadable(lazy(() => import('./components/dashboard/forms/UploadMultiplePreview')));
 
 const routes = [
   {
