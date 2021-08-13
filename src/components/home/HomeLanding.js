@@ -10,7 +10,7 @@ import SearchMain from '../search/SearchMain';
 const HomeLanding = () => {
   return (
     <Box>
-      <Typography>Search companies</Typography>
+      <Typography id="form-search">Search companies</Typography>
       <SearchMain type="true" />
     </Box>
     )
