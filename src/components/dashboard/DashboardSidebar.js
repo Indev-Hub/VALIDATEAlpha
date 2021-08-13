@@ -142,7 +142,7 @@ const sections = [
           },
           {
             title: 'Form Collection',
-            path: '/dashboard/test-list',
+            path: '/dashboard/form-collection',
             // icon: <Archive fontSize="small" />
           }
         ]

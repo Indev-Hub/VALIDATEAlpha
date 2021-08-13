@@ -66,7 +66,7 @@ const Overview = Loadable(lazy(() => import('./pages/dashboard/Overview')));
 const ProductCreate = Loadable(lazy(() => import('./pages/dashboard/ProductCreate')));
 const ProductList = Loadable(lazy(() => import('./pages/dashboard/ProductList')));
 const Profile = Loadable(lazy(() => import('./pages/dashboard/Profile')));
-const TestList = Loadable(lazy(() => import('./pages/dashboard/TestList')));
+const FormCollection = Loadable(lazy(() => import('./pages/dashboard/FormCollection')));
 const TestCreate = Loadable(lazy(() => import('./pages/dashboard/TestCreate')));
 // const Tests = Loadable(lazy(() => import('./pages/dashboard/Tests')));
 // const TestsAnalytics = Loadable(lazy(() => import('./pages/dashboard/TestsAnalytics')));
@@ -210,8 +210,8 @@ const routes = [
         element: <TestCreate />
       },
       {
-        path: 'test-list',
-        element: <TestList />
+        path: 'form-collection',
+        element: <FormCollection />
       },
       {
         path: 'validation',
@@ -220,10 +220,6 @@ const routes = [
       {
         path: 'test-create',
         element: <TestCreate />
-      },
-      {
-        path: 'test-list',
-        element: <TestList />
       },
       {
         path: 'calendar',
