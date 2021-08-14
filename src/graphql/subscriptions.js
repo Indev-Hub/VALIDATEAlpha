@@ -166,6 +166,16 @@ export const onCreateCompany = /* GraphQL */ `
         createdAt
         updatedAt
       }
+      employees {
+        items {
+          id
+          username
+          email
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       forms {
         items {
           id
@@ -222,6 +232,16 @@ export const onUpdateCompany = /* GraphQL */ `
         }
         createdAt
         updatedAt
+      }
+      employees {
+        items {
+          id
+          username
+          email
+          createdAt
+          updatedAt
+        }
+        nextToken
       }
       forms {
         items {
@@ -280,6 +300,16 @@ export const onDeleteCompany = /* GraphQL */ `
         createdAt
         updatedAt
       }
+      employees {
+        items {
+          id
+          username
+          email
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       forms {
         items {
           id
@@ -320,6 +350,9 @@ export const onCreateForm = /* GraphQL */ `
           createdAt
           updatedAt
         }
+        employees {
+          nextToken
+        }
         forms {
           nextToken
         }
@@ -354,6 +387,9 @@ export const onUpdateForm = /* GraphQL */ `
           createdAt
           updatedAt
         }
+        employees {
+          nextToken
+        }
         forms {
           nextToken
         }
@@ -387,6 +423,9 @@ export const onDeleteForm = /* GraphQL */ `
           email
           createdAt
           updatedAt
+        }
+        employees {
+          nextToken
         }
         forms {
           nextToken

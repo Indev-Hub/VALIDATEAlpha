@@ -121,6 +121,16 @@ export const getCompany = /* GraphQL */ `
         createdAt
         updatedAt
       }
+      employees {
+        items {
+          id
+          username
+          email
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
       forms {
         items {
           id
@@ -160,6 +170,9 @@ export const listCompanys = /* GraphQL */ `
           createdAt
           updatedAt
         }
+        employees {
+          nextToken
+        }
         forms {
           nextToken
         }
@@ -190,6 +203,9 @@ export const getForm = /* GraphQL */ `
           email
           createdAt
           updatedAt
+        }
+        employees {
+          nextToken
         }
         forms {
           nextToken

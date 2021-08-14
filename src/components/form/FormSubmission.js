@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { API, graphqlOperation } from 'aws-amplify';
 import { createFormSubmission } from '../../graphql/mutations';
 import { Alert, Box, Card, Grid, Typography } from '@material-ui/core';
@@ -9,6 +10,8 @@ import Controls from './controls/_controls';
 import Notification from './Notification';
 
 const FormSubmission = props => {
+  const navigate = useNavigate();
+
   // Destructure formDesign (=FormCreate form object) and other props
   const { formDesign, displaySubmitButton = true } = props;
 
@@ -101,7 +104,7 @@ const FormSubmission = props => {
           >
             <Typography variant="h4">{formDesign.title}</Typography>
             <Typography>
-              {formDesign.companyID} - {formDesign.isPrivate ? "Private Form" : "Public Form"}
+              {formDesign.company.name}
             </Typography>
             <Typography>{formDesign.description}</Typography>
           </Card>
@@ -122,7 +125,7 @@ const FormSubmission = props => {
               })}
 
               onSubmit={async (values, { setSubmitting }) => {
-                // Add user input values into question-answer submission structure
+                // Add user input values into submission data structure
                 let formSubmission = { ...submitStructure };
                 Object.keys(formSubmission.answers).forEach(questionId => {
                   formSubmission.answers[questionId]['answer'] = values[`q${questionId}`];
@@ -131,6 +134,7 @@ const FormSubmission = props => {
                 // Stringify 'answers' collection for single DynamoDB field
                 formSubmission.answers = JSON.stringify(formSubmission.answers);
 
+                // Output form submission data structure to console
                 // console.log(
                 //   'formSubmission:',
                 //   JSON.stringify(formSubmission, null, 2)
@@ -156,6 +160,7 @@ const FormSubmission = props => {
                   });
                 }
                 setSubmitting(false);
+                setTimeout(() => navigate('/#form-search'), 1500);
               }}
             >
               <Form autoComplete="off">

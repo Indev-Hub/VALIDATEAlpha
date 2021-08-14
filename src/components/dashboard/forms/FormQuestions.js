@@ -14,7 +14,7 @@ import { Close, DeleteForever } from '@material-ui/icons';
 import PropTypes from 'prop-types';
 import { Plus } from '../../../icons';
 import Controls from '../../form/controls/_controls';
-import UploadMultiplePreview from '../../test/UploadMultiplePreview';
+import UploadMultiplePreview from './UploadMultiplePreview';
 
 // VALIDATION QUESTIONS SECTION OF FormCreate
 
@@ -25,8 +25,8 @@ const INPUT_CONTROLS = [
   'Radio Group',
   'Radio Images',
   'Rating',
-  'Switch',
-  'Text Input',
+  // 'Switch',
+  // 'Text Input',
 ];
 
 const FormQuestions = props => {

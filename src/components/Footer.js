@@ -17,7 +17,7 @@ import Logo from '../images/IconBlack.png';
 const Footer = (props) => (
   <Box
     sx={{
-      backgroundColor: 'background.black'
+      backgroundColor: 'background.dark'
     }}
     {...props}
   >
