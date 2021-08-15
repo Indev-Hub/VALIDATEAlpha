@@ -13,6 +13,7 @@ type Company {
   name: String!
   userID: ID!
   manager: User
+  employees(filter: ModelUserFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelUserConnection
   forms(filter: ModelFormFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelFormConnection
   description: String
   tags: AWSJSON
@@ -23,7 +24,7 @@ type Company {
 type Form {
   id: ID!
   companyID: ID!
-  title: String
+  title: String!
   description: String
   isPrivate: Boolean
   company: Company
@@ -186,6 +187,7 @@ input CreateUserInput {
   username: String!
   email: String
   userDemographicsId: ID
+  companyEmployeesId: ID
 }
 
 input UpdateUserInput {
@@ -193,6 +195,7 @@ input UpdateUserInput {
   username: String
   email: String
   userDemographicsId: ID
+  companyEmployeesId: ID
 }
 
 input DeleteUserInput {
@@ -312,7 +315,7 @@ input ModelFormFilterInput {
 input CreateFormInput {
   id: ID
   companyID: ID!
-  title: String
+  title: String!
   description: String
   isPrivate: Boolean
   tags: AWSJSON

@@ -111,7 +111,7 @@ const themesOptions = {
       background: {
         default: '#f4f5f7',
         paper: '#ffffff',
-        black: '#000000'
+        dark: '#000000'
       },
       error: {
         contrastText: '#ffffff',
@@ -156,7 +156,8 @@ const themesOptions = {
     palette: {
       background: {
         default: '#171c24',
-        paper: '#222b36'
+        paper: '#222b36',
+        dark: '#888'
       },
       divider: 'rgba(145, 158, 171, 0.24)',
       error: {
