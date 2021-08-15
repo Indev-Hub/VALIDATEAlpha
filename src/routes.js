@@ -55,6 +55,7 @@ const CustomerDetails = Loadable(lazy(() => import('./pages/dashboard/CustomerDe
 const CustomerEdit = Loadable(lazy(() => import('./pages/dashboard/CustomerEdit')));
 const CustomerList = Loadable(lazy(() => import('./pages/dashboard/CustomerList')));
 const CompanyCreate = Loadable(lazy(() => import('./pages/dashboard/CompanyCreate')));
+const CompanyPage = Loadable(lazy(() => import('./pages/dashboard/CompanyPage')));
 const Finance = Loadable(lazy(() => import('./pages/dashboard/Finance')));
 const InvoiceDetails = Loadable(lazy(() => import('./pages/dashboard/InvoiceDetails')));
 const InvoiceList = Loadable(lazy(() => import('./pages/dashboard/InvoiceList')));
@@ -66,7 +67,7 @@ const Overview = Loadable(lazy(() => import('./pages/dashboard/Overview')));
 const ProductCreate = Loadable(lazy(() => import('./pages/dashboard/ProductCreate')));
 const ProductList = Loadable(lazy(() => import('./pages/dashboard/ProductList')));
 const Profile = Loadable(lazy(() => import('./pages/dashboard/Profile')));
-const TestList = Loadable(lazy(() => import('./pages/dashboard/TestList')));
+const FormCollection = Loadable(lazy(() => import('./pages/dashboard/FormCollection')));
 const TestCreate = Loadable(lazy(() => import('./pages/dashboard/TestCreate')));
 // const Tests = Loadable(lazy(() => import('./pages/dashboard/Tests')));
 // const TestsAnalytics = Loadable(lazy(() => import('./pages/dashboard/TestsAnalytics')));
@@ -103,6 +104,7 @@ const SubmissionFormPage = Loadable(lazy(() => import('./pages/company/Submissio
 const FormSubmissionWidget = Loadable(lazy(() => import('./pages/widgets/FormSubmissionWidget')));
 const FormAnalytics = Loadable(lazy(() => import('./pages/dashboard/FormAnalytics')));
 const UploadMultiplePreview = Loadable(lazy(() => import('./components/dashboard/forms/UploadMultiplePreview')));
+const FormList = Loadable(lazy(() => import('./pages/dashboard/FormList')));
 
 const routes = [
   {
@@ -210,8 +212,8 @@ const routes = [
         element: <TestCreate />
       },
       {
-        path: 'test-list',
-        element: <TestList />
+        path: 'form-collection',
+        element: <FormCollection />
       },
       {
         path: 'validation',
@@ -220,10 +222,6 @@ const routes = [
       {
         path: 'test-create',
         element: <TestCreate />
-      },
-      {
-        path: 'test-list',
-        element: <TestList />
       },
       {
         path: 'calendar',
@@ -238,7 +236,11 @@ const routes = [
         children: [
           {
             path: '/',
-            element: <CustomerList />
+            element: <CompanyPage />
+          },
+          {
+            path: 'forms',
+            element: <FormList />
           },
           {
             path: 'new',

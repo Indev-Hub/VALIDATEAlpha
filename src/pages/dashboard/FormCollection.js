@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import {
+  Button,
   Box,
   Container,
   Grid,
@@ -16,7 +17,7 @@ import ControlPointDuplicateIcon
   from '@material-ui/icons/ControlPointDuplicate';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import { API, graphqlOperation, Storage } from 'aws-amplify';
-import { listForms } from '../../graphql/queries';
+import { getUser, listForms } from '../../graphql/queries';
 import { deleteForm } from '../../graphql/mutations';
 import useAuth from '../../hooks/useAuth';
 import ConfirmDialog from '../../components/form/ConfirmDialog';
@@ -25,7 +26,6 @@ import FormSubmission from '../../components/form/FormSubmission';
 import Notification from '../../components/form/Notification';
 import FormCreate from '../../components/dashboard/forms/FormCreate';
 import useSettings from '../../hooks/useSettings';
-
 import FormSubmissionsList from '../../components/form/FormSubmissionsList';
 
 // Position 'delete' and 'duplicate' buttons
@@ -43,7 +43,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const TestList = () => {
+const FormCollection = () => {
   const classes = useStyles();
   const { settings } = useSettings();
   const { user } = useAuth();
@@ -63,9 +63,10 @@ const TestList = () => {
     subtitle: ''
   })
 
-  // Fetch forms list on initial render
+  // Fetch forms list and user record from DB on initial render
   useEffect(() => {
     fetchForms();
+    fetchUserData();
   }, []);
 
   const fetchForms = async () => {
@@ -131,6 +132,36 @@ const TestList = () => {
     setDuplicateForm(false);
   }
 
+  // Get user data from DynamoDB to access associated company info
+  const [userData, setUserData] = useState(null);
+  const fetchUserData = async () => {
+    try {
+      const fetchedUserData = await API.graphql({
+        query: getUser,
+        variables: { id: user.id }
+      });
+      console.log("FormCollection#fetchedUserData", fetchedUserData);
+      setUserData(fetchedUserData);
+      console.log("FormCollection#userData", userData);
+    } catch (error) {
+      console.log('error on fetching user', error);
+    }
+  }
+
+  const getUserCompanyIds = () => {
+    // If Else statement to prevent error on initial load when userData has not been set yet
+    if (userData !== null) {
+      const companies = userData.data.getUser.companies.items;
+      let companyIds = [];
+      companies.forEach(company => {
+        companyIds.push(company.id)
+      })
+      return companyIds;
+    } else {
+      return console.log("User data is not set yet")
+    }
+  }
+
   if (duplicateForm) {
     // Show FormCreate if duplicating from an existing form
     return (
@@ -185,8 +216,9 @@ const TestList = () => {
         >
           {
             forms.map((form, idx) => {
-              console.log('user companies', user.companies)
-              if (form.companyID === user.id) { // display only forms created by user (update email to companyID once that association to user is made)
+              console.log('FormCollection#user', user);
+              console.log('user companies', user.companies);
+              if (getUserCompanyIds().includes(form.companyID)) {
                 return (
                   <Paper
                     variant="outlined"
@@ -218,7 +250,7 @@ const TestList = () => {
                                 cursor: 'pointer',
                               }
                             }}
-                            // onClick={() => setSelectedForm(form)}
+                          // onClick={() => setSelectedForm(form)}
                           >
                             {form.title}
                           </Typography>
@@ -289,4 +321,4 @@ const TestList = () => {
   };
 };
 
-export default TestList;
+export default FormCollection;

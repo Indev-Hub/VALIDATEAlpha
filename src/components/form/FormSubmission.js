@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { API, graphqlOperation } from 'aws-amplify';
 import { createFormSubmission } from '../../graphql/mutations';
@@ -13,7 +13,7 @@ const FormSubmission = props => {
   const navigate = useNavigate();
 
   // Destructure formDesign (=FormCreate form object) and other props
-  const { formDesign, displaySubmitButton = true } = props;
+  const { formDesign, userData, displaySubmitButton = true } = props;
 
   // Form Design variables
   const marginUp = 2;
@@ -50,6 +50,19 @@ const FormSubmission = props => {
     console.log('Random Array Sorting:', randoSort);
     return randoSort;
   }
+
+  // Match selected Company ID with the correct name
+  const [compName, setCompName] = useState('');
+
+  useEffect(() => {
+    companyName();
+  }, [formDesign])
+
+  const companyName = () => {
+    const matchName = userData.companies.items.filter(item => formDesign.companyID.includes(item.id));
+    setCompName(matchName[0].name);
+  }
+  console.log('FORM DESIGN:', formDesign.companyID, 'COMP NAME:', compName)
 
   // Create initial field values (answer types) for Formik
   const initialValues = {};
@@ -103,10 +116,8 @@ const FormSubmission = props => {
             }}
           >
             <Typography variant="h4">{formDesign.title}</Typography>
-            <Typography>
-              {formDesign.company.name}
-            </Typography>
-            <Typography>{formDesign.description}</Typography>
+            <Typography>{compName}</Typography>
+            <Typography pt={2}>{formDesign.description}</Typography>
           </Card>
         </Grid>
         <Grid item xs={12} md={8}>

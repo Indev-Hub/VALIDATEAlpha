@@ -126,6 +126,10 @@ const themesOptions = {
         contrastText: '#ffffff',
         main: '#4caf50'
       },
+      standard: {
+        primary: '#f50057',
+        secondary: '#000000'
+      },
       text: {
         primary: '#172b4d',
         secondary: '#6b778c',
