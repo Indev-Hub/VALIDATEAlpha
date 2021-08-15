@@ -204,6 +204,7 @@ const FormCreate = props => {
             <FormSubmission
               formDesign={formPreview}
               displaySubmitButton={false}
+              userData={userData}
             />
           </Box>
         </Paper>
