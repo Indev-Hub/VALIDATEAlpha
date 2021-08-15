@@ -141,8 +141,7 @@ const CompanyCreateWizard = (props) => {
                     color="textSecondary"
                     variant="subtitle1"
                   >
-                    Donec ut augue sed nisi ullamcorper posuere
-                    sit amet eu mauris. Ut eget mauris scelerisque.
+                    We just need some basic information to add your company. Don't worry, you can always edit this information later on, too. 
                   </Typography>
                 </Box>
                 <Box

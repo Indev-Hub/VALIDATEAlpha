@@ -17,7 +17,7 @@ const CompanyCreate = () => {
   return (
     <>
       <Helmet>
-        <title>Dashboard: Project Create | VALIDATE</title>
+        <title>Dashboard: Create Company | VALIDATE</title>
       </Helmet>
       <Box
         sx={{
@@ -58,6 +58,12 @@ const CompanyCreate = () => {
                   variant="subtitle2"
                 >
                   Company
+                </Typography>
+                <Typography
+                  color="textSecondary"
+                  variant="subtitle2"
+                >
+                  Create Company
                 </Typography>
               </Breadcrumbs>
             </Grid>

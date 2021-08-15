@@ -85,8 +85,8 @@ const CompanyDetailsForm = (props) => {
               color="textSecondary"
               variant="body1"
             >
-              Proin tincidunt lacus sed ante efficitur efficitur.
-              Quisque aliquam fringilla velit sit amet euismod.
+              We just need some basic information to add your company. 
+              Don't worry, you can always edit this information later on, too. 
             </Typography>
             <Box sx={{ mt: 2 }}>
               <TextField

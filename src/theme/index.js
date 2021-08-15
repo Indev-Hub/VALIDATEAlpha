@@ -74,6 +74,16 @@ const baseOptions = {
       fontWeight: 600,
       fontSize: '1rem'
     },
+    h7: {
+      fontWeight: 600,
+      fontSize: '.85rem',
+      fontFamily: 'Montserrat'
+    },
+    h8: {
+      fontWeight: 600,
+      fontSize: '.7rem',
+      fontFamily: 'Montserrat'
+    },
     overline: {
       fontWeight: 600
     }
@@ -115,6 +125,10 @@ const themesOptions = {
       success: {
         contrastText: '#ffffff',
         main: '#4caf50'
+      },
+      standard: {
+        primary: '#f50057',
+        secondary: '#000000'
       },
       text: {
         primary: '#172b4d',

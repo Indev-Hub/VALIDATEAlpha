@@ -55,6 +55,7 @@ const CustomerDetails = Loadable(lazy(() => import('./pages/dashboard/CustomerDe
 const CustomerEdit = Loadable(lazy(() => import('./pages/dashboard/CustomerEdit')));
 const CustomerList = Loadable(lazy(() => import('./pages/dashboard/CustomerList')));
 const CompanyCreate = Loadable(lazy(() => import('./pages/dashboard/CompanyCreate')));
+const CompanyPage = Loadable(lazy(() => import('./pages/dashboard/CompanyPage')));
 const Finance = Loadable(lazy(() => import('./pages/dashboard/Finance')));
 const InvoiceDetails = Loadable(lazy(() => import('./pages/dashboard/InvoiceDetails')));
 const InvoiceList = Loadable(lazy(() => import('./pages/dashboard/InvoiceList')));
@@ -103,6 +104,7 @@ const SubmissionFormPage = Loadable(lazy(() => import('./pages/company/Submissio
 const FormSubmissionWidget = Loadable(lazy(() => import('./pages/widgets/FormSubmissionWidget')));
 const FormAnalytics = Loadable(lazy(() => import('./pages/dashboard/FormAnalytics')));
 const UploadMultiplePreview = Loadable(lazy(() => import('./components/dashboard/forms/UploadMultiplePreview')));
+const FormList = Loadable(lazy(() => import('./pages/dashboard/FormList')));
 
 const routes = [
   {
@@ -234,7 +236,11 @@ const routes = [
         children: [
           {
             path: '/',
-            element: <CustomerList />
+            element: <CompanyPage />
+          },
+          {
+            path: 'forms',
+            element: <FormList />
           },
           {
             path: 'new',

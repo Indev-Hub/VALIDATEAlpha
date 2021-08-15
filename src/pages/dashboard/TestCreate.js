@@ -40,7 +40,7 @@ const TestCreate = () => {
                 color="textPrimary"
                 variant="h5"
               >
-                Create a new validation
+                Create a new validation form
               </Typography>
               <Breadcrumbs
                 aria-label="breadcrumb"
@@ -78,7 +78,7 @@ const TestCreate = () => {
                   component={RouterLink}
                   startIcon={<ArrowLeftIcon fontSize="small" />}
                   sx={{ mt: 1 }}
-                  to="/dashboard/products"
+                  to="/dashboard/company/forms"
                   variant="outlined"
                 >
                   Cancel

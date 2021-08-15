@@ -26,7 +26,6 @@ import FormSubmission from '../../components/form/FormSubmission';
 import Notification from '../../components/form/Notification';
 import FormCreate from '../../components/dashboard/forms/FormCreate';
 import useSettings from '../../hooks/useSettings';
-
 import FormSubmissionsList from '../../components/form/FormSubmissionsList';
 
 // Position 'delete' and 'duplicate' buttons
@@ -150,12 +149,17 @@ const FormCollection = () => {
   }
 
   const getUserCompanyIds = () => {
-    const companies = userData.data.getUser.companies.items;
-    let companyIds = [];
-    companies.forEach(company => {
-      companyIds.push(company.id)
-    })
-    return companyIds;
+    // If Else statement to prevent error on initial load when userData has not been set yet
+    if (userData !== null) {
+      const companies = userData.data.getUser.companies.items;
+      let companyIds = [];
+      companies.forEach(company => {
+        companyIds.push(company.id)
+      })
+      return companyIds;
+    } else {
+      return console.log("User data is not set yet")
+    }
   }
 
   if (duplicateForm) {
