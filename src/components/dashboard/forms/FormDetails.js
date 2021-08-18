@@ -163,6 +163,7 @@ const FormDetails = props => {
               name="companyID"
               value={detailsState.companyID}
               onChange={handleDetailsInput}
+              required
             >
               { userData ? (
                 userData.companies.items.map(company => (

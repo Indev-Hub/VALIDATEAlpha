@@ -20,6 +20,7 @@ type Company @model {
 type Form @model @key(name: "byCompany", fields: ["companyID"]) {
   id: ID!
   companyID: ID!
+  companyName: String!
   title: String!
   description: String
   isPrivate: Boolean

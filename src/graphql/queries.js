@@ -135,6 +135,7 @@ export const getCompany = /* GraphQL */ `
         items {
           id
           companyID
+          companyName
           title
           description
           isPrivate
@@ -190,6 +191,7 @@ export const getForm = /* GraphQL */ `
     getForm(id: $id) {
       id
       companyID
+      companyName
       title
       description
       isPrivate
@@ -232,6 +234,7 @@ export const listForms = /* GraphQL */ `
       items {
         id
         companyID
+        companyName
         title
         description
         isPrivate
@@ -261,6 +264,7 @@ export const getFormSubmission = /* GraphQL */ `
       form {
         id
         companyID
+        companyName
         title
         description
         isPrivate
@@ -297,6 +301,7 @@ export const listFormSubmissions = /* GraphQL */ `
         form {
           id
           companyID
+          companyName
           title
           description
           isPrivate

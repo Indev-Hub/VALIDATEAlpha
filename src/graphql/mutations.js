@@ -192,6 +192,7 @@ export const createCompany = /* GraphQL */ `
         items {
           id
           companyID
+          companyName
           title
           description
           isPrivate
@@ -262,6 +263,7 @@ export const updateCompany = /* GraphQL */ `
         items {
           id
           companyID
+          companyName
           title
           description
           isPrivate
@@ -332,6 +334,7 @@ export const deleteCompany = /* GraphQL */ `
         items {
           id
           companyID
+          companyName
           title
           description
           isPrivate
@@ -357,6 +360,7 @@ export const createForm = /* GraphQL */ `
     createForm(input: $input, condition: $condition) {
       id
       companyID
+      companyName
       title
       description
       isPrivate
@@ -397,6 +401,7 @@ export const updateForm = /* GraphQL */ `
     updateForm(input: $input, condition: $condition) {
       id
       companyID
+      companyName
       title
       description
       isPrivate
@@ -437,6 +442,7 @@ export const deleteForm = /* GraphQL */ `
     deleteForm(input: $input, condition: $condition) {
       id
       companyID
+      companyName
       title
       description
       isPrivate
@@ -480,6 +486,7 @@ export const createFormSubmission = /* GraphQL */ `
       form {
         id
         companyID
+        companyName
         title
         description
         isPrivate
@@ -514,6 +521,7 @@ export const updateFormSubmission = /* GraphQL */ `
       form {
         id
         companyID
+        companyName
         title
         description
         isPrivate
@@ -548,6 +556,7 @@ export const deleteFormSubmission = /* GraphQL */ `
       form {
         id
         companyID
+        companyName
         title
         description
         isPrivate
