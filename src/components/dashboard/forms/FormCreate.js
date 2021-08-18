@@ -98,7 +98,8 @@ const FormCreate = props => {
     // The input data to be sent in our createForm request 
     const formDesignDataSet = {
       id: formId,
-      companyID: companyID, // to filter list; change to user.company once a companyID association has been made with user
+      companyID: companyID,
+      companyName: getCompanyName(),
       title: title,
       description: description,
       isPrivate: isPrivate,
@@ -132,14 +133,21 @@ const FormCreate = props => {
     console.log(
       'FormCreate#uploadForm', JSON.stringify(formDesignDataSet, null, 2)
     );
-    
+
     try {
       await API.graphql(graphqlOperation(
         createForm, { input: formDesignDataSet }
       ));
+      setNotify({
+        isOpen: true,
+        message: `Submitted Successfully`,
+        type: 'success'
+      });
       // Refresh if submitted from TestList page (i.e., starting from duplicate)
       // or redirect to TestList page if submitted from TestCreate route
-      selectedForm ? handleListRefresh() : navigate("/dashboard/form-collection");
+      selectedForm ?
+        setTimeout(() => handleListRefresh(), 1200)
+        : setTimeout(() => navigate("/dashboard/form-collection"), 1200);
     } catch (error) {
       console.log('error uploading form', error);
       setNotify({
@@ -174,7 +182,11 @@ const FormCreate = props => {
       console.log('error on fetching user table', error);
     }
   };
-  
+
+  const getCompanyName = () => {
+    const matchName = userData.companies.items.filter(item => detailsState.companyID.includes(item.id));
+    return matchName[0].name;
+  }
 
   return (
     <React.Fragment>

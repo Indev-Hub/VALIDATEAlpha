@@ -24,6 +24,7 @@ type Company {
 type Form {
   id: ID!
   companyID: ID!
+  companyName: String!
   title: String!
   description: String
   isPrivate: Boolean
@@ -302,6 +303,7 @@ type ModelFormConnection {
 input ModelFormFilterInput {
   id: ModelIDInput
   companyID: ModelIDInput
+  companyName: ModelStringInput
   title: ModelStringInput
   description: ModelStringInput
   isPrivate: ModelBooleanInput
@@ -315,6 +317,7 @@ input ModelFormFilterInput {
 input CreateFormInput {
   id: ID
   companyID: ID!
+  companyName: String!
   title: String!
   description: String
   isPrivate: Boolean
@@ -325,6 +328,7 @@ input CreateFormInput {
 input UpdateFormInput {
   id: ID!
   companyID: ID
+  companyName: String
   title: String
   description: String
   isPrivate: Boolean
@@ -338,6 +342,7 @@ input DeleteFormInput {
 
 input ModelFormConditionInput {
   companyID: ModelIDInput
+  companyName: ModelStringInput
   title: ModelStringInput
   description: ModelStringInput
   isPrivate: ModelBooleanInput

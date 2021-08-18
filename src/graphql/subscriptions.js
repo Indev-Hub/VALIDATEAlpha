@@ -180,6 +180,7 @@ export const onCreateCompany = /* GraphQL */ `
         items {
           id
           companyID
+          companyName
           title
           description
           isPrivate
@@ -247,6 +248,7 @@ export const onUpdateCompany = /* GraphQL */ `
         items {
           id
           companyID
+          companyName
           title
           description
           isPrivate
@@ -314,6 +316,7 @@ export const onDeleteCompany = /* GraphQL */ `
         items {
           id
           companyID
+          companyName
           title
           description
           isPrivate
@@ -336,6 +339,7 @@ export const onCreateForm = /* GraphQL */ `
     onCreateForm {
       id
       companyID
+      companyName
       title
       description
       isPrivate
@@ -373,6 +377,7 @@ export const onUpdateForm = /* GraphQL */ `
     onUpdateForm {
       id
       companyID
+      companyName
       title
       description
       isPrivate
@@ -410,6 +415,7 @@ export const onDeleteForm = /* GraphQL */ `
     onDeleteForm {
       id
       companyID
+      companyName
       title
       description
       isPrivate
@@ -450,6 +456,7 @@ export const onCreateFormSubmission = /* GraphQL */ `
       form {
         id
         companyID
+        companyName
         title
         description
         isPrivate
@@ -481,6 +488,7 @@ export const onUpdateFormSubmission = /* GraphQL */ `
       form {
         id
         companyID
+        companyName
         title
         description
         isPrivate
@@ -512,6 +520,7 @@ export const onDeleteFormSubmission = /* GraphQL */ `
       form {
         id
         companyID
+        companyName
         title
         description
         isPrivate

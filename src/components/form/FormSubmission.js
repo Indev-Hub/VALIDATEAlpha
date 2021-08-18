@@ -51,19 +51,6 @@ const FormSubmission = props => {
     return randoSort;
   }
 
-  // Match selected Company ID with the correct name
-  const [compName, setCompName] = useState('');
-
-  useEffect(() => {
-    companyName();
-  }, [formDesign])
-
-  const companyName = () => {
-    const matchName = userData.companies.items.filter(item => formDesign.companyID.includes(item.id));
-    setCompName(matchName[0].name);
-  }
-  console.log('FORM DESIGN:', formDesign.companyID, 'COMP NAME:', compName)
-
   // Create initial field values (answer types) for Formik
   const initialValues = {};
   questions.forEach(input => {
@@ -116,7 +103,7 @@ const FormSubmission = props => {
             }}
           >
             <Typography variant="h4">{formDesign.title}</Typography>
-            <Typography>{compName}</Typography>
+            <Typography>{formDesign.companyName}</Typography>
             <Typography pt={2}>{formDesign.description}</Typography>
           </Card>
         </Grid>
@@ -162,6 +149,7 @@ const FormSubmission = props => {
                     message: `Submitted Successfully`,
                     type: 'success'
                   });
+                  setTimeout(() => navigate('/#form-search'), 1200);
                 } catch (error) {
                   console.log('error submitting form', error);
                   setNotify({
@@ -171,7 +159,6 @@ const FormSubmission = props => {
                   });
                 }
                 setSubmitting(false);
-                setTimeout(() => navigate('/#form-search'), 1500);
               }}
             >
               <Form autoComplete="off">
