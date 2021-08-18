@@ -54,6 +54,8 @@ const Chat = Loadable(lazy(() => import('./pages/dashboard/Chat')));
 const CustomerDetails = Loadable(lazy(() => import('./pages/dashboard/CustomerDetails')));
 const CustomerEdit = Loadable(lazy(() => import('./pages/dashboard/CustomerEdit')));
 const CustomerList = Loadable(lazy(() => import('./pages/dashboard/CustomerList')));
+const CompanyCreate = Loadable(lazy(() => import('./pages/dashboard/CompanyCreate')));
+const CompanyPage = Loadable(lazy(() => import('./pages/dashboard/CompanyPage')));
 const Finance = Loadable(lazy(() => import('./pages/dashboard/Finance')));
 const InvoiceDetails = Loadable(lazy(() => import('./pages/dashboard/InvoiceDetails')));
 const InvoiceList = Loadable(lazy(() => import('./pages/dashboard/InvoiceList')));
@@ -64,7 +66,8 @@ const OrderList = Loadable(lazy(() => import('./pages/dashboard/OrderList')));
 const Overview = Loadable(lazy(() => import('./pages/dashboard/Overview')));
 const ProductCreate = Loadable(lazy(() => import('./pages/dashboard/ProductCreate')));
 const ProductList = Loadable(lazy(() => import('./pages/dashboard/ProductList')));
-const TestList = Loadable(lazy(() => import('./pages/dashboard/TestList')));
+const Profile = Loadable(lazy(() => import('./pages/dashboard/Profile')));
+const FormCollection = Loadable(lazy(() => import('./pages/dashboard/FormCollection')));
 const TestCreate = Loadable(lazy(() => import('./pages/dashboard/TestCreate')));
 // const Tests = Loadable(lazy(() => import('./pages/dashboard/Tests')));
 // const TestsAnalytics = Loadable(lazy(() => import('./pages/dashboard/TestsAnalytics')));
@@ -98,6 +101,10 @@ const Contact = Loadable(lazy(() => import('./pages/Contact')));
 const Home = Loadable(lazy(() => import('./pages/Home')));
 const Pricing = Loadable(lazy(() => import('./pages/Pricing')));
 const SubmissionFormPage = Loadable(lazy(() => import('./pages/company/SubmissionFormPage')));
+const FormSubmissionWidget = Loadable(lazy(() => import('./pages/widgets/FormSubmissionWidget')));
+const FormAnalytics = Loadable(lazy(() => import('./pages/dashboard/FormAnalytics')));
+const UploadMultiplePreview = Loadable(lazy(() => import('./components/dashboard/forms/UploadMultiplePreview')));
+const FormList = Loadable(lazy(() => import('./pages/dashboard/FormList')));
 
 const routes = [
   {
@@ -164,6 +171,19 @@ const routes = [
     element: <Contact />
   },
   {
+    path: 's3-upload',
+    element: <UploadMultiplePreview />
+  },
+  {
+    path: 'widget',
+    children: [
+      {
+        path: 'submissions/:formId',
+        element: <FormSubmissionWidget />
+      }
+    ]
+  },
+  {
     path: 'dashboard',
     element: (
       <AuthGuard>
@@ -184,12 +204,16 @@ const routes = [
         element: <Analytics />
       },
       {
+        path: 'form-analytics/:submissionId',
+        element: <FormAnalytics />
+      },
+      {
         path: 'test-create',
         element: <TestCreate />
       },
       {
-        path: 'test-list',
-        element: <TestList />
+        path: 'form-collection',
+        element: <FormCollection />
       },
       {
         path: 'validation',
@@ -200,12 +224,37 @@ const routes = [
         element: <TestCreate />
       },
       {
-        path: 'test-list',
-        element: <TestList />
-      },
-      {
         path: 'calendar',
         element: <Calendar />
+      },
+      {
+        path: 'profile',
+        element: <Profile />
+      },
+      {
+        path: 'company',
+        children: [
+          {
+            path: '/',
+            element: <CompanyPage />
+          },
+          {
+            path: 'forms',
+            element: <FormList />
+          },
+          {
+            path: 'new',
+            element: <CompanyCreate />
+          },
+          {
+            path: ':customerId',
+            element: <CustomerDetails />
+          },
+          {
+            path: ':customerId/edit',
+            element: <CustomerEdit />
+          }
+        ]
       },
       {
         path: 'chat',

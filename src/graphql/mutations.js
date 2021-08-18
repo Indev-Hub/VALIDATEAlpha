@@ -15,10 +15,32 @@ export const createUser = /* GraphQL */ `
           id
           name
           userID
+          description
+          tags
           createdAt
           updatedAt
         }
         nextToken
+      }
+      demographics {
+        id
+        userID
+        firstName
+        lastName
+        birthday
+        sex
+        gender
+        household
+        maritalStatus
+        city
+        state
+        country
+        income
+        homeowner
+        education
+        profession
+        createdAt
+        updatedAt
       }
       createdAt
       updatedAt
@@ -39,10 +61,32 @@ export const updateUser = /* GraphQL */ `
           id
           name
           userID
+          description
+          tags
           createdAt
           updatedAt
         }
         nextToken
+      }
+      demographics {
+        id
+        userID
+        firstName
+        lastName
+        birthday
+        sex
+        gender
+        household
+        maritalStatus
+        city
+        state
+        country
+        income
+        homeowner
+        education
+        profession
+        createdAt
+        updatedAt
       }
       createdAt
       updatedAt
@@ -63,10 +107,32 @@ export const deleteUser = /* GraphQL */ `
           id
           name
           userID
+          description
+          tags
           createdAt
           updatedAt
         }
         nextToken
+      }
+      demographics {
+        id
+        userID
+        firstName
+        lastName
+        birthday
+        sex
+        gender
+        household
+        maritalStatus
+        city
+        state
+        country
+        income
+        homeowner
+        education
+        profession
+        createdAt
+        updatedAt
       }
       createdAt
       updatedAt
@@ -82,28 +148,63 @@ export const createCompany = /* GraphQL */ `
       id
       name
       userID
-      user {
+      manager {
         id
         username
         email
         companies {
           nextToken
         }
+        demographics {
+          id
+          userID
+          firstName
+          lastName
+          birthday
+          sex
+          gender
+          household
+          maritalStatus
+          city
+          state
+          country
+          income
+          homeowner
+          education
+          profession
+          createdAt
+          updatedAt
+        }
         createdAt
         updatedAt
+      }
+      employees {
+        items {
+          id
+          username
+          email
+          createdAt
+          updatedAt
+        }
+        nextToken
       }
       forms {
         items {
           id
           companyID
+          companyName
           title
           description
+          isPrivate
+          tags
           validations
           createdAt
           updatedAt
         }
         nextToken
       }
+      description
+      tags
       createdAt
       updatedAt
     }
@@ -118,28 +219,63 @@ export const updateCompany = /* GraphQL */ `
       id
       name
       userID
-      user {
+      manager {
         id
         username
         email
         companies {
           nextToken
         }
+        demographics {
+          id
+          userID
+          firstName
+          lastName
+          birthday
+          sex
+          gender
+          household
+          maritalStatus
+          city
+          state
+          country
+          income
+          homeowner
+          education
+          profession
+          createdAt
+          updatedAt
+        }
         createdAt
         updatedAt
+      }
+      employees {
+        items {
+          id
+          username
+          email
+          createdAt
+          updatedAt
+        }
+        nextToken
       }
       forms {
         items {
           id
           companyID
+          companyName
           title
           description
+          isPrivate
+          tags
           validations
           createdAt
           updatedAt
         }
         nextToken
       }
+      description
+      tags
       createdAt
       updatedAt
     }
@@ -154,28 +290,63 @@ export const deleteCompany = /* GraphQL */ `
       id
       name
       userID
-      user {
+      manager {
         id
         username
         email
         companies {
           nextToken
         }
+        demographics {
+          id
+          userID
+          firstName
+          lastName
+          birthday
+          sex
+          gender
+          household
+          maritalStatus
+          city
+          state
+          country
+          income
+          homeowner
+          education
+          profession
+          createdAt
+          updatedAt
+        }
         createdAt
         updatedAt
+      }
+      employees {
+        items {
+          id
+          username
+          email
+          createdAt
+          updatedAt
+        }
+        nextToken
       }
       forms {
         items {
           id
           companyID
+          companyName
           title
           description
+          isPrivate
+          tags
           validations
           createdAt
           updatedAt
         }
         nextToken
       }
+      description
+      tags
       createdAt
       updatedAt
     }
@@ -189,25 +360,33 @@ export const createForm = /* GraphQL */ `
     createForm(input: $input, condition: $condition) {
       id
       companyID
+      companyName
       title
       description
+      isPrivate
       company {
         id
         name
         userID
-        user {
+        manager {
           id
           username
           email
           createdAt
           updatedAt
         }
+        employees {
+          nextToken
+        }
         forms {
           nextToken
         }
+        description
+        tags
         createdAt
         updatedAt
       }
+      tags
       validations
       createdAt
       updatedAt
@@ -222,25 +401,33 @@ export const updateForm = /* GraphQL */ `
     updateForm(input: $input, condition: $condition) {
       id
       companyID
+      companyName
       title
       description
+      isPrivate
       company {
         id
         name
         userID
-        user {
+        manager {
           id
           username
           email
           createdAt
           updatedAt
         }
+        employees {
+          nextToken
+        }
         forms {
           nextToken
         }
+        description
+        tags
         createdAt
         updatedAt
       }
+      tags
       validations
       createdAt
       updatedAt
@@ -255,25 +442,33 @@ export const deleteForm = /* GraphQL */ `
     deleteForm(input: $input, condition: $condition) {
       id
       companyID
+      companyName
       title
       description
+      isPrivate
       company {
         id
         name
         userID
-        user {
+        manager {
           id
           username
           email
           createdAt
           updatedAt
         }
+        employees {
+          nextToken
+        }
         forms {
           nextToken
         }
+        description
+        tags
         createdAt
         updatedAt
       }
+      tags
       validations
       createdAt
       updatedAt
@@ -291,15 +486,20 @@ export const createFormSubmission = /* GraphQL */ `
       form {
         id
         companyID
+        companyName
         title
         description
+        isPrivate
         company {
           id
           name
           userID
+          description
+          tags
           createdAt
           updatedAt
         }
+        tags
         validations
         createdAt
         updatedAt
@@ -321,15 +521,20 @@ export const updateFormSubmission = /* GraphQL */ `
       form {
         id
         companyID
+        companyName
         title
         description
+        isPrivate
         company {
           id
           name
           userID
+          description
+          tags
           createdAt
           updatedAt
         }
+        tags
         validations
         createdAt
         updatedAt
@@ -351,20 +556,106 @@ export const deleteFormSubmission = /* GraphQL */ `
       form {
         id
         companyID
+        companyName
         title
         description
+        isPrivate
         company {
           id
           name
           userID
+          description
+          tags
           createdAt
           updatedAt
         }
+        tags
         validations
         createdAt
         updatedAt
       }
       answers
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createDemographics = /* GraphQL */ `
+  mutation CreateDemographics(
+    $input: CreateDemographicsInput!
+    $condition: ModelDemographicsConditionInput
+  ) {
+    createDemographics(input: $input, condition: $condition) {
+      id
+      userID
+      firstName
+      lastName
+      birthday
+      sex
+      gender
+      household
+      maritalStatus
+      city
+      state
+      country
+      income
+      homeowner
+      education
+      profession
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateDemographics = /* GraphQL */ `
+  mutation UpdateDemographics(
+    $input: UpdateDemographicsInput!
+    $condition: ModelDemographicsConditionInput
+  ) {
+    updateDemographics(input: $input, condition: $condition) {
+      id
+      userID
+      firstName
+      lastName
+      birthday
+      sex
+      gender
+      household
+      maritalStatus
+      city
+      state
+      country
+      income
+      homeowner
+      education
+      profession
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteDemographics = /* GraphQL */ `
+  mutation DeleteDemographics(
+    $input: DeleteDemographicsInput!
+    $condition: ModelDemographicsConditionInput
+  ) {
+    deleteDemographics(input: $input, condition: $condition) {
+      id
+      userID
+      firstName
+      lastName
+      birthday
+      sex
+      gender
+      household
+      maritalStatus
+      city
+      state
+      country
+      income
+      homeowner
+      education
+      profession
       createdAt
       updatedAt
     }

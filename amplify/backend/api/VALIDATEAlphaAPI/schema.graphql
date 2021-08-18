@@ -2,23 +2,30 @@ type User @model {
   id: ID!
   username: String!
   email: String
-  companies: [Company] @connection(keyName: "byUser", fields: ["id"])
+  companies: [Company] @connection(name: "userCompanies")
+  demographics: Demographics @connection
 }
 
-type Company @model @key(name: "byUser", fields: ["userID"]) {
+type Company @model {
   id: ID!
   name: String! 
   userID: ID!
-  user: User @connection(fields: ["userID"])
+  manager: User @connection(name: "userCompanies")
+  employees: [User] @connection
   forms: [Form] @connection(keyName: "byCompany", fields: ["id"])
+  description: String
+  tags: AWSJSON
 }
 
 type Form @model @key(name: "byCompany", fields: ["companyID"]) {
   id: ID!
   companyID: ID!
-  title: String
+  companyName: String!
+  title: String!
   description: String
+  isPrivate: Boolean
   company: Company @connection(fields: ["companyID"])
+  tags: AWSJSON
   validations: AWSJSON
 }
 
@@ -27,4 +34,23 @@ type FormSubmission @model @key(name: "byForm", fields: ["formID"]) {
   formID: ID!
   form: Form @connection(fields: ["formID"])
   answers: AWSJSON
+}
+
+type Demographics @model {
+  id: ID!
+  userID: ID!
+  firstName: String
+  lastName: String
+  birthday: String
+  sex: String
+  gender: String
+  household: String
+  maritalStatus: String
+  city: String
+  state: String
+  country: String
+  income: String
+  homeowner: String
+  education: String
+  profession: String
 }

@@ -77,7 +77,7 @@ export const AuthProvider = (props) => {
           payload: {
             isAuthenticated: true,
             user: {
-              id: user.sub,
+              id: user.attributes.sub,
               avatar: '/static/mock-images/avatars/avatar-jane_rotanson.png',
               email: user.attributes.email,
               name: user.username,

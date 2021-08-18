@@ -1,4 +1,7 @@
 const countries = [
+  { text: 'United States', value: 'US' },
+  { text: 'Mexico', value: 'MX' },
+  { text: 'Canada', value: 'CA' },
   { text: 'Afghanistan', value: 'AF' },
   { text: 'Åland Islands', value: 'AX' },
   { text: 'Albania', value: 'AL' },

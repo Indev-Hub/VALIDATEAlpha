@@ -59,6 +59,11 @@ const sections = [
         title: 'Account',
         path: '/dashboard/account',
         // icon: <UserIcon fontSize="small" />
+      },
+      {
+        title: 'Profile',
+        path: '/dashboard/profile',
+        // icon: <UserIcon fontSize="small" />
       }
     ]
   },
@@ -129,7 +134,24 @@ const sections = [
   //   ]
   // },
   {
+    title: 'Company',
     items: [
+      {
+        title: 'Company',
+        path: '/dashboard/company'
+        // icon: <Plus fontSize="small" />
+      },
+      {
+        title: 'Form Collection',
+        path: '/dashboard/company/forms',
+        // icon: <Archive fontSize="small" />
+      },
+      {
+        title: 'Add Form',
+        path: '/dashboard/test-create',
+        icon: <Plus fontSize="small" />
+      },
+
       {
         title: 'Validations',
         // icon: <Clipboard fontSize="small" />,
@@ -142,7 +164,7 @@ const sections = [
           },
           {
             title: 'Form Collection',
-            path: '/dashboard/test-list',
+            path: '/dashboard/form-collection',
             // icon: <Archive fontSize="small" />
           }
         ]
