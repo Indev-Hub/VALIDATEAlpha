@@ -1,17 +1,17 @@
 import React from 'react';
 import {
   Box,
-  Button,
   Card,
   Grid,
   IconButton,
   MenuItem,
   TextField,
-  Typography
+  Typography,
+  Checkbox,
+  FormControlLabel
 } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
 import PropTypes from 'prop-types';
-import { Plus } from '../../../icons';
 import Controls from '../../form/controls/_controls';
 
 // FORM DETAILS SECTION OF FormCreate.js
@@ -33,12 +33,7 @@ const FormDetails = props => {
   });
 
   // Add tag to form and add the new tag to detailsState array
-  const addTag = () => {
-    setDetailsState({
-      ...detailsState, // make copy
-      tags: [...detailsState.tags, '']
-    })
-  };
+  
 
   // Remove tag from mapped array
   const removeTag = (tagidx) => {
@@ -53,6 +48,11 @@ const FormDetails = props => {
     updatedState.tags[tagidx] = e.target.value;
     setDetailsState(updatedState);
   };
+
+  const handleCheckedChange = (e) => setDetailsState({
+    ...detailsState, // make copy
+    [e.target.name]: e.target.checked,
+  });
   
   // Render form details section of FormCreate.js
   return (
@@ -96,43 +96,28 @@ const FormDetails = props => {
                     <Box key={`tag-${tagidx}`} sx={{ my: 0 }}>
                       <Grid container display="flex" sx={{ pb: 1 }}>
                         <Grid item xs={8}>
-                          <Controls.TextField
+                          <FormControlLabel
+                          control={
+                          <Checkbox
                             label={`Tag ${tagidx + 1}`}
-                            type="text"
+                            // type="text"
                             name={`tag-${tagidx + 1}`}
                             data-idx={tagidx}
                             id={`${tagidx}`}
                             fullWidth
                             className="tag"
                             value={detailsState.tags[tagidx]}
-                            onChange={(e) => handleTagInput(tagidx, e)}
-                            fullWidth
+                            onChange={(e) => handleCheckedChange(e)}
                           />
-                        </Grid>
-                        <Grid item>
-                          <IconButton
-                            type="button"
-                            id={`${tagidx}`}
-                            onClick={() => removeTag(tagidx)}
-                          >
-                            <Close />
-                          </IconButton>
+                          }
+                          label='Logo'
+                          />
                         </Grid>
                       </Grid>
                     </Box>
                   );
                 })}
               </Grid>
-              <Button
-                type="button"
-                onClick={addTag}
-                variant="contained"
-                color="inherit"
-                sx={{ m: 1, pr: 3 }}
-                startIcon={<Plus />}
-              >
-                Add Tag
-              </Button>
             </Grid>
           </Grid>
         </Grid>

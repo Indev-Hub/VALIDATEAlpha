@@ -168,7 +168,7 @@ const FormCreate = props => {
   // Load User table data
   useEffect(() => {
     getUserTable();
-  }, [])
+  }, [getUserTable])
 
   // API call to get User table data
   const getUserTable = async () => {
@@ -184,8 +184,12 @@ const FormCreate = props => {
   };
 
   const getCompanyName = () => {
-    const matchName = userData.companies.items.filter(item => detailsState.companyID.includes(item.id));
-    return matchName[0].name;
+    if(userData.companyID !== null) {
+      const matchName = userData.companies.items.filter(item => detailsState.companyID.includes(item.id));
+      return matchName[0].name;
+    } else {
+      return "nothing Found"
+    }
   }
 
   return (
