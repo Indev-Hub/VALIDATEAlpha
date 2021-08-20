@@ -23,7 +23,7 @@ const INPUT_CONTROLS = [
   'Dropdown',
   'Number',
   'Radio Group',
-  'Radio Images',
+  'Images',
   'Rating',
   // 'Switch',
   // 'Text Input',
@@ -74,7 +74,7 @@ const FormQuestions = props => {
     setQuestionsState(updatedState);
   };
 
-  // Update answer type when selected
+  // Update random answer type when selected
   const handleRandomChange = (qstidx, e) => {
     const updatedState = [...questionsState]; // make copy
     updatedState[qstidx].randomize = e.target.checked;
@@ -213,6 +213,7 @@ const FormQuestions = props => {
                     value={questionsState[qstidx].type}
                     options={INPUT_CONTROLS}
                     onChange={(e) => handleSelectChange(qstidx, e)}
+                    
                   />
                   <FormControlLabel
                     control={<Switch onClick={() => toggleImages(qstidx)} name="useImages" />}
@@ -250,43 +251,58 @@ const FormQuestions = props => {
                     return (
                       <Box key={`input-${optidx}`} sx={{ my: 0 }}>
                         <Grid container display="flex" sx={{ pb: 1 }}>
-                          <Grid item xs>
-                            <Controls.TextField
-                              label={`Option ${optidx + 1}`}
-                              type="text"
-                              name={`option-${optidx + 1}`}
-                              placeholder={`Option ${optidx + 1} for Question #${qstidx + 1}`}
-                              data-idx={optidx}
-                              id={`${optidx}`}
-                              fullWidth
-                              className="option"
-                              value={questionsState[qstidx].options[optidx]}
-                              onChange={(e) => handleOptionInput(qstidx, optidx, e)}
-                            />
+                          <Grid item xs>                             
+                            {questionsState[qstidx].type !== 'Images' ?
+                              (
+                                <Controls.TextField
+                                  label={`Option ${optidx + 1}`}
+                                  type="text"
+                                  name={`option-${optidx + 1}`}
+                                  placeholder={`Option ${optidx + 1} for Question #${qstidx + 1}`}
+                                  data-idx={optidx}
+                                  id={`${optidx}`}
+                                  fullWidth
+                                  className="option"
+                                  value={questionsState[qstidx].options[optidx]}
+                                  onChange={(e) => handleOptionInput(qstidx, optidx, e)}
+                                />
+                              ) : ( 
+                              null 
+                              )
+                            }
                           </Grid>
                           <Grid item xs={2}>
-                            <IconButton
-                              type="button"
-                              onClick={() => removeOption(qstidx, optidx)}
-                              id={`${optidx}`}
-                            >
-                              <Close />
-                            </IconButton>
+                            {questionsState[qstidx].type !== 'Images' ?
+                                (
+                              <IconButton
+                                type="button"
+                                onClick={() => removeOption(qstidx, optidx)}
+                                id={`${optidx}`}
+                                >
+                                <Close />
+                              </IconButton>
+                              ) : (
+                                null
+                              )
+                            }
                           </Grid>
                         </Grid>
                       </Box>
                     );
                   })}
-                  <Button
-                    type="button"
-                    onClick={() => addOption(qstidx)}
-                    variant="contained"
-                    color="secondary"
-                    sx={{ m: 1, pr: 3 }}
-                    startIcon={<Plus />}
-                  >
-                    Add Option
-                  </Button>
+                  {questionsState[qstidx].type !== 'Images' ? (
+                    <Button
+                      type="button"
+                      onClick={() => addOption(qstidx)}
+                      variant="contained"
+                      color="secondary"
+                      sx={{ m: 1, pr: 3 }}
+                      startIcon={<Plus />}>
+                      Add Option
+                    </Button>
+                    ) : ( 
+                    null 
+                    )}
                 </Box>
               </Grid>
             </Grid>
