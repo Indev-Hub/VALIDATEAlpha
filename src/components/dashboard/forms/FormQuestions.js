@@ -246,63 +246,66 @@ const FormQuestions = props => {
                       null
                     )
                   }
-                  {/* Start mapping the validation answer options */}
-                  {questionsState[qstidx].options.map((_opt, optidx) => {
-                    return (
-                      <Box key={`input-${optidx}`} sx={{ my: 0 }}>
-                        <Grid container display="flex" sx={{ pb: 1 }}>
-                          <Grid item xs>                             
-                            {questionsState[qstidx].type !== 'Images' ?
-                              (
-                                <Controls.TextField
-                                  label={`Option ${optidx + 1}`}
-                                  type="text"
-                                  name={`option-${optidx + 1}`}
-                                  placeholder={`Option ${optidx + 1} for Question #${qstidx + 1}`}
-                                  data-idx={optidx}
-                                  id={`${optidx}`}
-                                  fullWidth
-                                  className="option"
-                                  value={questionsState[qstidx].options[optidx]}
-                                  onChange={(e) => handleOptionInput(qstidx, optidx, e)}
-                                />
-                              ) : ( 
-                              null 
-                              )
-                            }
-                          </Grid>
-                          <Grid item xs={2}>
-                            {questionsState[qstidx].type !== 'Images' ?
-                                (
-                              <IconButton
-                                type="button"
-                                onClick={() => removeOption(qstidx, optidx)}
-                                id={`${optidx}`}
-                                >
-                                <Close />
-                              </IconButton>
-                              ) : (
-                                null
-                              )
-                            }
-                          </Grid>
-                        </Grid>
-                      </Box>
-                    );
-                  })}
-                  {questionsState[qstidx].type !== 'Images' ? (
-                    <Button
-                      type="button"
-                      onClick={() => addOption(qstidx)}
-                      variant="contained"
-                      color="secondary"
-                      sx={{ m: 1, pr: 3 }}
-                      startIcon={<Plus />}>
-                      Add Option
-                    </Button>
+                  {/* Start mapping the validation answer options & alternate text and image upload */}
+                  {questionsState[qstidx].type !== 'Images' ?
+                    ( 
+                      <>
+                        {questionsState[qstidx].options.map((_opt, optidx) => {
+                          return (
+                            <Box key={`input-${optidx}`} sx={{ my: 0 }}>
+                              <Grid container display="flex" sx={{ pb: 1 }}>
+                                <Grid item xs>                             
+                                  <Controls.TextField
+                                    label={`Option ${optidx + 1}`}
+                                    type="text"
+                                    name={`option-${optidx + 1}`}
+                                    placeholder={`Option ${optidx + 1} for Question #${qstidx + 1}`}
+                                    data-idx={optidx}
+                                    id={`${optidx}`}
+                                    fullWidth
+                                    className="option"
+                                    value={questionsState[qstidx].options[optidx]}
+                                    onChange={(e) => handleOptionInput(qstidx, optidx, e)}
+                                  />
+                                </Grid>
+                                <Grid item xs={2}>
+                                  <IconButton
+                                    type="button"
+                                    onClick={() => removeOption(qstidx, optidx)}
+                                    id={`${optidx}`}
+                                    >
+                                    <Close />
+                                  </IconButton>
+                                </Grid>
+                              </Grid>
+                            </Box>
+                          );
+                        })}
+                        <Button
+                          type="button"
+                          onClick={() => addOption(qstidx)}
+                          variant="contained"
+                          color="secondary"
+                          sx={{ m: 1, pr: 3 }}
+                          startIcon={<Plus />}>
+                          Add Option
+                        </Button>
+                      </>
                     ) : ( 
-                    null 
-                    )}
+                      <Button
+                        control={
+                          <Switch 
+                          onClick={() => toggleImages(qstidx)}
+                          name="useImages" 
+                          class="btn btn-outline-success btn-block"
+                          type="submit"
+                          />
+                        }
+                      >
+                        Upload Photos
+                      </Button>
+                    )
+                  }
                 </Box>
               </Grid>
             </Grid>
