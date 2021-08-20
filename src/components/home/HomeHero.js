@@ -1,22 +1,16 @@
 /* eslint-disable */
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 // import { Link as RouterLink } from 'react-router-dom';
-import {
-  Box,
-  Button,
-  Container,
-  Link,
-  Typography
-} from '@material-ui/core';
-import { useTheme } from '@material-ui/core/styles';
-import Amplify, { API, graphqlOperation } from 'aws-amplify';
-import awsconfig from '../../aws-exports';
+import { Box, Button, Container, Link, Typography } from "@material-ui/core";
+import { useTheme } from "@material-ui/core/styles";
+import Amplify, { API, graphqlOperation } from "aws-amplify";
+import awsconfig from "../../aws-exports";
 // import CheckCircleIcon from '../../icons/CheckCircle';
 // import FormSelect from '../form/FormSelect';
 // import FormCheckbox from '../form/FormCheckbox';
-import Logo from '../../images/VALIDATE PunchOut.png';
-import HomeLanding from './HomeLanding';
-import { ArrowCircleDown } from '@material-ui/icons';
+import Logo from "../../images/VALIDATE PunchOut.png";
+import HomeLanding from "./HomeLanding";
+import { ArrowCircleDown } from "@material-ui/icons";
 // import CreateFormDesign from '../form/CreateFormDesign';
 // import UserList from '../user/UserList';
 // import SubmissionList from '../submissions/submissionList';
@@ -26,7 +20,7 @@ Amplify.configure(awsconfig);
 const HomeHero = (props) => {
   const theme = useTheme();
   const [isLoading, setIsLoading] = useState(true);
-  const [image, setImage] = useState('');
+  const [image, setImage] = useState("");
 
   const loops = [
     'url("https://media.giphy.com/media/3o84U78CXEB2opZd4I/giphy.gif")',
@@ -36,13 +30,15 @@ const HomeHero = (props) => {
     'url("https://media.giphy.com/media/3o7TKrOrms2QqxGchO/giphy.gif")',
     'url("https://media.giphy.com/media/3o6Ztgkkc0eeQUVt7y/giphy.gif")',
     'url("https://media.giphy.com/media/3oEduJkM0N7gYxZPBm/giphy.gif")',
-    'url("https://media.giphy.com/media/uhBRkVfDoKwRW/giphy.gif")'
+    'url("https://media.giphy.com/media/uhBRkVfDoKwRW/giphy.gif")',
   ];
   const loop = loops[Math.floor(Math.random() * loops.length)];
 
   useEffect(() => {
     (async () => {
-      const response = await fetch(`/static/home/hero_${theme.palette.mode}.png`);
+      const response = await fetch(
+        `/static/home/hero_${theme.palette.mode}.png`
+      );
       const blob = await response.blob();
 
       setImage(URL.createObjectURL(blob));
@@ -53,21 +49,21 @@ const HomeHero = (props) => {
   return (
     <Box
       sx={{
-        backgroundColor: 'black',
+        backgroundColor: "black",
         pt: 0,
-        overflow: 'hidden'
+        overflow: "hidden",
       }}
       {...props}
     >
       <Container
         maxWidth="false"
         sx={{
-          backgroundColor: 'black',
-          height: '100vh',
-          alignItems: 'center',
-          display: 'block',
-          flexDirection: 'column',
-          justifyContent: 'center'
+          backgroundColor: "black",
+          height: "100vh",
+          alignItems: "center",
+          display: "block",
+          flexDirection: "column",
+          justifyContent: "center",
           // px: {
           //   md: '130px !important'
           // }
@@ -76,26 +72,22 @@ const HomeHero = (props) => {
         <Box
           sx={{
             backgroundImage: loop,
-            backgroundColor: 'black',
-            alignItems: 'center',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            marginTop: '25vh'
+            backgroundColor: "black",
+            alignItems: "center",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            marginTop: "25vh",
+            border: "20px solid black",
           }}
         >
-          <img
-            src={Logo}
-            alt="Logo"
-            width="100%"
-            border="20"
-          />
+          <img src={Logo} alt="Logo" width="100%" border="20" />
         </Box>
         <Box
           sx={{
-            backgroundColor: 'black',
-            display: 'flex',
-            flexDirection: 'column'
+            backgroundColor: "black",
+            display: "flex",
+            flexDirection: "column",
           }}
         >
           <Link
@@ -104,22 +96,22 @@ const HomeHero = (props) => {
             textAlign="center"
             sx={{
               "&:hover": {
-                textDecoration: 'none',
-              }
+                textDecoration: "none",
+              },
             }}
-        >
+          >
             <Button
               variant="contained"
               sx={{
-                color: '#fff',
-                backgroundColor: '#000',
-                border: '2px solid #fff',
+                color: "#fff",
+                backgroundColor: "#000",
+                border: "2px solid #fff",
                 "&:hover": {
-                  color: '#000',
-                  backgroundColor: '#fff',
-                  textDecoration: 'none',
-                  border: '2px solid #000'
-                }
+                  color: "#000",
+                  backgroundColor: "#fff",
+                  textDecoration: "none",
+                  border: "2px solid #000",
+                },
               }}
             >
               In Development Now
@@ -130,14 +122,14 @@ const HomeHero = (props) => {
       <Container
         maxWidth="100%"
         sx={{
-          backgroundColor: '#666',
-          alignItems: 'center',
-          display: 'flex',
-          flexDirection: 'column',
+          backgroundColor: "#666",
+          alignItems: "center",
+          display: "flex",
+          flexDirection: "column",
           py: 4,
           px: {
-            md: '130px !important'
-          }
+            md: "130px !important",
+          },
         }}
       >
         <Box width="100%" id="HomeLanding">
