@@ -21,13 +21,17 @@ import {
   TableRow,
   Tabs,
   TextField,
+  Tooltip,
   Typography
 } from '@material-ui/core';
-import ArrowRightIcon from '../../../icons/ArrowRight';
-import PencilAltIcon from '../../../icons/PencilAlt';
+// import ArrowRightIcon from '../../../icons/ArrowRight';
+// import PencilAltIcon from '../../../icons/PencilAlt';
 import SearchIcon from '../../../icons/Search';
 import getInitials from '../../../utils/getInitials';
 import Scrollbar from '../../Scrollbar';
+import ControlPointDuplicateIcon
+  from '@material-ui/icons/ControlPointDuplicate';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 
 // This array is no longer used. Tab label/value comes from forms.reduce function now
 const tabs = [
@@ -142,7 +146,14 @@ const applySort = (forms, sort) => {
 };
 
 const CompanyFormsTable = (props) => {
-  const { forms, ...other } = props;
+  const {
+    forms,
+    setConfirmDialog,
+    handleFormDelete,
+    handleDuplicateForm,
+    ...other
+  } = props;
+  console.log('CompanyFormsTable#forms', forms)
   const [currentTab, setCurrentTab] = useState('all');
   console.log('currentTab', currentTab)
   const [selectedForms, setSelectedForms] = useState([]);
@@ -371,9 +382,8 @@ const CompanyFormsTable = (props) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {paginatedForms.map((form) => {
+              {paginatedForms.map((form, idx) => {
                 const isFormSelected = selectedForms.includes(form.id);
-
                 return (
                   <TableRow
                     hover
@@ -434,18 +444,42 @@ const CompanyFormsTable = (props) => {
                         .format(`${form.currency}0,0.00`)}
                     </TableCell> */}
                     <TableCell align="right">
-                      <IconButton
+                      {/* <IconButton
                         component={RouterLink}
                         to="/dashboard/forms/1/edit"
                       >
                         <PencilAltIcon fontSize="small" />
-                      </IconButton>
-                      <IconButton
+                      </IconButton> */}
+
+                      {/* <IconButton
                         component={RouterLink}
                         to="/dashboard/forms/1"
                       >
                         <ArrowRightIcon fontSize="small" />
-                      </IconButton>
+                      </IconButton> */}
+                      <Tooltip title="Duplicate">
+                        <IconButton
+                          onClick={() => handleDuplicateForm(form)}
+                        >
+                          <ControlPointDuplicateIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+
+                      <Tooltip title="Delete">
+                        <IconButton
+                          onClick={() => {
+                            setConfirmDialog({
+                              isOpen: true,
+                              title: 'Delete form',
+                              subtitle: `Are you sure you want to delete this form? It will be permanently removed and this action cannot be undone.`,
+                              buttonText: 'Delete',
+                              onConfirm: () => handleFormDelete(form.id, idx),
+                            });
+                          }}
+                        >
+                          <DeleteForeverIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
                     </TableCell>
                   </TableRow>
                 );
@@ -468,7 +502,10 @@ const CompanyFormsTable = (props) => {
 };
 
 CompanyFormsTable.propTypes = {
-  forms: PropTypes.array.isRequired
+  forms: PropTypes.array.isRequired,
+  setConfirmDialog: PropTypes.func,
+  handleFormDelete: PropTypes.func,
+  handleDuplicateForm: PropTypes.func,
 };
 
 export default CompanyFormsTable;

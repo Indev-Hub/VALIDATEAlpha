@@ -146,7 +146,7 @@ const FormCreate = props => {
       // or redirect to TestList page if submitted from TestCreate route
       selectedForm ?
         setTimeout(() => handleListRefresh(), 1200)
-        : setTimeout(() => navigate("/dashboard/form-collection"), 1200);
+        : setTimeout(() => navigate("/dashboard/company/forms"), 1200);
     } catch (error) {
       console.log('error uploading form', error);
       setNotify({
