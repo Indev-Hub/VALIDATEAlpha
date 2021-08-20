@@ -48,7 +48,7 @@ const FormCreate = props => {
       description: '',
       tags: [''],
       isPrivate: false,
-      companyID: [''],
+      companyID: '',
     }
   };
 
@@ -157,7 +157,7 @@ const FormCreate = props => {
     }
   };
 
-  
+
   //==================================//
   //      USER TABLE INFORMATION      //
   //==================================//
