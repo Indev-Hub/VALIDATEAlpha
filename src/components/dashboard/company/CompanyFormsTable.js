@@ -376,7 +376,7 @@ const CompanyFormsTable = (props) => {
                 {/* <TableCell>
                   Spent
                 </TableCell> */}
-                <TableCell align="right">
+                <TableCell align="center">
                   Actions
                 </TableCell>
               </TableRow>
@@ -418,7 +418,7 @@ const CompanyFormsTable = (props) => {
                           <Link
                             color="inherit"
                             component={RouterLink}
-                            to="/dashboard/forms/1"
+                            to={`/dashboard/form-analytics/${form.id}`}
                             variant="subtitle2"
                           >
                             {form.title}
@@ -443,7 +443,7 @@ const CompanyFormsTable = (props) => {
                       {numeral(form.totalAmountSpent)
                         .format(`${form.currency}0,0.00`)}
                     </TableCell> */}
-                    <TableCell align="right">
+                    <TableCell align="center">
                       {/* <IconButton
                         component={RouterLink}
                         to="/dashboard/forms/1/edit"
