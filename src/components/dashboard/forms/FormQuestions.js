@@ -9,6 +9,7 @@ import {
   IconButton,
   Switch,
   Typography,
+  AddIcon,
 } from '@material-ui/core';
 import { Close, DeleteForever } from '@material-ui/icons';
 import PropTypes from 'prop-types';
@@ -30,14 +31,14 @@ const INPUT_CONTROLS = [
 ];
 
 const FormQuestions = props => {
-  // Deconstruct state props from FormCreate
+  // Deconstruct state props from FormCreate -- createForm is now living in FormCreate.js
   const {
     formId,
     questionsState,
     setQuestionsState,
     blankQuestion,
     previewForm,
-    uploadForm,
+    // uploadForm,
   } = props;
 
   // Add question ID state for UploadMultiplePreview (RadioImages options)
@@ -216,10 +217,6 @@ const FormQuestions = props => {
                     
                   />
                   <FormControlLabel
-                    control={<Switch onClick={() => toggleImages(qstidx)} name="useImages" />}
-                    label="Use images as answers"
-                  />
-                  <FormControlLabel
                     control={<Switch value={questionsState[qstidx].randomize} onChange={(e) => handleRandomChange(qstidx, e)} name="randomizeOptions" />}
                     label="Randomize answers"
                   />
@@ -227,25 +224,6 @@ const FormQuestions = props => {
               </Grid>
               <Grid item xs={12} md={4}>
                 <Box>
-                  {isImage.includes(qstidx) ?
-                    (
-                      <Dialog
-                        open={() => toggleImages(qstidx)}
-                        fullWidth='true'
-                      >
-                        <Box mb={1}>
-                          <UploadMultiplePreview
-                            formId={formId}
-                            questionIdx={qstidx}
-                            toggleDialog={toggleImages}
-                            updateRadioImagesOptions={updateRadioImagesOptions}
-                          />
-                        </Box>
-                      </Dialog>
-                    ) : (
-                      null
-                    )
-                  }
                   {/* Start mapping the validation answer options & alternate text and image upload */}
                   {questionsState[qstidx].type !== 'Images' ?
                     ( 
@@ -292,18 +270,37 @@ const FormQuestions = props => {
                         </Button>
                       </>
                     ) : ( 
-                      <Button
-                        control={
-                          <Switch 
+                      <>
+                        <Button
+                          type="button"
                           onClick={() => toggleImages(qstidx)}
-                          name="useImages" 
-                          class="btn btn-outline-success btn-block"
-                          type="submit"
-                          />
+                          padding="5 30 5 30"
+                          variant="contained"
+                          color="secondary"
+                          sx={{ m: 1, pr: 3 }}
+                          startIcon={<Plus />}>
+                          Upload Images
+                        </Button>
+                        {isImage.includes(qstidx) ?
+                          (
+                            <Dialog
+                              open={() => toggleImages(qstidx)}
+                              fullWidth='true'
+                            >
+                              <Box mb={1}>
+                                <UploadMultiplePreview
+                                  formId={formId}
+                                  questionIdx={qstidx}
+                                  toggleDialog={toggleImages}
+                                  updateRadioImagesOptions={updateRadioImagesOptions}
+                                />
+                              </Box>
+                            </Dialog>
+                          ) : (
+                            null
+                          )
                         }
-                      >
-                        Upload Photos
-                      </Button>
+                      </>
                     )
                   }
                 </Box>
@@ -331,7 +328,7 @@ const FormQuestions = props => {
       >
         Preview Form
       </Button>
-      <Button
+      {/* <Button
         sx={{ mt: 3, padding: 2 }}
         fullWidth
         color="primary"
@@ -340,7 +337,7 @@ const FormQuestions = props => {
         onClick={uploadForm}
       >
         CREATE FORM
-      </Button>
+      </Button> */}
     </React.Fragment>
   );
 };
@@ -351,7 +348,7 @@ FormQuestions.propTypes = {
   setQuestionsState: PropTypes.func,
   blankQuestion: PropTypes.object,
   previewForm: PropTypes.func,
-  uploadForm: PropTypes.func,
+  // uploadForm: PropTypes.func, -- handled in FormCreate.js
 };
 
 export default FormQuestions;

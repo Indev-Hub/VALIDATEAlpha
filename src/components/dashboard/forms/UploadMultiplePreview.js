@@ -29,16 +29,31 @@ const UploadMultiplePreview = props => {
     Object.values(images).forEach((image, idx) => {
       const path = `${formId}/q${questionIdx + 1}_a${idx + 1}_${image.name}`;
       imageUrls.push(path);
-      handleUpload(image, path);
+      handleImgUpload(image, path);
     })
     updateRadioImagesOptions(questionIdx, imageUrls);
     toggleDialog(questionIdx);
   };
 
+  //Stores images in hook 
+  // const onClick = () => {
+
+  // }
+
+  
   // Upload images to S3
-  const handleUpload = async (file, path) => {
-    await Storage.put(path, file, { contentType: 'image' });
-  }
+  // const handleUpload = async (file, path) => {
+  //   await Storage.put(path, file, { contentType: 'image' });
+  // }
+  const handleImgUpload = async (file, path) => {
+    try {
+      await Storage.put(path, file, {contentType: 'image'});
+      console.log(path, file);
+    } catch (error) {
+      console.log('error on uploading images to s3', error);
+    }
+  };
+
 
   // Set state for image preview
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -55,10 +70,10 @@ const UploadMultiplePreview = props => {
 
       // Add new selected image files to existing image files
 
-      // setSelectedFiles((prevImages) => prevImages.concat(filesArray));
-      // Array.from(e.target.files).map(
-      //   (file) => URL.revokeObjectURL(file) // avoid memory leak
-      // );
+      setSelectedFiles((prevImages) => prevImages.concat(filesArray));
+      Array.from(e.target.files).map(
+        (file) => URL.revokeObjectURL(file) // avoid memory leak
+      );
 
     }
   };
@@ -121,6 +136,8 @@ const UploadMultiplePreview = props => {
         {/* This operation only shows the upload images to s3 button if images have been selected */}
         {selectedFiles.length > 0 ?
           (
+
+            // this is where we will need to transition the image array to state, instead of uploading to s3.
             <Button
               type="button"
               variant="contained"
@@ -137,7 +154,7 @@ const UploadMultiplePreview = props => {
       </Grid>
     </Grid>
   )
-}
+};
 
 UploadMultiplePreview.propTypes = {
   formId: PropTypes.string,
@@ -146,4 +163,4 @@ UploadMultiplePreview.propTypes = {
   toggleDialog: PropTypes.func,
 };
 
-export default UploadMultiplePreview
+export default UploadMultiplePreview;

@@ -5,7 +5,7 @@ import { createForm } from '../../../graphql/mutations';
 import { getUser } from 'src/graphql/queries';
 import { Formik, Form } from 'formik';
 import PropTypes from 'prop-types';
-import { Box, Paper } from '@material-ui/core';
+import { Box, Paper, Button } from '@material-ui/core';
 import { v4 as uuidv4 } from 'uuid';
 import useAuth from '../../../hooks/useAuth';
 import FormSubmission from '../../form/FormSubmission';
@@ -210,6 +210,17 @@ const FormCreate = props => {
             previewForm={previewForm}
             uploadForm={uploadForm}
           />
+          <Button
+            sx={{ mt: 3, padding: 2 }}
+            fullWidth
+            color="primary"
+            type="button"
+            variant="contained"
+            onClick={uploadForm}
+            // onClick={onClick}
+          >
+            CREATE FORM
+          </Button>
         </Form>
       </Formik >
 
@@ -223,8 +234,9 @@ const FormCreate = props => {
             />
           </Box>
         </Paper>
-      ) : null}
-
+      ) : (
+        null 
+      )}
       <Notification
         notify={notify}
         setNotify={setNotify}
