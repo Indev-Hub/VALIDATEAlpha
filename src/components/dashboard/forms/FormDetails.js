@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -10,9 +10,8 @@ import {
   Typography,
   Chip,
 } from "@material-ui/core";
-import { Close } from "@material-ui/icons";
+import { Close, EventAvailableOutlined } from "@material-ui/icons";
 import { Plus } from "../../../icons";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import PropTypes from "prop-types";
 import Controls from "../../form/controls/_controls";
 
@@ -37,17 +36,25 @@ const FormDetails = (props) => {
     });
 
   // Add tag to form and add the new tag to detailsState array
-  const addTag = (tagidx, e) => {
+  const addTag = (tagidx) => {
+    const tagToAdd = detailsState.availableTags[tagidx];
+    const newAvailableTags = detailsState.availableTags.filter(e => e !== tagToAdd);
     setDetailsState({
       ...detailsState, // make copy
-      tags: [...detailsState.tags, e.target.value],
+      tags: [...detailsState.tags, tagToAdd],
+      availableTags: newAvailableTags,
     });
   };
+  
   // Remove tag from mapped array
   const removeTag = (tagidx) => {
-    const updatedState = { ...detailsState }; // make copy
-    updatedState.tags.splice(tagidx, 1);
-    setDetailsState(updatedState);
+    const tagToRemove = detailsState.tags[tagidx];
+    const newTags = detailsState.tags.filter(e => e !== tagToRemove)
+    setDetailsState({
+      ...detailsState,
+      tags: newTags,
+      availableTags: [...detailsState.availableTags, tagToRemove]
+    });
   };
 
   // Update tag input every time a field is modified
@@ -56,10 +63,6 @@ const FormDetails = (props) => {
     updatedState.tags[tagidx] = e.target.value;
     setDetailsState(updatedState);
   };
-
-//   onDragEnd = result => {
-// // will synchronously update state to reflect drag and drop result. Might not go here...
-//   }  
 
   // Render form details section of FormCreate.js
   return (
@@ -89,83 +92,33 @@ const FormDetails = (props) => {
                 fullWidth
               />
             </Grid>
-            <DragDropContext>
               <Grid item xs={12} mt={2}>
                 <Grid container alignItems="center">
-                  {/* Start mapping tags */}
-                  {detailsState.tags.map((_tag, tagidx) => {
-                    return (
-                      <Box key={`tag-${tagidx}`} sx={{ my: 0 }}>
-                        <Grid container display="flex" sx={{ pb: 1 }}>
-                          <Grid item xs={8}>
-                            <Chip
-                              label={detailsState.tags[tagidx]}
-                              type="text"
-                              name={`tag-${tagidx + 1}`}
-                              data-idx={tagidx}
-                              id={`${tagidx}`}
-                              className="tag"
-                              value={detailsState.tags[tagidx]}
-                              onChange={(e) => handleTagInput(tagidx, e)}
-                              onDelete={()=>removeTag(tagidx)}
-                              sx={{ m: 1}}
-                            />
-                          </Grid>
-                          {/* <Grid item>
-                            <IconButton
-                              type="button"
-                              id={`${tagidx}`}
-                              onClick={() => removeTag(tagidx)}
-                            >
-                              <Close />
-                            </IconButton>
-                          </Grid> */}
-                        </Grid>
-                      </Box>
-                    );
-                  })}
                 </Grid>
-                {detailsState.availableTags.map((_tag, tagidx) => {
-                  return (
-                  <Chip
-                  key={tagidx}
-                  label={detailsState.availableTags[tagidx]}
-                  type="text"
-                  name={`tag-${tagidx + 1}`}
-                  data-idx={tagidx}
-                  id={`${tagidx}`}
-                  className="tag"
-                  value={detailsState.availableTags[tagidx]}
-                  onClick={(e) => addTag(tagidx, e)}
-                  sx={{ m: 1}}
-                  color="secondary"
-                  />
-                  )
-                })}
-                {/* <Draggable> */}
-                  {/* <Chip onClick={addTag} label="Logo" color="secondary" value="LOGO" id="logo-chip" sx={{ m: 1 }}/>
-                  <Chip onClick={addTag} label="Images" color="secondary" value="IMAGES" id="images-chip" sx={{ m: 1}}/>
-                  <Chip onClick={addTag} label="Swag" color="secondary" value="SWAG" id="swag-chip" sx={{ m: 1}}/> */}
-                {/* </Draggable> */}
-                {/* <Droppable droppableId={this.props.column.id}></Droppable> */}
-                {/* <Button
-                  type="button"
-                  onClick={addTag}
-                  variant="contained"
-                  color="inherit"
-                  sx={{ m: 1, pr: 3 }}
-                  startIcon={<Plus />}
-                >
-                  Add Tag
-                </Button> */}
+                {/* Start mapping though the available tags */}
+                  {detailsState.availableTags.map((_tag, tagidx) => {
+                    return (
+                          <Chip
+                          key={tagidx}
+                          label={detailsState.availableTags[tagidx]}
+                          type="text"
+                          name={`tag-${tagidx + 1}`}
+                          data-idx={tagidx}
+                          id={`${tagidx}`}
+                          className="tag"
+                          value={detailsState.availableTags[tagidx]}
+                          onClick={() => addTag(tagidx)}
+                          sx={{ m: 1}}
+                          color="secondary"
+                          />
+                      )
+                    })}
               </Grid>
-            </DragDropContext>
           </Grid>
         </Grid>
         <Grid item px={2} xs={3}>
           <Card
             sx={{
-              // backgroundColor: 'blue',
               p: 3,
             }}
           >
@@ -190,14 +143,30 @@ const FormDetails = (props) => {
               {userData ? (
                 userData.companies.items.map((company) => (
                   <MenuItem value={company.id}>{company.name}</MenuItem>
-                ))
-              ) : (
-                <Typography>Loading Companies</Typography>
-              )}
+                  ))
+                  ) : (
+                    <Typography>Loading Companies</Typography>
+                    )}
             </TextField>
+                    {detailsState.tags.map((_tag, tagidx) => {
+                      return (
+                        <Chip
+                          key={tagidx}
+                          label={detailsState.tags[tagidx]}
+                          type="text"
+                          name={`tag-${tagidx + 1}`}
+                          data-idx={tagidx}
+                          id={`${tagidx}`}
+                          className="tag"
+                          value={detailsState.tags[tagidx]}
+                          onDelete={()=>removeTag(tagidx)}
+                          sx={{ m: 1}}
+                        />
+                        );
+                  })}
             {console.log("userData", userData)}
             {console.log("detailsState", detailsState)}
-          </Card>
+            </Card>
         </Grid>
       </Grid>
     </React.Fragment>

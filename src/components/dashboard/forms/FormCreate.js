@@ -49,8 +49,8 @@ const FormCreate = (props) => {
       companyID: [""],
       isPrivate: false,
       randomize: "",
-      tags: [""],
-      availableTags:["Logo", "Swag", "Images"]
+      tags: [],
+      availableTags: ["Logo", "Swag", "Images", "Product", "Color"],
     };
   }
 
@@ -98,7 +98,6 @@ const FormCreate = (props) => {
       isPrivate,
       randomize,
       tags,
-      availableTags
     } = detailsState;
     // const formID = getRandomInt(1000, 9999); // replaced by uuid for UploadMulitplePreview (form subdirectory in S3)
     const compID = getRandomInt(1000, 9999);
