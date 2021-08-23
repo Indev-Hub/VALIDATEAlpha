@@ -37,9 +37,6 @@ const FormCreate = (props) => {
     initialDetails = {
       title: selectedForm.title,
       description: selectedForm.description,
-      companyID: selectedForm.companyID,
-      isPrivate: selectedForm.isPrivate,
-      randomize: selectedForm.randomize,
       tags: JSON.parse(selectedForm.tags),
     };
   } else {
@@ -83,51 +80,44 @@ const FormCreate = (props) => {
 
   // Construct data object to be used as output for DB and prop for form preview
   const createFormDesignDataSet = () => {
-    // Create random number for ID (temp solution for unique ID — will add company name and form number later on)
-    function getRandomInt(min, max) {
-      min = Math.ceil(min);
-      max = Math.floor(max);
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-
     // Deconstruct form properties
     const {
       title,
-      companyID,
       description,
-      isPrivate,
-      randomize,
       tags,
+      isPrivate,
+      companyID,
     } = detailsState;
-    // const formID = getRandomInt(1000, 9999); // replaced by uuid for UploadMulitplePreview (form subdirectory in S3)
-    const compID = getRandomInt(1000, 9999);
 
     // The input data to be sent in our createForm request
     const formDesignDataSet = {
       id: formId,
-      companyID: companyID,
-      companyName: getCompanyName(),
       title: title,
       description: description,
-      isPrivate: isPrivate,
       tags: JSON.stringify(tags),
+      isPrivate: isPrivate,
+      companyID: companyID,
+      companyName: getCompanyName(),
       validations: JSON.stringify(questionsState),
     };
 
     return formDesignDataSet;
   };
 
+
   //==================================//
   //           FORM PREVIEW           //
   //==================================//
-
-  // Form preview
   const [formPreview, setFormPreview] = useState(null);
   const previewForm = () => {
     const formDesign = createFormDesignDataSet();
     setFormPreview(formDesign);
   };
 
+
+  //==================================//
+  //           UPLOAD FORM            //
+  //==================================//
   const uploadForm = async () => {
     // Get user attributes
     const { signInUserSession } = await Auth.currentAuthenticatedUser();
@@ -166,6 +156,7 @@ const FormCreate = (props) => {
     }
   };
 
+
   //==================================//
   //      USER TABLE INFORMATION      //
   //==================================//
@@ -194,12 +185,13 @@ const FormCreate = (props) => {
     }
   };
 
+  // Get company name from selected companyId, '' if none
   const getCompanyName = () => {
-    const matchName = userData.companies.items.filter((item) =>
-      detailsState.companyID.includes(item.id)
+    const matchName = userData.companies.items.filter(
+      item => detailsState.companyID.includes(item.id)
     );
-    return matchName[0] ? matchName[0].name : "";
-  };
+    return matchName[0] ? matchName[0].name : '' ;
+  }
 
   return (
     <React.Fragment>

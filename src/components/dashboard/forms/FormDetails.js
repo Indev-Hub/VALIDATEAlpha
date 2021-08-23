@@ -57,13 +57,6 @@ const FormDetails = (props) => {
     });
   };
 
-  // Update tag input every time a field is modified
-  const handleTagInput = (tagidx, e) => {
-    const updatedState = { ...detailsState }; // make copy
-    updatedState.tags[tagidx] = e.target.value;
-    setDetailsState(updatedState);
-  };
-
   // Render form details section of FormCreate.js
   return (
     <React.Fragment>
@@ -138,7 +131,6 @@ const FormDetails = (props) => {
               name="companyID"
               value={detailsState.companyID}
               onChange={handleDetailsInput}
-              required
             >
               {userData ? (
                 userData.companies.items.map((company) => (
