@@ -1,13 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { API, graphqlOperation, Storage } from 'aws-amplify';
-import { getUser, listForms } from '../../graphql/queries';
-import { deleteForm } from '../../graphql/mutations';
-import useIsMountedRef from '../../hooks/useIsMountedRef';
-import useSettings from '../../hooks/useSettings';
-import gtm from '../../lib/gtm';
-import axios from '../../lib/axios';
 import {
   Box,
   Breadcrumbs,
@@ -17,6 +10,12 @@ import {
   Link,
   Typography
 } from '@material-ui/core';
+import { API, graphqlOperation, Storage } from 'aws-amplify';
+import { listForms } from '../../graphql/queries';
+import { deleteForm } from '../../graphql/mutations';
+import useIsMountedRef from '../../hooks/useIsMountedRef';
+import useSettings from '../../hooks/useSettings';
+import gtm from '../../lib/gtm';
 import ChevronRightIcon from '../../icons/ChevronRight';
 import DownloadIcon from '../../icons/Download';
 import PlusIcon from '../../icons/Plus';
@@ -33,6 +32,8 @@ const FormList = () => {
   const [forms, setForms] = useState([]);
   const [selectedForm, setSelectedForm] = useState(null);
   const [duplicateForm, setDuplicateForm] = useState(false);
+  const [formImageFiles, setFormImageFiles] = useState();
+  const [listRefresh, setListRefresh] = useState(false);
   const [notify, setNotify] = useState({
     isOpen: false,
     message: '',
@@ -46,7 +47,7 @@ const FormList = () => {
 
   useEffect(() => {
     gtm.push({ event: 'page_view' });
-  }, [forms]);
+  }, []);
 
   // const getCustomers = useCallback(async () => {
   //   try {
@@ -82,9 +83,10 @@ const FormList = () => {
 
   useEffect(() => {
     getForms();
-  }, [getForms]);
+    getFileList();
+  }, [listRefresh]);
 
-  // Delete a form
+  // Delete a form from DynamoDB
   const formDelete = async (id) => {
     try {
       await API.graphql(graphqlOperation(deleteForm, { input: { id: id } }));
@@ -103,14 +105,36 @@ const FormList = () => {
     }
   };
 
-  // Delete from database with success/failure notification
-  const handleFormDelete = (id, idx) => {
+  // Delete a form's associated S3 files
+  const getFileList = async () => {
+    try {
+      const fileList = await Storage.list('');
+      setFormImageFiles(fileList);
+    } catch (error) {
+      console.log('error on fetching file list', error);
+    }
+  }
+
+  const removeFile = async (fileName) => {
+    try {
+      await Storage.remove(fileName);
+    } catch (error) {
+      console.log('error removing file', error);
+    }
+  }
+
+  const deleteFormImages = (formId) => {
+    const fileNames = formImageFiles.filter(file => file.key.includes(formId));
+    fileNames.forEach(fileName => {
+      console.log("FormList#deleteFormImages removed file:", fileName.key)
+      removeFile(fileName.key);
+    });
+  }
+
+  // Delete form from database, images from S3, with success/failure alert
+  const handleFormDelete = (id) => {
+    deleteFormImages(id);
     formDelete(id);
-    // Delete from 'forms' state (avoids extra fetchForms API call)
-    const newFormsList = [...forms];
-    newFormsList.splice(idx, 1);
-    setForms(newFormsList);
-    // Hide confirmation modal
     setConfirmDialog({
       ...confirmDialog,
       isOpen: false,
@@ -128,7 +152,7 @@ const FormList = () => {
   const handleListRefresh = () => {
     setSelectedForm(null);
     setDuplicateForm(false);
-    getForms();
+    setListRefresh(!listRefresh);
   }
 
   // Go back to list from duplicate form creation view if not submitted

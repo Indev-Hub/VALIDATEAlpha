@@ -473,7 +473,7 @@ const CompanyFormsTable = (props) => {
                               title: 'Delete form',
                               subtitle: `Are you sure you want to delete this form? It will be permanently removed and this action cannot be undone.`,
                               buttonText: 'Delete',
-                              onConfirm: () => handleFormDelete(form.id, idx),
+                              onConfirm: () => handleFormDelete(form.id),
                             });
                           }}
                         >
