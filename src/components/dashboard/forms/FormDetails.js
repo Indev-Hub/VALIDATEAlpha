@@ -11,10 +11,9 @@ import { Close, EventAvailableOutlined } from "@material-ui/icons";
 import { Plus } from "../../../icons";
 import PropTypes from "prop-types";
 import Controls from "../../form/controls/_controls";
-import TAGS from '../../form/controls/Tags.js'
+import { TAGS } from "./FormConstants.js";
 
 // FORM DETAILS SECTION OF FormCreate.js
-
 const FormDetails = (props) => {
   // Deconstruct state props from FormCreate.js
   const { userData, detailsState, setDetailsState } = props;

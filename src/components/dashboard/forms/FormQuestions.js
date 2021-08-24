@@ -15,20 +15,9 @@ import PropTypes from 'prop-types';
 import { Plus } from '../../../icons';
 import Controls from '../../form/controls/_controls';
 import UploadMultiplePreview from './UploadMultiplePreview';
+import { INPUT_CONTROLS } from "./FormConstants";
 
 // VALIDATION QUESTIONS SECTION OF FormCreate
-
-const INPUT_CONTROLS = [
-  'Checkbox',
-  'Dropdown',
-  'Number',
-  'Radio Group',
-  'Radio Images',
-  'Rating',
-  // 'Switch',
-  // 'Text Input',
-];
-
 const FormQuestions = props => {
   // Deconstruct state props from FormCreate
   const {
