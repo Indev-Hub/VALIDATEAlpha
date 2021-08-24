@@ -20,9 +20,6 @@ const FormCreate = props => {
   // This is used if duplicating from existing form in TestList
   const { selectedForm = null, handleListRefresh } = props;
 
-  // Create unique form id (also passed through to UploadMultiplePreview)
-  const formId = `form-${uuidv4()}`;
-
   // Set state of upload success and failure notifications
   const [notify, setNotify] = useState({
     isOpen: false,
@@ -35,6 +32,7 @@ const FormCreate = props => {
   if (selectedForm) {
     // If duplicating from existing form
     initialDetails = {
+      formId: `form-${uuidv4()}`,
       title: selectedForm.title,
       description: selectedForm.description,
       tags: JSON.parse(selectedForm.tags),
@@ -44,6 +42,7 @@ const FormCreate = props => {
     }
   } else {
     initialDetails = {
+      formId: `form-${uuidv4()}`,
       title: '',
       description: '',
       tags: [''],
@@ -84,6 +83,7 @@ const FormCreate = props => {
   const createFormDesignDataSet = () => {
     // Deconstruct form properties
     const {
+      formId,
       title,
       description,
       tags,
@@ -203,7 +203,7 @@ const FormCreate = props => {
           />
           {/* Start mapping the validation questions */}
           <FormQuestions
-            formId={formId}
+            formId={detailsState.formId}
             questionsState={questionsState}
             setQuestionsState={setQuestionsState}
             blankQuestion={blankQuestion}
