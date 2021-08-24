@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Card,
   Grid,
@@ -11,12 +11,23 @@ import { Close, EventAvailableOutlined } from "@material-ui/icons";
 import { Plus } from "../../../icons";
 import PropTypes from "prop-types";
 import Controls from "../../form/controls/_controls";
+import TAGS from '../../form/controls/Tags.js'
 
 // FORM DETAILS SECTION OF FormCreate.js
 
 const FormDetails = (props) => {
   // Deconstruct state props from FormCreate.js
   const { userData, detailsState, setDetailsState } = props;
+
+  const AVAILABLETAGS = TAGS.filter(e => !detailsState.tags.includes(e))
+
+  const [tags, setTags] = useState(AVAILABLETAGS)
+
+  //updates the list of available tags once the state of tags is changed
+  useEffect(() => {
+    setTags(AVAILABLETAGS)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [detailsState.tags])
 
   // Update details portion of form every time a field is modified
   const handleDetailsInput = (e) =>
@@ -34,15 +45,13 @@ const FormDetails = (props) => {
 
   // Add tag to form and add the new tag to detailsState array
   const addTag = (tagidx) => {
-    const tagToAdd = detailsState.availableTags[tagidx];
-    const newAvailableTags = detailsState.availableTags.filter(e => e !== tagToAdd);
+    const tagToAdd = AVAILABLETAGS[tagidx];
     setDetailsState({
       ...detailsState, // make copy
       tags: [...detailsState.tags, tagToAdd],
-      availableTags: newAvailableTags,
     });
   };
-  
+
   // Remove tag from mapped array
   const removeTag = (tagidx) => {
     const tagToRemove = detailsState.tags[tagidx];
@@ -50,7 +59,6 @@ const FormDetails = (props) => {
     setDetailsState({
       ...detailsState,
       tags: newTags,
-      availableTags: [...detailsState.availableTags, tagToRemove]
     });
   };
 
@@ -82,28 +90,37 @@ const FormDetails = (props) => {
                 fullWidth
               />
             </Grid>
-              <Grid item xs={12} mt={2}>
-                <Grid container alignItems="center">
-                </Grid>
-                {/* Start mapping though the available tags */}
-                  {detailsState.availableTags.map((_tag, tagidx) => {
+            <Grid item xs={12} mt={2}>
+              <Grid alignItems="center">
+                <Card
+                  sx={{
+                    p: 3,
+                  }}
+                >
+                  <Typography>
+                    Available tags for form validation:
+                  </Typography>
+                  {/* Start mapping though the available tags */}
+                  {tags.map((_tag, tagidx) => {
                     return (
-                          <Chip
-                          key={tagidx}
-                          label={detailsState.availableTags[tagidx]}
-                          type="text"
-                          name={`tag-${tagidx + 1}`}
-                          data-idx={tagidx}
-                          id={`${tagidx}`}
-                          className="tag"
-                          value={detailsState.availableTags[tagidx]}
-                          onClick={() => addTag(tagidx)}
-                          sx={{ m: 1}}
-                          color="secondary"
-                          />
-                      )
-                    })}
+                      <Chip
+                        key={tagidx}
+                        label={tags[tagidx]}
+                        type="text"
+                        name={`tag-${tagidx + 1}`}
+                        data-idx={tagidx}
+                        id={`${tagidx}`}
+                        className="tag"
+                        value={tags[tagidx]}
+                        onClick={() => addTag(tagidx)}
+                        sx={{ m: 1 }}
+                        color="secondary"
+                      />
+                    )
+                  })}
+                </Card>
               </Grid>
+            </Grid>
           </Grid>
         </Grid>
         <Grid item px={2} xs={3}>
@@ -132,30 +149,31 @@ const FormDetails = (props) => {
               {userData ? (
                 userData.companies.items.map((company) => (
                   <MenuItem value={company.id}>{company.name}</MenuItem>
-                  ))
-                  ) : (
-                    <Typography>Loading Companies</Typography>
-                    )}
+                ))
+              ) : (
+                <Typography>Loading Companies</Typography>
+              )}
             </TextField>
-                    {detailsState.tags.map((_tag, tagidx) => {
-                      return (
-                        <Chip
-                          key={tagidx}
-                          label={detailsState.tags[tagidx]}
-                          type="text"
-                          name={`tag-${tagidx + 1}`}
-                          data-idx={tagidx}
-                          id={`${tagidx}`}
-                          className="tag"
-                          value={detailsState.tags[tagidx]}
-                          onDelete={()=>removeTag(tagidx)}
-                          sx={{ m: 1}}
-                        />
-                        );
-                  })}
+            {detailsState.tags.map((_tag, tagidx) => {
+              return (
+                <Chip
+                  key={tagidx}
+                  label={detailsState.tags[tagidx]}
+                  type="text"
+                  name={`tag-${tagidx + 1}`}
+                  data-idx={tagidx}
+                  id={`${tagidx}`}
+                  className="tag"
+                  value={detailsState.tags[tagidx]}
+                  onDelete={() => removeTag(tagidx)}
+                  sx={{ m: 1 }}
+                  color="primary"
+                />
+              );
+            })}
             {console.log("userData", userData)}
             {console.log("detailsState", detailsState)}
-            </Card>
+          </Card>
         </Grid>
       </Grid>
     </React.Fragment>

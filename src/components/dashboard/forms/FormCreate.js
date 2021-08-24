@@ -13,6 +13,7 @@ import Notification from "../../form/Notification";
 import FormDetails from "./FormDetails";
 import FormQuestions from "./FormQuestions";
 
+
 const FormCreate = (props) => {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -47,7 +48,6 @@ const FormCreate = (props) => {
       isPrivate: false,
       randomize: "",
       tags: [],
-      availableTags: ["Logo", "Swag", "Images", "Product", "Color"],
     };
   }
 
@@ -190,7 +190,7 @@ const FormCreate = (props) => {
     const matchName = userData.companies.items.filter(
       item => detailsState.companyID.includes(item.id)
     );
-    return matchName[0] ? matchName[0].name : '' ;
+    return matchName[0] ? matchName[0].name : '';
   }
 
   return (
