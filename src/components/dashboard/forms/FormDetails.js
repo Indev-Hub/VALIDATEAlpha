@@ -18,13 +18,12 @@ const FormDetails = (props) => {
   // Deconstruct state props from FormCreate.js
   const { userData, detailsState, setDetailsState } = props;
 
-  const AVAILABLETAGS = TAGS.filter(e => !detailsState.tags.includes(e))
-
-  const [tags, setTags] = useState(AVAILABLETAGS)
-
   //updates the list of available tags once the state of tags is changed
+  const [availableTags, setAvailableTags] = useState([]);
+
   useEffect(() => {
-    setTags(AVAILABLETAGS)
+    const filteredTags = TAGS.filter(tag => !detailsState.tags.includes(tag));
+    setAvailableTags(filteredTags)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [detailsState.tags])
 
@@ -44,7 +43,7 @@ const FormDetails = (props) => {
 
   // Add tag to form and add the new tag to detailsState array
   const addTag = (tagidx) => {
-    const tagToAdd = AVAILABLETAGS[tagidx];
+    const tagToAdd = availableTags[tagidx];
     setDetailsState({
       ...detailsState, // make copy
       tags: [...detailsState.tags, tagToAdd],
@@ -100,17 +99,17 @@ const FormDetails = (props) => {
                     Available tags for form validation:
                   </Typography>
                   {/* Start mapping though the available tags */}
-                  {tags.map((_tag, tagidx) => {
+                  {availableTags.map((_tag, tagidx) => {
                     return (
                       <Chip
                         key={tagidx}
-                        label={tags[tagidx]}
+                        label={availableTags[tagidx]}
                         type="text"
                         name={`tag-${tagidx + 1}`}
                         data-idx={tagidx}
                         id={`${tagidx}`}
                         className="tag"
-                        value={tags[tagidx]}
+                        value={availableTags[tagidx]}
                         onClick={() => addTag(tagidx)}
                         sx={{ m: 1 }}
                         color="secondary"
