@@ -21,9 +21,6 @@ const FormCreate = (props) => {
   // This is used if duplicating from existing form in TestList
   const { selectedForm = null, handleListRefresh } = props;
 
-  // Create unique form id (also passed through to UploadMultiplePreview)
-  const formId = `form-${uuidv4()}`;
-
   // Set state of upload success and failure notifications
   const [notify, setNotify] = useState({
     isOpen: false,
@@ -36,18 +33,18 @@ const FormCreate = (props) => {
   if (selectedForm) {
     // If duplicating from existing form
     initialDetails = {
+      formId: `form-${uuidv4()}`,
       title: selectedForm.title,
       description: selectedForm.description,
       tags: JSON.parse(selectedForm.tags),
     };
   } else {
     initialDetails = {
-      title: "",
-      description: "",
-      companyID: [""],
-      isPrivate: false,
-      randomize: "",
+      formId: `form-${uuidv4()}`,
+      title: '',
+      description: '',
       tags: [],
+      isPrivate: false,
     };
   }
 
@@ -82,6 +79,7 @@ const FormCreate = (props) => {
   const createFormDesignDataSet = () => {
     // Deconstruct form properties
     const {
+      formId,
       title,
       description,
       tags,
@@ -143,9 +141,9 @@ const FormCreate = (props) => {
       });
       // Refresh if submitted from TestList page (i.e., starting from duplicate)
       // or redirect to TestList page if submitted from TestCreate route
-      selectedForm
-        ? setTimeout(() => handleListRefresh(), 1200)
-        : setTimeout(() => navigate("/dashboard/form-collection"), 1200);
+      selectedForm ?
+        setTimeout(() => handleListRefresh(), 1200)
+        : setTimeout(() => navigate("/dashboard/company/forms"), 1200);
     } catch (error) {
       console.log("error uploading form", error);
       setNotify({
@@ -205,7 +203,7 @@ const FormCreate = (props) => {
           />
           {/* Start mapping the validation questions */}
           <FormQuestions
-            formId={formId}
+            formId={detailsState.formId}
             questionsState={questionsState}
             setQuestionsState={setQuestionsState}
             blankQuestion={blankQuestion}
