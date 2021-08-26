@@ -22,49 +22,44 @@ const FormCreate = props => {
   // This is used if duplicating from existing form in TestList
   const { selectedForm = null, handleListRefresh } = props;
 
-  // Create unique form id (also passed through to UploadMultiplePreview)
-  const formId = `form-${uuidv4()}`;
-
   // Set state of upload success and failure notifications
   const [notify, setNotify] = useState({
     isOpen: false,
-    message: '',
-    type: ''
-  })
+    message: "",
+    type: "",
+  });
 
   // Initialize form details state
   let initialDetails;
   if (selectedForm) {
     // If duplicating from existing form
     initialDetails = {
+      formId: `form-${uuidv4()}`,
       title: selectedForm.title,
       description: selectedForm.description,
       tags: JSON.parse(selectedForm.tags),
-      isPrivate: selectedForm.isPrivate,
-      companyID: selectedForm.companyID,
-      // companyName: selectedForm.companyName,
-    }
+    };
   } else {
     initialDetails = {
+      formId: `form-${uuidv4()}`,
       title: '',
       description: '',
-      tags: [''],
+      tags: [],
       isPrivate: false,
-      companyID: [''],
-    }
-  };
+    };
+  }
 
   const [detailsState, setDetailsState] = useState(initialDetails);
-  console.log('FormCreate-detailsState', detailsState)
+  console.log("Details State", detailsState);
 
   // Initialize questions state
   const blankQuestion = {
     questionId: 1,
-    question: '',
-    type: '',
+    question: "",
+    type: "",
     images: false,
-    randomize: '',
-    options: [''],
+    randomize: "",
+    options: [""],
   };
 
   let initialQuestions;
@@ -77,7 +72,6 @@ const FormCreate = props => {
 
   const [questionsState, setQuestionsState] = useState(initialQuestions);
 
-
   //==================================//
   //           CREATE FORM            //
   //==================================//
@@ -86,6 +80,7 @@ const FormCreate = props => {
   const createFormDesignDataSet = () => {
     // Deconstruct form properties
     const {
+      formId,
       title,
       description,
       tags,
@@ -93,7 +88,7 @@ const FormCreate = props => {
       companyID,
     } = detailsState;
 
-    // The input data to be sent in our createForm request 
+    // The input data to be sent in our createForm request
     const formDesignDataSet = {
       id: formId,
       title: title,
@@ -149,41 +144,42 @@ const FormCreate = props => {
     // Get user attributes
     const { signInUserSession } = await Auth.currentAuthenticatedUser();
     const userName = signInUserSession.accessToken.payload.username;
-    const userId = signInUserSession.accessToken.payload.sub
+    const userId = signInUserSession.accessToken.payload.sub;
 
     // Get form design schema and output to DynamoDB
     const formDesignDataSet = createFormDesignDataSet();
 
     console.log(
-      'FormCreate#uploadForm', JSON.stringify(formDesignDataSet, null, 2)
+      "FormCreate#uploadForm",
+      JSON.stringify(formDesignDataSet, null, 2)
     );
 
     try {
-      await API.graphql(graphqlOperation(
-        createForm, { input: formDesignDataSet }
-      ));
+      await API.graphql(
+        graphqlOperation(createForm, { input: formDesignDataSet })
+      );
       setNotify({
         isOpen: true,
         message: `Submitted Successfully`,
-        type: 'success'
+        type: "success",
       });
       s3Upload();
       // Refresh if submitted from TestList page (i.e., starting from duplicate)
       // or redirect to TestList page if submitted from TestCreate route
       selectedForm ?
         setTimeout(() => handleListRefresh(), 1200)
-        : setTimeout(() => navigate("/dashboard/form-collection"), 1200);
+        : setTimeout(() => navigate("/dashboard/company/forms"), 1200);
     } catch (error) {
-      console.log('error uploading form', error);
+      console.log("error uploading form", error);
       setNotify({
         isOpen: true,
         message: `Upload Failed: ${JSON.stringify(error)}`,
-        type: 'error'
+        type: "error",
       });
     }
   };
 
-  
+
   //==================================//
   //      USER TABLE INFORMATION      //
   //==================================//
@@ -194,18 +190,21 @@ const FormCreate = props => {
   // Load User table data
   useEffect(() => {
     getUserTable();
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // API call to get User table data
   const getUserTable = async () => {
     try {
-      const userData = await API.graphql(graphqlOperation(getUser, { id: user.id }));
+      const userData = await API.graphql(
+        graphqlOperation(getUser, { id: user.id })
+      );
       const userList = userData.data.getUser;
       setUserData(userList);
-      console.log('user info', userList);
-      console.log('user sub', user.id)
+      console.log("user info", userList);
+      console.log("user sub", user.id);
     } catch (error) {
-      console.log('error on fetching user table', error);
+      console.log("error on fetching user table", error);
     }
   };
 
@@ -214,7 +213,7 @@ const FormCreate = props => {
     const matchName = userData.companies.items.filter(
       item => detailsState.companyID.includes(item.id)
     );
-    return matchName[0] ? matchName[0].name : '' ;
+    return matchName[0] ? matchName[0].name : '';
   }
 
   return (
@@ -229,7 +228,7 @@ const FormCreate = props => {
           />
           {/* Start mapping the validation questions */}
           <FormQuestions
-            formId={formId}
+            formId={detailsState.formId}
             questionsState={questionsState}
             setQuestionsState={setQuestionsState}
             blankQuestion={blankQuestion}
@@ -250,7 +249,7 @@ const FormCreate = props => {
             CREATE FORM
           </Button>
         </Form>
-      </Formik >
+      </Formik>
 
       {formPreview ? (
         <Paper elevation={3} sx={{ mt: 2 }}>
@@ -262,13 +261,9 @@ const FormCreate = props => {
             />
           </Box>
         </Paper>
-      ) : (
-        null 
-      )}
-      <Notification
-        notify={notify}
-        setNotify={setNotify}
-      />
+      ) : null}
+
+      <Notification notify={notify} setNotify={setNotify} />
     </React.Fragment>
   );
 };
