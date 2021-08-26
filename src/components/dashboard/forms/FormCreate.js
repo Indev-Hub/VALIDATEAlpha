@@ -120,6 +120,15 @@ const FormCreate = props => {
   //==================================//
   //           UPLOAD FORM            //
   //==================================//
+
+  const [formImages, setFormImages] = useState([]);
+  
+  //==================================//
+  //            Upload to s3          //
+  //==================================//
+
+  
+
   const uploadForm = async () => {
     // Get user attributes
     const { signInUserSession } = await Auth.currentAuthenticatedUser();
@@ -142,6 +151,7 @@ const FormCreate = props => {
         message: `Submitted Successfully`,
         type: 'success'
       });
+
       // Refresh if submitted from TestList page (i.e., starting from duplicate)
       // or redirect to TestList page if submitted from TestCreate route
       selectedForm ?
@@ -209,6 +219,8 @@ const FormCreate = props => {
             blankQuestion={blankQuestion}
             previewForm={previewForm}
             uploadForm={uploadForm}
+            formImages={formImages}
+            setFormImages={setFormImages}
           />
           <Button
             sx={{ mt: 3, padding: 2 }}
@@ -221,6 +233,7 @@ const FormCreate = props => {
           >
             CREATE FORM
           </Button>
+          <Button onClick={console.log('Image State / Form Create', formImages)}>Check State</Button>
         </Form>
       </Formik >
 
@@ -248,6 +261,8 @@ const FormCreate = props => {
 FormCreate.propTypes = {
   selectedForm: PropTypes.object,
   handleListRefresh: PropTypes.func,
+  formImages: PropTypes.array,
+  setFormImages: PropTypes.func
 };
 
 export default FormCreate;

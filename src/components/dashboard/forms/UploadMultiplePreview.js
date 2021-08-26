@@ -5,6 +5,8 @@ import { Close } from '@material-ui/icons';
 import { Storage } from 'aws-amplify';
 import PropTypes from 'prop-types';
 
+import storeImages from '../../../hooks/storeImages.js'
+
 const useStyles = makeStyles(() => ({
   closeButton: {
     position: 'absolute',
@@ -16,7 +18,7 @@ const UploadMultiplePreview = props => {
   const classes = useStyles();
 
   // Deconstruct props from FormQuestions
-  const { formId, questionIdx, updateRadioImagesOptions, toggleDialog } = props;
+  const { formId, questionIdx, updateRadioImagesOptions, toggleDialog, formImages, setFormImages } = props;
 
   // Declare file input reference
   const fileInput = React.useRef();
@@ -26,19 +28,28 @@ const UploadMultiplePreview = props => {
   const onClick = () => {
     let images = fileInput.current.files;
     let imageUrls = [];
+    let formCollection = [];
     Object.values(images).forEach((image, idx) => {
       const path = `${formId}/q${questionIdx + 1}_a${idx + 1}_${image.name}`;
       imageUrls.push(path);
-      handleImgUpload(image, path);
+      formCollection.push([image, path])
+      console.log("uploadmultiplePreview#formImages", formImages)
     })
+    setFormImages([
+      ...formImages,
+      ...formCollection
+    ]);
     updateRadioImagesOptions(questionIdx, imageUrls);
     toggleDialog(questionIdx);
   };
 
-  //Stores images in hook 
-  // const onClick = () => {
+  // store images in hook
 
-  // }
+// const onClick = () => {
+//   setImages()
+// }
+
+
 
   
   // Upload images to S3
@@ -70,10 +81,10 @@ const UploadMultiplePreview = props => {
 
       // Add new selected image files to existing image files
 
-      setSelectedFiles((prevImages) => prevImages.concat(filesArray));
-      Array.from(e.target.files).map(
-        (file) => URL.revokeObjectURL(file) // avoid memory leak
-      );
+      // setSelectedFiles((prevImages) => prevImages.concat(filesArray));
+      // Array.from(e.target.files).map(
+      //   (file) => URL.revokeObjectURL(file) // avoid memory leak
+      // );
 
     }
   };
@@ -161,6 +172,8 @@ UploadMultiplePreview.propTypes = {
   questionIdx: PropTypes.number,
   updateRadioImagesOptions: PropTypes.func,
   toggleDialog: PropTypes.func,
+  formImages: PropTypes.array,
+  setFormImages: PropTypes.func
 };
 
 export default UploadMultiplePreview;
