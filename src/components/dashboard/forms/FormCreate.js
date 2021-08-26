@@ -13,6 +13,8 @@ import Notification from '../../form/Notification';
 import FormDetails from './FormDetails';
 import FormQuestions from './FormQuestions';
 
+import { Storage } from 'aws-amplify';
+
 const FormCreate = props => {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -127,7 +129,21 @@ const FormCreate = props => {
   //            Upload to s3          //
   //==================================//
 
-  
+  // Upload images to S3
+  const handleImgUpload = async (file, path) => {
+    try {
+      await Storage.put(path, file, {contentType: 'image'});
+      console.log(path, file);
+    } catch (error) {
+      console.log('error on uploading images to s3', error);
+    }
+  };
+
+  const s3Upload = () => {
+    formImages.map(pair => {
+      handleImgUpload(pair[0], pair[1]);
+    })
+  };
 
   const uploadForm = async () => {
     // Get user attributes
@@ -151,7 +167,7 @@ const FormCreate = props => {
         message: `Submitted Successfully`,
         type: 'success'
       });
-
+      s3Upload();
       // Refresh if submitted from TestList page (i.e., starting from duplicate)
       // or redirect to TestList page if submitted from TestCreate route
       selectedForm ?
@@ -233,7 +249,6 @@ const FormCreate = props => {
           >
             CREATE FORM
           </Button>
-          <Button onClick={console.log('Image State / Form Create', formImages)}>Check State</Button>
         </Form>
       </Formik >
 
@@ -261,8 +276,7 @@ const FormCreate = props => {
 FormCreate.propTypes = {
   selectedForm: PropTypes.object,
   handleListRefresh: PropTypes.func,
-  formImages: PropTypes.array,
-  setFormImages: PropTypes.func
+
 };
 
 export default FormCreate;

@@ -33,7 +33,6 @@ const UploadMultiplePreview = props => {
       const path = `${formId}/q${questionIdx + 1}_a${idx + 1}_${image.name}`;
       imageUrls.push(path);
       formCollection.push([image, path])
-      console.log("uploadmultiplePreview#formImages", formImages)
     })
     setFormImages([
       ...formImages,
@@ -48,23 +47,6 @@ const UploadMultiplePreview = props => {
 // const onClick = () => {
 //   setImages()
 // }
-
-
-
-  
-  // Upload images to S3
-  // const handleUpload = async (file, path) => {
-  //   await Storage.put(path, file, { contentType: 'image' });
-  // }
-  const handleImgUpload = async (file, path) => {
-    try {
-      await Storage.put(path, file, {contentType: 'image'});
-      console.log(path, file);
-    } catch (error) {
-      console.log('error on uploading images to s3', error);
-    }
-  };
-
 
   // Set state for image preview
   const [selectedFiles, setSelectedFiles] = useState([]);
