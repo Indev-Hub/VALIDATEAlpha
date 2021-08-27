@@ -12,7 +12,8 @@ import FormSubmission from "../../form/FormSubmission";
 import Notification from "../../form/Notification";
 import FormDetails from "./FormDetails";
 import FormQuestions from "./FormQuestions";
-
+import { ValidatorForm } from 'react-material-ui-form-validator';
+import * as Yup from 'yup';
 
 const FormCreate = (props) => {
   const navigate = useNavigate();
@@ -102,7 +103,6 @@ const FormCreate = (props) => {
     return formDesignDataSet;
   };
 
-
   //==================================//
   //           FORM PREVIEW           //
   //==================================//
@@ -112,10 +112,10 @@ const FormCreate = (props) => {
     setFormPreview(formDesign);
   };
 
-
   //==================================//
   //           UPLOAD FORM            //
   //==================================//
+
   const uploadForm = async () => {
     // Get user attributes
     const { signInUserSession } = await Auth.currentAuthenticatedUser();
@@ -153,6 +153,36 @@ const FormCreate = (props) => {
       });
     }
   };
+
+  //checks each form value before uploading form to database
+  const validateFormFields = () => {
+    if (detailsState.title === "") {
+      return setNotify({
+        isOpen: true,
+        message: "Form Name Must Be Filled Out Before Submission",
+        type: "error",
+      });
+    } else if (detailsState.companyID === undefined) {
+      return setNotify({
+        isOpen: true,
+        message: "Company Name Must Be Selected Before Submission",
+        type: "error",
+      });
+    } else {
+      for (let i = 0; i < questionsState.length; i++) {
+        if (questionsState[i].question === ""
+          || questionsState[i].type === ""
+          || questionsState[i].options.includes("")) {
+          return setNotify({
+            isOpen: true,
+            message: "Your Questions Must Be Filled Out Completely",
+            type: "error",
+          });
+        }
+      }
+    }
+    return uploadForm();
+  }
 
 
   //==================================//
@@ -208,11 +238,10 @@ const FormCreate = (props) => {
             setQuestionsState={setQuestionsState}
             blankQuestion={blankQuestion}
             previewForm={previewForm}
-            uploadForm={uploadForm}
+            validateFormFields={validateFormFields}
           />
         </Form>
       </Formik>
-
       {formPreview ? (
         <Paper elevation={3} sx={{ mt: 2 }}>
           <Box p={4}>

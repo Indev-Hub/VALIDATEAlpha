@@ -26,7 +26,7 @@ const FormQuestions = props => {
     setQuestionsState,
     blankQuestion,
     previewForm,
-    uploadForm,
+    validateFormFields,
   } = props;
 
   // Add question ID state for UploadMultiplePreview (RadioImages options)
@@ -307,7 +307,7 @@ const FormQuestions = props => {
         color="primary"
         type="button"
         variant="contained"
-        onClick={uploadForm}
+        onClick={validateFormFields}
       >
         CREATE FORM
       </Button>
@@ -321,7 +321,7 @@ FormQuestions.propTypes = {
   setQuestionsState: PropTypes.func,
   blankQuestion: PropTypes.object,
   previewForm: PropTypes.func,
-  uploadForm: PropTypes.func,
+  validateFormFields: PropTypes.func,
 };
 
 export default FormQuestions;

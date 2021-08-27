@@ -12,6 +12,7 @@ import { Plus } from "../../../icons";
 import PropTypes from "prop-types";
 import Controls from "../../form/controls/_controls";
 import { TAGS } from "./FormConstants.js";
+import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 
 // FORM DETAILS SECTION OF FormCreate.js
 const FormDetails = (props) => {
@@ -59,6 +60,11 @@ const FormDetails = (props) => {
       tags: newTags,
     });
   };
+
+  const validate = () => {
+    let temp = {};
+    temp.title = detailsState.title ? "" : "This field is required"
+  }
 
   // Render form details section of FormCreate.js
   return (
