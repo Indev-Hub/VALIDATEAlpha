@@ -5,8 +5,6 @@ import { Close } from '@material-ui/icons';
 import { Storage } from 'aws-amplify';
 import PropTypes from 'prop-types';
 
-import storeImages from '../../../hooks/storeImages.js'
-
 const useStyles = makeStyles(() => ({
   closeButton: {
     position: 'absolute',

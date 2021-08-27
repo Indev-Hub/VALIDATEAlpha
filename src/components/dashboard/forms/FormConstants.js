@@ -14,7 +14,7 @@ export const INPUT_CONTROLS = [
   'Dropdown',
   'Number',
   'Radio Group',
-  'Radio Images',
+  'Images',
   'Rating',
   // 'Switch',
   // 'Text Input',
