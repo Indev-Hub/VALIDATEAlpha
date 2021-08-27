@@ -39,6 +39,8 @@ const FormQuestions = props => {
     blankQuestion,
     previewForm,
     uploadForm,
+    formImages,
+    setFormImages
   } = props;
 
   // Add question ID state for UploadMultiplePreview (RadioImages options)
@@ -293,6 +295,8 @@ const FormQuestions = props => {
                                   questionIdx={qstidx}
                                   toggleDialog={toggleImages}
                                   updateRadioImagesOptions={updateRadioImagesOptions}
+                                  formImages={formImages}
+                                  setFormImages={setFormImages}
                                 />
                               </Box>
                             </Dialog>
@@ -348,6 +352,8 @@ FormQuestions.propTypes = {
   setQuestionsState: PropTypes.func,
   blankQuestion: PropTypes.object,
   previewForm: PropTypes.func,
+  formImages: PropTypes.array,
+  setFormImages: PropTypes.func,
   // uploadForm: PropTypes.func, -- handled in FormCreate.js
 };
 

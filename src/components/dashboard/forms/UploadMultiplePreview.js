@@ -29,6 +29,7 @@ const UploadMultiplePreview = props => {
     let formCollection = [];
     Object.values(images).forEach((image, idx) => {
       const path = `${formId}/q${questionIdx + 1}_a${idx + 1}_${image.name}`;
+      console.log("uploadmultiplepreview#onClick", formCollection)
       imageUrls.push(path);
       formCollection.push([image, path])
     })
