@@ -220,7 +220,7 @@ const FormSubmission = props => {
                             </Box>
                           );
                           break;
-                        case 'Radio Images':
+                        case 'Images':
                           return (
                             <Box mt={marginUp}>
                               <Controls.RadioImages
