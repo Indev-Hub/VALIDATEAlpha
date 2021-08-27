@@ -9,7 +9,8 @@ import {
   Drawer,
   Hidden,
   Link,
-  Typography } from '@material-ui/core';
+  Typography
+} from '@material-ui/core';
 import useAuth from '../../hooks/useAuth';
 // import ReceiptIcon from '@material-ui/icons/Receipt';
 // import BriefcaseIcon from '../../icons/Briefcase';
@@ -152,23 +153,23 @@ const sections = [
         icon: <Plus fontSize="small" />
       },
 
-      {
-        title: 'Validations',
-        // icon: <Clipboard fontSize="small" />,
-        path: '/dashboard/orders',
-        children: [
-          {
-            title: 'Add Form',
-            path: '/dashboard/test-create',
-            icon: <Plus fontSize="small" />
-          },
-          {
-            title: 'Form Collection',
-            path: '/dashboard/form-collection',
-            // icon: <Archive fontSize="small" />
-          }
-        ]
-      }
+      // {
+      //   title: 'Validations',
+      //   // icon: <Clipboard fontSize="small" />,
+      //   path: '/dashboard/orders',
+      //   children: [
+      //     {
+      //       title: 'Add Form',
+      //       path: '/dashboard/test-create',
+      //       icon: <Plus fontSize="small" />
+      //     },
+      //     {
+      //       title: 'Form Collection',
+      //       path: '/dashboard/form-collection',
+      //       // icon: <Archive fontSize="small" />
+      //     }
+      //   ]
+      // }
     ]
   },
   {
@@ -272,7 +273,7 @@ const DashboardSidebar = (props) => {
     if (openMobile && onMobileClose) {
       onMobileClose();
     }
-  }, [location.pathname]);
+  }, [location.pathname, onMobileClose, openMobile]);
 
   const content = (
     <Box
