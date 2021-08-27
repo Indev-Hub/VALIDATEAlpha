@@ -29,7 +29,6 @@ const UploadMultiplePreview = props => {
     let formCollection = [];
     Object.values(images).forEach((image, idx) => {
       const path = `${formId}/q${questionIdx + 1}_a${idx + 1}_${image.name}`;
-      console.log("uploadmultiplepreview#onClick", formCollection)
       imageUrls.push(path);
       formCollection.push([image, path])
     })
@@ -103,7 +102,7 @@ const UploadMultiplePreview = props => {
         </IconButton>
         <Typography variant="h5" p={3}>Upload Image Options</Typography>
 
-          {/* const toggleImages = async (qstidx) => {
+      {/* const toggleImages = async (qstidx) => {
       // Check if the current index already exists in the array
       if (isImage.includes(qstidx)) {
         // Duplicate existing isImage array and return only the items that DO NOT match the current index.
