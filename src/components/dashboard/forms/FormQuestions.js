@@ -9,27 +9,36 @@ import {
   IconButton,
   Switch,
   Typography,
-  AddIcon,
 } from '@material-ui/core';
 import { Close, DeleteForever } from '@material-ui/icons';
 import PropTypes from 'prop-types';
 import { Plus } from '../../../icons';
 import Controls from '../../form/controls/_controls';
 import UploadMultiplePreview from './UploadMultiplePreview';
-import { INPUT_CONTROLS } from "./FormConstants";
+import {INPUT_CONTROLS} from './FormConstants'
 
 // VALIDATION QUESTIONS SECTION OF FormCreate
+
+// const INPUT_CONTROLS = [
+//   'Checkbox',
+//   'Dropdown',
+//   'Number',
+//   'Radio Group',
+//   'Images',
+//   'Rating',
+//   // 'Switch',
+//   // 'Text Input',
+// ];
+
 const FormQuestions = props => {
-  // Deconstruct state props from FormCreate -- createForm is now living in FormCreate.js
+  // Deconstruct state props from FormCreate
   const {
     formId,
     questionsState,
     setQuestionsState,
     blankQuestion,
     previewForm,
-    formImages,
-    setFormImages
-    // uploadForm,
+    uploadForm,
   } = props;
 
   // Add question ID state for UploadMultiplePreview (RadioImages options)
@@ -66,7 +75,7 @@ const FormQuestions = props => {
     setQuestionsState(updatedState);
   };
 
-  // Update random answer type when selected
+  // Update answer type when selected
   const handleRandomChange = (qstidx, e) => {
     const updatedState = [...questionsState]; // make copy
     updatedState[qstidx].randomize = e.target.checked;
@@ -284,8 +293,6 @@ const FormQuestions = props => {
                                   questionIdx={qstidx}
                                   toggleDialog={toggleImages}
                                   updateRadioImagesOptions={updateRadioImagesOptions}
-                                  formImages={formImages}
-                                  setFormImages={setFormImages}
                                 />
                               </Box>
                             </Dialog>
@@ -341,8 +348,6 @@ FormQuestions.propTypes = {
   setQuestionsState: PropTypes.func,
   blankQuestion: PropTypes.object,
   previewForm: PropTypes.func,
-  formImages: PropTypes.array,
-  setFormImages: PropTypes.func
   // uploadForm: PropTypes.func, -- handled in FormCreate.js
 };
 

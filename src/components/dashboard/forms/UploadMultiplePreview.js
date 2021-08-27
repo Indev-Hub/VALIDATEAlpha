@@ -101,6 +101,19 @@ const UploadMultiplePreview = props => {
           <Close />
         </IconButton>
         <Typography variant="h5" p={3}>Upload Image Options</Typography>
+
+          {/* const toggleImages = async (qstidx) => {
+      // Check if the current index already exists in the array
+      if (isImage.includes(qstidx)) {
+        // Duplicate existing isImage array and return only the items that DO NOT match the current index.
+        // When setIsImage operates below it effectively removes the current index from the array.
+        const removeImageOption = isImage.filter(items => { return items !== qstidx });
+
+        // Replace isImage array with modified array (without current index)
+        setIsImage(removeImageOption);
+        console.log('image check true:', isImage, qstidx) // Can be removed if everything is understood and working correctly
+        return;
+      } */}
         <Button
           variant="contained"
           component="label"
