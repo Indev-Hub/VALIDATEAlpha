@@ -12,8 +12,6 @@ import FormSubmission from "../../form/FormSubmission";
 import Notification from "../../form/Notification";
 import FormDetails from "./FormDetails";
 import FormQuestions from "./FormQuestions";
-import { ValidatorForm } from 'react-material-ui-form-validator';
-import * as Yup from 'yup';
 
 const FormCreate = (props) => {
   const navigate = useNavigate();
@@ -183,7 +181,6 @@ const FormCreate = (props) => {
     }
     return uploadForm();
   }
-
 
   //==================================//
   //      USER TABLE INFORMATION      //

@@ -6,13 +6,14 @@ import {
   TextField,
   Typography,
   Chip,
+  Button
 } from "@material-ui/core";
 import { Close, EventAvailableOutlined } from "@material-ui/icons";
 import { Plus } from "../../../icons";
 import PropTypes from "prop-types";
 import Controls from "../../form/controls/_controls";
 import { TAGS } from "./FormConstants.js";
-import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
+import { Link } from "react-router-dom";
 
 // FORM DETAILS SECTION OF FormCreate.js
 const FormDetails = (props) => {
@@ -61,9 +62,36 @@ const FormDetails = (props) => {
     });
   };
 
-  const validate = () => {
-    let temp = {};
-    temp.title = detailsState.title ? "" : "This field is required"
+  // Conditionally renders list of companies if user has created them
+  const checkCompanies = () => {
+    if (userData.companies.items.length > 0) {
+      return (
+        <TextField
+          select
+          fullWidth
+          label="Company"
+          name="companyID"
+          value={detailsState.companyID}
+          onChange={handleDetailsInput}
+        >
+          {userData.companies.items.map((company) => (
+            <MenuItem value={company.id}>{company.name}</MenuItem>
+          ))}
+        </TextField>
+      )
+    } else {
+      return (
+        <Button
+          variant="contained"
+          color="primary"
+          fullWidth={true}
+          type="button"
+          href="/dashboard/company/new"
+        >
+          Create Company
+        </Button>
+      )
+    }
   }
 
   // Render form details section of FormCreate.js
@@ -142,22 +170,12 @@ const FormDetails = (props) => {
               value={detailsState.isPrivate ? "Private" : "Public"}
               onChange={handlePublicPrivateChange}
             />
-            <TextField
-              select
-              fullWidth
-              label="Company"
-              name="companyID"
-              value={detailsState.companyID}
-              onChange={handleDetailsInput}
-            >
-              {userData ? (
-                userData.companies.items.map((company) => (
-                  <MenuItem value={company.id}>{company.name}</MenuItem>
-                ))
+            {userData
+              ? (
+                checkCompanies()
               ) : (
                 <Typography>Loading Companies</Typography>
               )}
-            </TextField>
             {detailsState.tags.map((_tag, tagidx) => {
               return (
                 <Chip
