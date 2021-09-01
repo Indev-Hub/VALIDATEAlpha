@@ -8,12 +8,9 @@ import {
   Chip,
   Button
 } from "@material-ui/core";
-import { Close, EventAvailableOutlined } from "@material-ui/icons";
-import { Plus } from "../../../icons";
 import PropTypes from "prop-types";
 import Controls from "../../form/controls/_controls";
 import { TAGS } from "./FormConstants.js";
-import { Link } from "react-router-dom";
 
 // FORM DETAILS SECTION OF FormCreate.js
 const FormDetails = (props) => {
