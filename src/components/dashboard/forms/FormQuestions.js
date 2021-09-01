@@ -27,16 +27,9 @@ const FormQuestions = (props) => {
     setQuestionsState,
     blankQuestion,
     previewForm,
-    validateFormFields,
     formImages,
     setFormImages,
   } = props;
-
-  // Declare file input reference
-  const fileInput = React.useRef();
-
-  // Set state for image preview
-  // const [selectedFiles, setSelectedFiles] = useState([]);
 
   // Add question ID state for UploadMultiplePreview (RadioImages options)
   const [questionId, setQuestionId] = useState(1);
@@ -94,7 +87,7 @@ const FormQuestions = (props) => {
     setQuestionsState(updatedState);
   };
 
-  // Removes answer option from mapped array.
+  // Remove answer option from mapped array
   const removeOption = (qstidx, optidx) => {
     const updatedState = [...questionsState]; // make copy
     updatedState[qstidx].options.splice(optidx, 1);
@@ -112,22 +105,17 @@ const FormQuestions = (props) => {
   // Sets whether images are being added to options and displays dialog if true
   const [isImage, setIsImage] = useState([]);
 
-  // Update image state array
+  // Update isImage state to toggle UploadMultiplePreveiw dialog component
   const toggleImages = async (qstidx) => {
-    // Check if the current index already exists in the array
+    // Remove if question index is already in state
     if (isImage.includes(qstidx)) {
-      // Duplicate existing isImage array and return only the items that DO NOT match the current index.
-      // When setIsImage operates below it effectively removes the current index from the array.
       const removeImageOption = isImage.filter((items) => {
         return items !== qstidx;
       });
-
-      // Replace isImage array with modified array (without current index)
       setIsImage(removeImageOption);
       return;
     }
-
-    // Add the index to the isImage array if the above check is false 
+    // Otherwise, add the index to isImage state 
     setIsImage([...isImage, qstidx]);
   };
 
@@ -330,7 +318,6 @@ FormQuestions.propTypes = {
   setQuestionsState: PropTypes.func,
   blankQuestion: PropTypes.object,
   previewForm: PropTypes.func,
-  validateFormFields: PropTypes.func,
   formImages: PropTypes.array,
   setFormImages: PropTypes.func,
 };
