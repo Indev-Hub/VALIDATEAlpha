@@ -177,7 +177,7 @@ const FormCreate = props => {
     }
   };
 
-  //checks each form value before uploading form to database
+  // Validate required form fields before uploading form to database
   const validateFormFields = () => {
     if (detailsState.title === "") {
       return setNotify({
@@ -194,11 +194,10 @@ const FormCreate = props => {
     } else {
       for (let i = 0; i < questionsState.length; i++) {
         if (questionsState[i].question === ""
-          || questionsState[i].type === ""
-          || questionsState[i].options.includes("")) {
+          || questionsState[i].type === "") {
           return setNotify({
             isOpen: true,
-            message: "Your Questions Must Be Filled Out Completely",
+            message: "Your Questions Must Have a Question and an Answer Type",
             type: "error",
           });
         }
@@ -260,7 +259,6 @@ const FormCreate = props => {
             setQuestionsState={setQuestionsState}
             blankQuestion={blankQuestion}
             previewForm={previewForm}
-            validateFormFields={validateFormFields}
             uploadForm={uploadForm}
             formImages={formImages}
             setFormImages={setFormImages}
