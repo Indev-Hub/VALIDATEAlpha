@@ -60,7 +60,7 @@ const FormDetails = (props) => {
   };
 
   // Conditionally renders list of companies if user has created them
-  const checkCompanies = () => {
+  const listCompanies = () => {
     if (userData.companies.items.length > 0) {
       return (
         <TextField
@@ -167,12 +167,11 @@ const FormDetails = (props) => {
               value={detailsState.isPrivate ? "Private" : "Public"}
               onChange={handlePublicPrivateChange}
             />
-            {userData
-              ? (
-                checkCompanies()
-              ) : (
-                <Typography>Loading Companies</Typography>
-              )}
+            {userData ? (
+              listCompanies()
+            ) : (
+              <Typography>Loading Companies</Typography>
+            )}
             {detailsState.tags.map((_tag, tagidx) => {
               return (
                 <Chip
@@ -190,8 +189,6 @@ const FormDetails = (props) => {
                 />
               );
             })}
-            {console.log("FormDetails userData:", userData)}
-            {console.log("FormDetails detailsState:", detailsState)}
           </Card>
         </Grid>
       </Grid>
