@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Button, Grid, IconButton, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { Close } from "@material-ui/icons";
-import { Storage } from "aws-amplify";
 import PropTypes from "prop-types";
 
 const useStyles = makeStyles(() => ({
@@ -55,7 +54,7 @@ const UploadMultiplePreview = (props) => {
       );
 
       // Replace existing image files with new selected image files
-      // setSelectedFiles(filesArray);
+      setSelectedFiles(filesArray);
 
       // Add new selected image files to existing image files
       // setSelectedFiles((prevImages) => prevImages.concat(filesArray));

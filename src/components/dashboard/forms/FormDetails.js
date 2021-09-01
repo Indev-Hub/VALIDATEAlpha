@@ -6,9 +6,8 @@ import {
   TextField,
   Typography,
   Chip,
+  Button
 } from "@material-ui/core";
-import { Close, EventAvailableOutlined } from "@material-ui/icons";
-import { Plus } from "../../../icons";
 import PropTypes from "prop-types";
 import Controls from "../../form/controls/_controls";
 import { TAGS } from "./FormConstants.js";
@@ -59,6 +58,38 @@ const FormDetails = (props) => {
       tags: newTags,
     });
   };
+
+  // Conditionally renders list of companies if user has created them
+  const listCompanies = () => {
+    if (userData.companies.items.length > 0) {
+      return (
+        <TextField
+          select
+          fullWidth
+          label="Company"
+          name="companyID"
+          value={detailsState.companyID}
+          onChange={handleDetailsInput}
+        >
+          {userData.companies.items.map((company) => (
+            <MenuItem value={company.id}>{company.name}</MenuItem>
+          ))}
+        </TextField>
+      )
+    } else {
+      return (
+        <Button
+          variant="contained"
+          color="primary"
+          fullWidth={true}
+          type="button"
+          href="/dashboard/company/new"
+        >
+          Create Company
+        </Button>
+      )
+    }
+  }
 
   // Render form details section of FormCreate.js
   return (
@@ -136,22 +167,11 @@ const FormDetails = (props) => {
               value={detailsState.isPrivate ? "Private" : "Public"}
               onChange={handlePublicPrivateChange}
             />
-            <TextField
-              select
-              fullWidth
-              label="Company"
-              name="companyID"
-              value={detailsState.companyID}
-              onChange={handleDetailsInput}
-            >
-              {userData ? (
-                userData.companies.items.map((company) => (
-                  <MenuItem value={company.id}>{company.name}</MenuItem>
-                ))
-              ) : (
-                <Typography>Loading Companies</Typography>
-              )}
-            </TextField>
+            {userData ? (
+              listCompanies()
+            ) : (
+              <Typography>Loading Companies</Typography>
+            )}
             {detailsState.tags.map((_tag, tagidx) => {
               return (
                 <Chip
@@ -169,8 +189,6 @@ const FormDetails = (props) => {
                 />
               );
             })}
-            {console.log("FormDetails userData:", userData)}
-            {console.log("FormDetails detailsState:", detailsState)}
           </Card>
         </Grid>
       </Grid>

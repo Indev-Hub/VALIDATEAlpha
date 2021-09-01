@@ -111,7 +111,6 @@ const FormCreate = props => {
     setFormPreview(formDesign);
   };
 
-
   //==================================//
   //           UPLOAD FORM            //
   //==================================//
@@ -178,6 +177,35 @@ const FormCreate = props => {
     }
   };
 
+  // Validate required form fields before uploading form to database
+  const validateFormFields = () => {
+    if (detailsState.title === "") {
+      return setNotify({
+        isOpen: true,
+        message: "Form Name Must Be Filled Out Before Submission",
+        type: "error",
+      });
+    } else if (detailsState.companyID === undefined) {
+      return setNotify({
+        isOpen: true,
+        message: "Company Name Must Be Selected Before Submission",
+        type: "error",
+      });
+    } else {
+      for (let i = 0; i < questionsState.length; i++) {
+        if (questionsState[i].question === ""
+          || questionsState[i].type === "") {
+          return setNotify({
+            isOpen: true,
+            message: "Your Questions Must Have a Question and an Answer Type",
+            type: "error",
+          });
+        }
+      }
+    }
+    return uploadForm();
+  }
+
   //==================================//
   //      USER TABLE INFORMATION      //
   //==================================//
@@ -241,13 +269,12 @@ const FormCreate = props => {
             color="primary"
             type="button"
             variant="contained"
-            onClick={uploadForm}
+            onClick={validateFormFields}
           >
             CREATE FORM
           </Button>
         </Form>
       </Formik>
-
       {formPreview ? (
         <Paper elevation={3} sx={{ mt: 2 }}>
           <Box p={4}>
