@@ -1,19 +1,21 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { API, Auth, graphqlOperation } from "aws-amplify";
-import { createForm } from "../../../graphql/mutations";
-import { getUser } from "src/graphql/queries";
-import { Formik, Form } from "formik";
-import PropTypes from "prop-types";
-import { Box, Paper } from "@material-ui/core";
-import { v4 as uuidv4 } from "uuid";
-import useAuth from "../../../hooks/useAuth";
-import FormSubmission from "../../form/FormSubmission";
-import Notification from "../../form/Notification";
-import FormDetails from "./FormDetails";
-import FormQuestions from "./FormQuestions";
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { API, Auth, graphqlOperation } from 'aws-amplify';
+import { Storage } from 'aws-amplify';
+import { Formik, Form } from 'formik';
+import { Box, Button, Paper } from '@material-ui/core';
+import { v4 as uuidv4 } from 'uuid';
+import { createForm } from '../../../graphql/mutations';
+import { getUser } from '../../../graphql/queries';
+import useAuth from '../../../hooks/useAuth';
+import FormDetails from './FormDetails';
+import FormQuestions from './FormQuestions';
+import FormSubmission from '../../form/FormSubmission';
+import Notification from '../../form/Notification';
 
-const FormCreate = (props) => {
+
+const FormCreate = props => {
   const navigate = useNavigate();
   const { user } = useAuth();
 
@@ -48,7 +50,6 @@ const FormCreate = (props) => {
   }
 
   const [detailsState, setDetailsState] = useState(initialDetails);
-  console.log("Details State", detailsState);
 
   // Initialize questions state
   const blankQuestion = {
@@ -102,7 +103,7 @@ const FormCreate = (props) => {
   };
 
   //==================================//
-  //           FORM PREVIEW           //
+  //           PREVIEW FORM           //
   //==================================//
   const [formPreview, setFormPreview] = useState(null);
   const previewForm = () => {
@@ -113,6 +114,25 @@ const FormCreate = (props) => {
   //==================================//
   //           UPLOAD FORM            //
   //==================================//
+  
+  // State passed through FormQuestions to UploadMultiplePreview
+  const [formImages, setFormImages] = useState([]);
+
+  // Upload images to S3
+  const handleImgUpload = async (path, file) => {
+    try {
+      await Storage.put(path, file, {contentType: 'image'});
+    } catch (error) {
+      console.log('error on uploading images to s3', error);
+    }
+  };
+
+  // Map through image/url pairs and pass to S3 upload function
+  const s3Upload = () => {
+    formImages.map(pair => {
+      handleImgUpload(pair[0], pair[1]);
+    })
+  };
 
   const uploadForm = async () => {
     // Get user attributes
@@ -123,10 +143,11 @@ const FormCreate = (props) => {
     // Get form design schema and output to DynamoDB
     const formDesignDataSet = createFormDesignDataSet();
 
-    console.log(
-      "FormCreate#uploadForm",
-      JSON.stringify(formDesignDataSet, null, 2)
-    );
+    // Uncomment to console log complete form design structure
+    // console.log(
+    //   "FormCreate uploadForm formDesignDataSet:",
+    //   JSON.stringify(formDesignDataSet, null, 2)
+    // );
 
     try {
       await API.graphql(
@@ -137,11 +158,15 @@ const FormCreate = (props) => {
         message: `Submitted Successfully`,
         type: "success",
       });
+
+      s3Upload();
+
       // Refresh if submitted from TestList page (i.e., starting from duplicate)
       // or redirect to TestList page if submitted from TestCreate route
       selectedForm ?
         setTimeout(() => handleListRefresh(), 1200)
         : setTimeout(() => navigate("/dashboard/company/forms"), 1200);
+
     } catch (error) {
       console.log("error uploading form", error);
       setNotify({
@@ -203,8 +228,8 @@ const FormCreate = (props) => {
       );
       const userList = userData.data.getUser;
       setUserData(userList);
-      console.log("user info", userList);
-      console.log("user sub", user.id);
+      console.log("FormCreate getUserTable userList:", userList);
+      console.log("FormCreate getUserTable user.id:", user.id);
     } catch (error) {
       console.log("error on fetching user table", error);
     }
@@ -236,7 +261,20 @@ const FormCreate = (props) => {
             blankQuestion={blankQuestion}
             previewForm={previewForm}
             validateFormFields={validateFormFields}
+            uploadForm={uploadForm}
+            formImages={formImages}
+            setFormImages={setFormImages}
           />
+          <Button
+            sx={{ mt: 3, padding: 2 }}
+            fullWidth
+            color="primary"
+            type="button"
+            variant="contained"
+            onClick={validateFormFields}
+          >
+            CREATE FORM
+          </Button>
         </Form>
       </Formik>
       {formPreview ? (
@@ -259,6 +297,7 @@ const FormCreate = (props) => {
 FormCreate.propTypes = {
   selectedForm: PropTypes.object,
   handleListRefresh: PropTypes.func,
+
 };
 
 export default FormCreate;

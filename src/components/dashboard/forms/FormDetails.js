@@ -193,8 +193,8 @@ const FormDetails = (props) => {
                 />
               );
             })}
-            {console.log("userData", userData)}
-            {console.log("detailsState", detailsState)}
+            {console.log("FormDetails userData:", userData)}
+            {console.log("FormDetails detailsState:", detailsState)}
           </Card>
         </Grid>
       </Grid>
@@ -203,6 +203,7 @@ const FormDetails = (props) => {
 };
 
 FormDetails.propTypes = {
+  userData: PropTypes.object,
   detailsState: PropTypes.object,
   setDetailsState: PropTypes.func,
 };

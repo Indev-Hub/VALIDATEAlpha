@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -9,16 +9,17 @@ import {
   IconButton,
   Switch,
   Typography,
-} from '@material-ui/core';
-import { Close, DeleteForever } from '@material-ui/icons';
-import PropTypes from 'prop-types';
-import { Plus } from '../../../icons';
-import Controls from '../../form/controls/_controls';
-import UploadMultiplePreview from './UploadMultiplePreview';
+} from "@material-ui/core";
+import { Close, DeleteForever } from "@material-ui/icons";
+import PropTypes from "prop-types";
+import { Plus } from "../../../icons";
+import Controls from "../../form/controls/_controls";
+import UploadMultiplePreview from "./UploadMultiplePreview";
 import { INPUT_CONTROLS } from "./FormConstants";
 
 // VALIDATION QUESTIONS SECTION OF FormCreate
-const FormQuestions = props => {
+
+const FormQuestions = (props) => {
   // Deconstruct state props from FormCreate
   const {
     formId,
@@ -27,7 +28,15 @@ const FormQuestions = props => {
     blankQuestion,
     previewForm,
     validateFormFields,
+    formImages,
+    setFormImages,
   } = props;
+
+  // Declare file input reference
+  const fileInput = React.useRef();
+
+  // Set state for image preview
+  // const [selectedFiles, setSelectedFiles] = useState([]);
 
   // Add question ID state for UploadMultiplePreview (RadioImages options)
   const [questionId, setQuestionId] = useState(1);
@@ -38,7 +47,7 @@ const FormQuestions = props => {
     setQuestionId(newId);
     setQuestionsState([
       ...questionsState,
-      { ...blankQuestion, questionId: newId }
+      { ...blankQuestion, questionId: newId },
     ]);
   };
 
@@ -73,7 +82,7 @@ const FormQuestions = props => {
   // Add answer option to form and add the new option to our questionsState
   const addOption = (qstidx) => {
     const updatedState = [...questionsState]; // make copy
-    updatedState[qstidx].options = [...updatedState[qstidx].options, '']
+    updatedState[qstidx].options = [...updatedState[qstidx].options, ""];
     setQuestionsState(updatedState);
   };
 
@@ -81,7 +90,7 @@ const FormQuestions = props => {
   // function is passed to UploadeMultiplePreview
   const updateRadioImagesOptions = (qstidx, imgUrlArray) => {
     const updatedState = [...questionsState];
-    updatedState[qstidx].options = [...imgUrlArray]
+    updatedState[qstidx].options = [...imgUrlArray];
     setQuestionsState(updatedState);
   };
 
@@ -109,20 +118,17 @@ const FormQuestions = props => {
     if (isImage.includes(qstidx)) {
       // Duplicate existing isImage array and return only the items that DO NOT match the current index.
       // When setIsImage operates below it effectively removes the current index from the array.
-      const removeImageOption = isImage.filter(items => { return items !== qstidx });
+      const removeImageOption = isImage.filter((items) => {
+        return items !== qstidx;
+      });
 
       // Replace isImage array with modified array (without current index)
       setIsImage(removeImageOption);
-      console.log('image check true:', isImage, qstidx) // Can be removed if everything is understood and working correctly
       return;
     }
 
-    // If the above "if" check comes back false then we add the index to the isImage array
-    setIsImage([
-      ...isImage,
-      qstidx
-    ]);
-    console.log('image check false:', isImage, qstidx) // Can be removed if everything is understood and working correctly
+    // Add the index to the isImage array if the above check is false 
+    setIsImage([...isImage, qstidx]);
   };
 
   return (
@@ -136,17 +142,13 @@ const FormQuestions = props => {
               container
               display="flex"
               sx={{
-                backgroundColor: 'black',
+                backgroundColor: "black",
                 p: 1,
-                color: 'white'
+                color: "white",
               }}
             >
               <Grid item justifyContent="center" xs={10} sm={11}>
-                <Typography
-                  variant="h6"
-                  fullWidth
-                  align='center'
-                >
+                <Typography variant="h6" fullWidth align="center">
                   {`Question ${qstidx + 1}`}
                 </Typography>
               </Grid>
@@ -155,10 +157,10 @@ const FormQuestions = props => {
                   type="button"
                   id={`${qstidx}`}
                   sx={{
-                    color: 'text.secondary',
-                    '&:hover': {
-                      color: 'text.light'
-                    }
+                    color: "text.secondary",
+                    "&:hover": {
+                      color: "text.light",
+                    },
                   }}
                   onClick={() => removeQuestion(qstidx)}
                 >
@@ -166,13 +168,7 @@ const FormQuestions = props => {
                 </Button>
               </Grid>
             </Grid>
-            <Grid
-              container
-              spacing={1}
-              display="flex"
-              sx={{ p: 2 }}
-              row="true"
-            >
+            <Grid container spacing={1} display="flex" sx={{ p: 2 }} row="true">
               <Grid item xs={12} md={4}>
                 <Box>
                   <Controls.TextField
@@ -204,78 +200,101 @@ const FormQuestions = props => {
                     onChange={(e) => handleSelectChange(qstidx, e)}
                   />
                   <FormControlLabel
-                    control={<Switch onClick={() => toggleImages(qstidx)} name="useImages" />}
-                    label="Use images as answers"
-                  />
-                  <FormControlLabel
-                    control={<Switch value={questionsState[qstidx].randomize} onChange={(e) => handleRandomChange(qstidx, e)} name="randomizeOptions" />}
+                    control={
+                      <Switch
+                        value={questionsState[qstidx].randomize}
+                        onChange={(e) => handleRandomChange(qstidx, e)}
+                        name="randomizeOptions"
+                      />
+                    }
                     label="Randomize answers"
                   />
                 </Box>
               </Grid>
               <Grid item xs={12} md={4}>
                 <Box>
-                  {isImage.includes(qstidx) ?
-                    (
-                      <Dialog
-                        open={() => toggleImages(qstidx)}
-                        fullWidth='true'
+                  {/* Start mapping the validation answer options & alternate text and image upload */}
+                  {questionsState[qstidx].type !== "Images" ? (
+                    <>
+                      {questionsState[qstidx].options.map((_opt, optidx) => {
+                        return (
+                          <Box key={`input-${optidx}`} sx={{ my: 0 }}>
+                            <Grid container display="flex" sx={{ pb: 1 }}>
+                              <Grid item xs>
+                                <Controls.TextField
+                                  label={`Option ${optidx + 1}`}
+                                  type="text"
+                                  name={`option-${optidx + 1}`}
+                                  placeholder={`Option ${optidx +
+                                    1} for Question #${qstidx + 1}`}
+                                  data-idx={optidx}
+                                  id={`${optidx}`}
+                                  fullWidth
+                                  className="option"
+                                  value={questionsState[qstidx].options[optidx]}
+                                  onChange={(e) =>
+                                    handleOptionInput(qstidx, optidx, e)
+                                  }
+                                />
+                              </Grid>
+                              <Grid item xs={2}>
+                                <IconButton
+                                  type="button"
+                                  onClick={() => removeOption(qstidx, optidx)}
+                                  id={`${optidx}`}
+                                >
+                                  <Close />
+                                </IconButton>
+                              </Grid>
+                            </Grid>
+                          </Box>
+                        );
+                      })}
+                      <Button
+                        type="button"
+                        onClick={() => addOption(qstidx)}
+                        variant="contained"
+                        color="secondary"
+                        sx={{ m: 1, pr: 3 }}
+                        startIcon={<Plus />}
                       >
-                        <Box mb={1}>
-                          <UploadMultiplePreview
-                            formId={formId}
-                            questionIdx={qstidx}
-                            toggleDialog={toggleImages}
-                            updateRadioImagesOptions={updateRadioImagesOptions}
-                          />
-                        </Box>
-                      </Dialog>
-                    ) : (
-                      null
-                    )
-                  }
-                  {/* Start mapping the validation answer options */}
-                  {questionsState[qstidx].options.map((_opt, optidx) => {
-                    return (
-                      <Box key={`input-${optidx}`} sx={{ my: 0 }}>
-                        <Grid container display="flex" sx={{ pb: 1 }}>
-                          <Grid item xs>
-                            <Controls.TextField
-                              label={`Option ${optidx + 1}`}
-                              type="text"
-                              name={`option-${optidx + 1}`}
-                              placeholder={`Option ${optidx + 1} for Question #${qstidx + 1}`}
-                              data-idx={optidx}
-                              id={`${optidx}`}
-                              fullWidth
-                              className="option"
-                              value={questionsState[qstidx].options[optidx]}
-                              onChange={(e) => handleOptionInput(qstidx, optidx, e)}
+                        Add Option
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Button
+                        type="button"
+                        onClick={() => toggleImages(qstidx)}
+                        padding="5 30 5 30"
+                        variant="contained"
+                        color="secondary"
+                        sx={{ m: 1, pr: 3 }}
+                        startIcon={<Plus />}
+                      >
+                        Upload Images
+                      </Button>
+                      {isImage.includes(qstidx) ? (
+                        <Dialog
+                          open={() => toggleImages(qstidx)}
+                          fullWidth="true"
+                        >
+                          <Box mb={1}>
+                            <UploadMultiplePreview
+                              formId={formId}
+                              questionIdx={qstidx}
+                              toggleDialog={toggleImages}
+                              updateRadioImagesOptions={
+                                updateRadioImagesOptions
+                              }
+                              formImages={formImages}
+                              setFormImages={setFormImages}
                             />
-                          </Grid>
-                          <Grid item xs={2}>
-                            <IconButton
-                              type="button"
-                              onClick={() => removeOption(qstidx, optidx)}
-                              id={`${optidx}`}
-                            >
-                              <Close />
-                            </IconButton>
-                          </Grid>
-                        </Grid>
-                      </Box>
-                    );
-                  })}
-                  <Button
-                    type="button"
-                    onClick={() => addOption(qstidx)}
-                    variant="contained"
-                    color="secondary"
-                    sx={{ m: 1, pr: 3 }}
-                    startIcon={<Plus />}
-                  >
-                    Add Option
-                  </Button>
+                          </Box>
+                        </Dialog>
+                      ) : null}
+                    </>
+                  )}
                 </Box>
               </Grid>
             </Grid>
@@ -301,16 +320,6 @@ const FormQuestions = props => {
       >
         Preview Form
       </Button>
-      <Button
-        sx={{ mt: 3, padding: 2 }}
-        fullWidth
-        color="primary"
-        type="button"
-        variant="contained"
-        onClick={validateFormFields}
-      >
-        CREATE FORM
-      </Button>
     </React.Fragment>
   );
 };
@@ -322,6 +331,8 @@ FormQuestions.propTypes = {
   blankQuestion: PropTypes.object,
   previewForm: PropTypes.func,
   validateFormFields: PropTypes.func,
+  formImages: PropTypes.array,
+  setFormImages: PropTypes.func,
 };
 
 export default FormQuestions;
