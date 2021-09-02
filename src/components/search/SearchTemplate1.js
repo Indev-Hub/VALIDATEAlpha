@@ -69,9 +69,11 @@ const SearchTemplate1 = (props) => {
     const newSubmissions = submissions.filter(item => item.formID === form.id).length;
     setCountSubmissions(newSubmissions)
     setSubSet(true)
-    console.log(form.id, countSubmissions)
-    console.log(subSet)     
-  }  
+    console.log(form.id, form.name, countSubmissions)
+    console.log(subSet)
+  }
+
+  console.log(form.id, form.companyName, countSubmissions)
 
   return (
     <Card style={{ height: '100%' }}>
@@ -124,7 +126,7 @@ const SearchTemplate1 = (props) => {
         </Box>
       </Box>
       <Box
-        sx={{ p:2 }}
+        sx={{ p: 2 }}
       >
         <Box>
           <Typography
@@ -190,8 +192,8 @@ const SearchTemplate1 = (props) => {
             <Typography fontSize='1.2em'>{form.description}</Typography>
           </Popover>
         </Box>
-        <Divider sx={{ color: 'background.dark', mt:4 }} />
-        <Box align="center" sx={{ mt:-1.3, mb:4}}>
+        <Divider sx={{ color: 'background.dark', mt: 4 }} />
+        <Box align="center" sx={{ mt: -1.3, mb: 4 }}>
           <Typography variant="h8" sx={{ color: 'text.light', backgroundColor: 'background.dark', px: 2, py: .5, borderRadius: 2 }}>
             Submissions: {countSubmissions}
           </Typography>
