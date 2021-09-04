@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { API, Auth, graphqlOperation } from 'aws-amplify';
 import { Storage } from 'aws-amplify';
 import { Formik, Form } from 'formik';
-import { Box, Button, Paper } from '@material-ui/core';
+import { Alert, AlertTitle, Box, Button, Paper, Typography } from '@material-ui/core';
 import { v4 as uuidv4 } from 'uuid';
 import { createForm } from '../../../graphql/mutations';
 import { getUser } from '../../../graphql/queries';
@@ -57,7 +57,7 @@ const FormCreate = props => {
     question: "",
     type: "",
     images: false,
-    randomize: "",
+    randomize: true,
     options: [""],
   };
 
@@ -85,6 +85,7 @@ const FormCreate = props => {
       tags,
       isPrivate,
       companyID,
+      companyName
     } = detailsState;
 
     // The input data to be sent in our createForm request
@@ -94,8 +95,8 @@ const FormCreate = props => {
       description: description,
       tags: JSON.stringify(tags),
       isPrivate: isPrivate,
-      companyID: companyID,
-      companyName: getCompanyName(),
+      companyID: userData.companies.items.length > 1 ? companyID : userData.companies.items[0].id,
+      companyName: userData.companies.items.length > 1 ? getCompanyName() : userData.companies.items[0].name,
       validations: JSON.stringify(questionsState),
     };
 
@@ -105,6 +106,9 @@ const FormCreate = props => {
   //==================================//
   //           PREVIEW FORM           //
   //==================================//
+  console.log('detailsState', detailsState);
+  console.log('detailsState companyID', detailsState.companyID);
+  console.log('detailsState companyName', detailsState.companyName);
   const [formPreview, setFormPreview] = useState(null);
   const previewForm = () => {
     const formDesign = createFormDesignDataSet();
@@ -236,10 +240,15 @@ const FormCreate = props => {
 
   // Get company name from selected companyId, '' if none
   const getCompanyName = () => {
-    const matchName = userData.companies.items.filter(
-      item => detailsState.companyID.includes(item.id)
-    );
-    return matchName[0] ? matchName[0].name : '';
+    console.log('userData companies', userData.companies)
+    if (detailsState.companyID !== undefined ) {
+      const matchName = userData.companies.items.filter(
+        item => detailsState.companyID.includes(item.id)
+      );
+      return matchName[0] ? matchName[0].name : '';
+    } else {
+      console.log('NOTHING RETURNED')
+    }
   }
 
   return (
@@ -275,16 +284,25 @@ const FormCreate = props => {
           </Button>
         </Form>
       </Formik>
+      {console.log('formPreview', formPreview)}
       {formPreview ? (
-        <Paper elevation={3} sx={{ mt: 2 }}>
-          <Box p={4}>
-            <FormSubmission
-              formDesign={formPreview}
-              displaySubmitButton={false}
-              userData={userData}
-            />
-          </Box>
-        </Paper>
+        detailsState.companyID !== undefined ? (
+          <Paper elevation={3} sx={{ mt: 2 }}>
+            <Box p={4}>
+              <FormSubmission
+                formDesign={formPreview}
+                displaySubmitButton={false}
+                userData={userData}
+              />
+            </Box>
+          </Paper>
+        ) : (
+          <Alert severity="error" sx={{mt: 3, px: 10}}>
+            <AlertTitle variant="h5">Error creating form preview</AlertTitle>
+            <Typography fontWeight="500">No Company Selected</Typography>
+            <Typography>Select a company in the Form Details section. If you have more than one company, we leave the company field blank so that you don't accidentally create a form for the wrong company.</Typography>
+          </Alert>
+        )
       ) : null}
 
       <Notification notify={notify} setNotify={setNotify} />
