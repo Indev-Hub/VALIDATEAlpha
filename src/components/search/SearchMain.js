@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Grid, Link, Chip, Card, Typography } from '@material-ui/core';
+import { Grid, Link, Chip, Card } from '@material-ui/core';
 import { listForms, listFormSubmissions } from 'src/graphql/queries';
 import { API, graphqlOperation } from 'aws-amplify';
 import SearchForms from './SearchForms';
@@ -16,6 +16,10 @@ const SearchMain = () => {
 
   const [tagsToFilter, setTagsToFilter] = useState([]);
 
+  const [word, setWord] = useState("");
+
+  const [filterDisplay, setFilterDisplay] = useState();
+
   useEffect(() => {
     fetchForms();
     fetchSubmission();
@@ -26,7 +30,6 @@ const SearchMain = () => {
     try {
       const formData = await API.graphql(graphqlOperation(listForms));
       const formList = formData.data.listForms.items;
-      // console.log('form list', formList);
       setForms(formList);
       setFilteredForms(formList);
       console.log("forms", forms);
@@ -135,62 +138,6 @@ const SearchMain = () => {
           }
         </Card>
       </Grid>
-      {/* <Grid>
-        <Card
-          display="flex"
-          margin="auto"
-          justifyContent="center"
-          sx={{
-            mb: 5,
-            pt: 3,
-            width: "100%",
-          }}>
-          {
-            availableTags.map(tag => {
-              return (
-                <Chip
-                  label={tag}
-                  type="text"
-                  id={tag}
-                  className={tag}
-                  value={tag}
-                  sx={{
-                    ml: 5,
-                    mb: 3,
-                    p: 2,
-                    width: 100
-                  }}
-                  variant="outlined"
-                  color="primary"
-                  clickable
-                  onClick={() => addTag(tag)}
-                />
-              )
-            })
-          }
-          {
-            tagsToFilter.map(tag => {
-              return (
-                <Chip
-                  label={tag}
-                  type="text"
-                  id={tag}
-                  className={tag}
-                  value={tag}
-                  sx={{
-                    ml: 5,
-                    mb: 3,
-                    p: 2,
-                  }}
-                  color="primary"
-                  clickable
-                  onDelete={() => removeTag(tag)}
-                />
-              )
-            })
-          }
-        </Card>
-      </Grid> */}
       <Grid container spacing={2} xs={12}>
         {filteredForms.map((form, index) => {
           if (!form.isPrivate) {
