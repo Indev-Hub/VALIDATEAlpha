@@ -61,20 +61,36 @@ const FormDetails = (props) => {
 
   // Conditionally renders list of companies if user has created them
   const listCompanies = () => {
-    if (userData.companies.items.length > 0) {
+    if (userData.companies.items.length === 1 ) {
       return (
-        <TextField
-          select
-          fullWidth
-          label="Company"
-          name="companyID"
-          value={detailsState.companyID}
-          onChange={handleDetailsInput}
-        >
-          {userData.companies.items.map((company) => (
-            <MenuItem value={company.id}>{company.name}</MenuItem>
-          ))}
-        </TextField>
+        <>
+          <TextField
+            fullWidth
+            disabled
+            label="Company"
+            name="companyID"
+            value={userData.companies.items[0].name}
+            onChange={handleDetailsInput}
+          />
+          <input type="hidden" value={detailsState.companyID = userData.companies.items[0].id} />
+        </>
+      )
+    } else if (userData.companies.items.length > 1) {
+      return (
+        <>
+          <TextField
+            select
+            fullWidth
+            label="Company"
+            name="companyID"
+            value={detailsState.companyID}
+            onChange={handleDetailsInput}
+          >
+            {userData.companies.items.map((company) => (
+              <MenuItem value={company.id}>{company.name}</MenuItem>
+            ))}
+          </TextField>
+        </>
       )
     } else {
       return (
