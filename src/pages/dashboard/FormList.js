@@ -51,7 +51,6 @@ const FormList = () => {
 
   // Get user data from DynamoDB to access associated company info
   const getUserCompanies = async () => {
-    console.log("FormList getUserCompanies was triggered");
     try {
       const fetchedUserData = await API.graphql({
         query: getUser,
@@ -68,7 +67,7 @@ const FormList = () => {
     }
   };
 
-  // Fetch user data and companies list from DB on initial render
+  // Fetch user data from DB to filter forms list on initial render
   useEffect(() => {
     getUserCompanies();
     gtm.push({ event: 'page_view' });
@@ -76,7 +75,6 @@ const FormList = () => {
 
   // Fetch forms array and filter to only include user associated forms
   const getForms = async () => {
-    console.log("FormList getForms was triggered");
     try {
       const formData = await API.graphql(graphqlOperation(listForms));
       const formList = formData.data.listForms.items;
@@ -94,7 +92,7 @@ const FormList = () => {
     getForms();
     getSubmissions();
     getS3FileList();
-  }, [userCompanies,listRefresh]); // listRefresh
+  }, [userCompanies,listRefresh]);
 
   // Delete a form from DynamoDB Form table
   const formDelete = async (id) => {
@@ -326,9 +324,7 @@ const FormList = () => {
             </Grid>
             <Box sx={{ mt: 3 }}>
               <CompanyFormsTable
-                // userCompanies={userCompanies}
                 forms={forms}
-                setForms={setForms}
                 setConfirmDialog={setConfirmDialog}
                 handleFormDelete={handleFormDelete}
                 handleDuplicateForm={handleDuplicateForm}

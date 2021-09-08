@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import numeral from 'numeral';
 import PropTypes from 'prop-types';
 import {
   Avatar,
@@ -24,37 +23,12 @@ import {
   Tooltip,
   Typography
 } from '@material-ui/core';
-// import ArrowRightIcon from '../../../icons/ArrowRight';
-// import PencilAltIcon from '../../../icons/PencilAlt';
-// import ControlPointDuplicateIcon
-//   from '@material-ui/icons/ControlPointDuplicate';
-// import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import getInitials from '../../../utils/getInitials';
 import Scrollbar from '../../Scrollbar';
 import SearchIcon from '../../../icons/Search';
 
-// This array is no longer used. Tab label/value comes from forms.reduce function now
-const tabs = [
-  {
-    label: 'All',
-    value: 'all'
-  },
-  {
-    label: 'Accepts Marketing',
-    value: 'hasAcceptedMarketing'
-  },
-  {
-    label: 'Prospect',
-    value: 'isProspect'
-  },
-  {
-    label: 'Returning',
-    value: 'isReturning'
-  }
-];
-
-// This array IS BEING USED
+// The following are rendered as sort options and used to set sort state
 const sortOptions = [
   {
     label: 'Last update (newest)',
@@ -74,12 +48,14 @@ const sortOptions = [
   }
 ];
 
+// Filter forms list based on search query or 'filters' object for tabs
 const applyFilters = (forms, query, filters) => forms
   .filter((form) => {
     let matches = true;
 
     if (query) {
-      // "properties" determines the fields that are searched for matching values in the query
+      // "properties" determines the fields that are searched 
+      // for matching values in the query
       const properties = ['title', 'description'];
       let containsQuery = false;
 
@@ -94,11 +70,10 @@ const applyFilters = (forms, query, filters) => forms
       }
     }
 
-    // This is where we will sort based on the Company name from the selected tab
+    // Filter forms based on the Company Name value from the selected tab
     Object.keys(filters).forEach((key) => {
       const value = filters[key];
-
-      if (value && form[key] !== value) {
+      if (value && form.companyName !== key) {
         matches = false;
       }
     });
@@ -148,19 +123,14 @@ const applySort = (forms, sort) => {
 
 const CompanyFormsTable = (props) => {
   const {
-    userCompanies,
     forms,
     setConfirmDialog,
     handleFormDelete,
     handleDuplicateForm,
     ...other
   } = props;
-  console.log('CompanyFormsTable#forms', forms)
   const [currentTab, setCurrentTab] = useState('all');
-  console.log('currentTab', currentTab)
   const [selectedForms, setSelectedForms] = useState([]);
-  console.log('selected forms', selectedForms)
-  const [companyIds, setCompanyIds] = useState(['All']);
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(5);
   const [query, setQuery] = useState('');
@@ -170,24 +140,17 @@ const CompanyFormsTable = (props) => {
     isProspect: null,
     isReturning: null
   });
-  console.log('filters', filters)
 
-  const handleTabsChange = (event, value) => {
-    const updatedFilters = {
-      ...filters,
-      hasAcceptedMarketing: null,
-      isProspect: null,
-      isReturning: null
-    };
-
+  // When a tab is selected, update filters state to be the tab value 
+  // (i.e., company name) as key with a value of true; 
+  // this state is passed to applyFilters when it is invoked upon  
+  // assignment to filteredForms with every component render
+  const handleTabsChange = (_event, value) => {
+    const updatedFilters = {};
     if (value !== 'all') {
       updatedFilters[value] = true;
     }
-
-    // The below setFilters(updatedFilters) function needs to be added back in once the updateFilters
-    // keys are replaced with the Company names
-
-    // setFilters(updatedFilters);
+    setFilters(updatedFilters);
     setSelectedForms([]);
     setCurrentTab(value);
   };
@@ -206,11 +169,12 @@ const CompanyFormsTable = (props) => {
       : []);
   };
 
-  const handleSelectOneForm = (event, formId) => {
+  const handleSelectOneForm = (_event, formId) => {
     if (!selectedForms.includes(formId)) {
       setSelectedForms((prevSelected) => [...prevSelected, formId]);
     } else {
-      setSelectedForms((prevSelected) => prevSelected.filter((id) => id !== formId));
+      setSelectedForms((prevSelected) => prevSelected
+        .filter((id) => id !== formId));
     }
   };
 
@@ -220,7 +184,7 @@ const CompanyFormsTable = (props) => {
     });
   };
 
-  const handlePageChange = (event, newPage) => {
+  const handlePageChange = (_event, newPage) => {
     setPage(newPage);
   };
 
@@ -246,25 +210,20 @@ const CompanyFormsTable = (props) => {
         value={currentTab}
         variant="scrollable"
       >
-        {/* {tabs.map((tab) => (
-          <Tab
-            key={tab.value}
-            label={tab.label}
-            value={tab.value}
-          />
-        ))} */}
         <Tab
           key="all"
           label="All"
           value="all"
         />
-        {Object.keys(forms.reduce((acc, it) => (acc[it.company.name] = it, acc), [])).map((comp) => (
-          <Tab
-            key={comp}
-            label={comp}
-            value={comp}
-          />
-        ))}
+        {Object.keys(
+          forms.reduce((acc, it) => (acc[it.company.name] = it, acc), []))
+          .map((comp) => (
+            <Tab
+              key={comp}
+              label={comp}
+              value={comp}
+            />
+          ))}
       </Tabs>
       <Divider />
       <Box
@@ -393,9 +352,6 @@ const CompanyFormsTable = (props) => {
                 <TableCell>
                   Description
                 </TableCell>
-                {/* <TableCell>
-                  Spent
-                </TableCell> */}
                 <TableCell align="center">
                   Actions
                 </TableCell>
@@ -456,27 +412,10 @@ const CompanyFormsTable = (props) => {
                       {form.company.name}
                     </TableCell>
                     <TableCell>
-                      {/* {form.description} */}
-                      {`${form.description.substring(0, 80)}${form.description.length > 80 ? '...' : ''}`}
+                      {`${form.description.substring(0, 80)}
+                      ${form.description.length > 80 ? '...' : ''}`}
                     </TableCell>
-                    {/* <TableCell>
-                      {numeral(form.totalAmountSpent)
-                        .format(`${form.currency}0,0.00`)}
-                    </TableCell> */}
                     <TableCell align="center">
-                      {/* <IconButton
-                        component={RouterLink}
-                        to="/dashboard/forms/1/edit"
-                      >
-                        <PencilAltIcon fontSize="small" />
-                      </IconButton> */}
-
-                      {/* <IconButton
-                        component={RouterLink}
-                        to="/dashboard/forms/1"
-                      >
-                        <ArrowRightIcon fontSize="small" />
-                      </IconButton> */}
                       <Tooltip title="Duplicate">
                         <IconButton
                           onClick={() => handleDuplicateForm(form)}
@@ -484,25 +423,6 @@ const CompanyFormsTable = (props) => {
                           <FileCopyIcon fontSize="small" />
                         </IconButton>
                       </Tooltip>
-
-                      {/* <Tooltip title="Delete">
-                        <IconButton
-                          onClick={() => {
-                            setConfirmDialog({
-                              isOpen: true,
-                              title: 'Delete form',
-                              subtitle: `Are you sure you want to delete this 
-                              form? It will be permanently removed, along with 
-                              all associated images and responses. This action 
-                              cannot be undone.`,
-                              buttonText: 'Delete',
-                              onConfirm: () => handleFormDelete(form.id),
-                            });
-                          }}
-                        >
-                          <DeleteForeverIcon fontSize="small" />
-                        </IconButton>
-                      </Tooltip> */}
                     </TableCell>
                   </TableRow>
                 );
@@ -525,7 +445,6 @@ const CompanyFormsTable = (props) => {
 };
 
 CompanyFormsTable.propTypes = {
-  userCompanies: PropTypes.array,
   forms: PropTypes.array,
   setConfirmDialog: PropTypes.func,
   handleFormDelete: PropTypes.func,
