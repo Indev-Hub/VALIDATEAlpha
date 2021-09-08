@@ -9,6 +9,7 @@ import {
   IconButton,
   Switch,
   Typography,
+  Row
 } from "@material-ui/core";
 import { Close, DeleteForever } from "@material-ui/icons";
 import PropTypes from "prop-types";
@@ -30,6 +31,8 @@ const FormQuestions = (props) => {
     formImages,
     setFormImages,
   } = props;
+
+  const [selectedFiles, setSelectedFiles] = useState([]);
 
   // Add question ID state for UploadMultiplePreview (RadioImages options)
   const [questionId, setQuestionId] = useState(1);
@@ -117,6 +120,39 @@ const FormQuestions = (props) => {
     }
     // Otherwise, add the index to isImage state 
     setIsImage([...isImage, qstidx]);
+  };
+
+  // Update state for image preview with selected images
+  const handleImageChange = (e) => {
+    if (e.target.files) {
+      const filesArray = Array.from(e.target.files).map((file) =>
+        URL.createObjectURL(file)
+      );
+      // Replace existing image files with new selected image files
+      setSelectedFiles(...selectedFiles, filesArray);
+    }
+  }
+
+  const renderPhotos = (source) => {
+    return source.map((photo) => {
+      return (
+        // <Grid item key={photo} style={{ padding: "10px" }} xs={4}>
+        <img
+          src={photo}
+          width={80}
+          height={80}
+          style={{
+            objectFit: "cover",
+            borderRadius: 15,
+            marginRight: 10,
+            marginLeft: 10,
+            marginBottom: 10,
+          }}
+          alt=""
+        />
+        // {/* </Grid> */ }
+      );
+    });
   };
 
   return (
@@ -251,17 +287,28 @@ const FormQuestions = (props) => {
                     </>
                   ) : (
                     <>
-                      <Button
-                        type="button"
-                        onClick={() => toggleImages(qstidx)}
-                        padding="5 30 5 30"
-                        variant="contained"
-                        color="secondary"
-                        sx={{ m: 1, pr: 3 }}
-                        startIcon={<Plus />}
+                      <Grid
+                        container
+                        direction="row"
+                        justifyContent="flex-start"
+                        alignItems="flex-start"
+
                       >
-                        Upload Images
-                      </Button>
+                        {renderPhotos(selectedFiles)}
+                        <Button
+                          type="button"
+                          onClick={() => toggleImages(qstidx)}
+                          variant="contained"
+                          color="secondary"
+                          sx={{
+                            m: 1,
+                            width: "100%",
+                          }}
+                          startIcon={<Plus />}
+                        >
+                          Upload Images
+                        </Button>
+                      </Grid>
                       {isImage.includes(qstidx) ? (
                         <Dialog
                           open={() => toggleImages(qstidx)}
@@ -277,15 +324,28 @@ const FormQuestions = (props) => {
                               }
                               formImages={formImages}
                               setFormImages={setFormImages}
+                              handleImageChange={handleImageChange}
+                              selectedFiles={selectedFiles}
+                              setSelectedFiles={setSelectedFiles}
+                              renderPhotos={renderPhotos}
                             />
                           </Box>
                         </Dialog>
-                      ) : null}
+                      ) : null
+                      }
                     </>
                   )}
                 </Box>
               </Grid>
             </Grid>
+            {/* <Grid
+              container
+              direction="row"
+              justifyContent="flex-end"
+              alignItems="flex-start"
+            >
+              {renderPhotos(selectedFiles)}
+            </Grid> */}
           </Card>
         );
       })}

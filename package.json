@@ -67,6 +67,7 @@
     "gray-matter": "^4.0.2",
     "history": "^5.0.0",
     "i18next": "^19.8.7",
+    "jw-react-pagination": "^1.1.0",
     "linq": "^3.2.3",
     "lodash": "^4.17.20",
     "notistack": "^1.0.3",

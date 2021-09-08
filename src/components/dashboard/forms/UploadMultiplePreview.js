@@ -22,6 +22,10 @@ const UploadMultiplePreview = (props) => {
     toggleDialog,
     formImages,
     setFormImages,
+    handleImageChange,
+    setSelectedFiles,
+    selectedFiles,
+    renderPhotos
   } = props;
 
   // Declare file input reference
@@ -39,45 +43,9 @@ const UploadMultiplePreview = (props) => {
       formCollection.push([path, image]);
     });
     setFormImages([...formImages, ...formCollection]);
+    console.log("formImages#", formImages)
     updateRadioImagesOptions(questionIdx, imageUrls);
     toggleDialog(questionIdx);
-  };
-
-  // Set state for image preview
-  const [selectedFiles, setSelectedFiles] = useState([]);
-
-  // Update state for image preview with selected images
-  const handleImageChange = (e) => {
-    if (e.target.files) {
-      const filesArray = Array.from(e.target.files).map((file) =>
-        URL.createObjectURL(file)
-      );
-
-      // Replace existing image files with new selected image files
-      setSelectedFiles(filesArray);
-
-      // Add new selected image files to existing image files
-      // setSelectedFiles((prevImages) => prevImages.concat(filesArray));
-      // Array.from(e.target.files).map(
-      //   (file) => URL.revokeObjectURL(file) // avoid memory leak
-      // );
-    }
-  };
-
-  const renderPhotos = (source) => {
-    return source.map((photo) => {
-      return (
-        <Grid item key={photo} style={{ padding: "10px" }} xs={4}>
-          <img
-            src={photo}
-            width="100%"
-            height="150px"
-            style={{ objectFit: "cover" }}
-            alt=""
-          />
-        </Grid>
-      );
-    });
   };
 
   return (
@@ -121,7 +89,7 @@ const UploadMultiplePreview = (props) => {
             variant="contained"
             color="secondary"
             style={{ marginTop: "10px" }}
-            onClick={onClick}
+            onClick={() => onClick()}
           >
             Add Images
           </Button>
@@ -138,6 +106,9 @@ UploadMultiplePreview.propTypes = {
   toggleDialog: PropTypes.func,
   formImages: PropTypes.array,
   setFormImages: PropTypes.func,
+  selectedFiles: PropTypes.array,
+  setSelectedFiles: PropTypes.func,
+  handleImageChange: PropTypes.func,
 };
 
 export default UploadMultiplePreview;
