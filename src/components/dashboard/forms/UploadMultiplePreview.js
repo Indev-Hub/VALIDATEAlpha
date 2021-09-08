@@ -33,20 +33,20 @@ const UploadMultiplePreview = (props) => {
 
   // Create image array, generate path, call upload function
   // when form is submitted, and toggle off dialog
-  const onClick = () => {
-    let images = fileInput.current.files;
-    let imageUrls = [];
-    let formCollection = [];
-    Object.values(images).forEach((image, idx) => {
-      const path = `${formId}/q${questionIdx + 1}_a${idx + 1}_${image.name}`;
-      imageUrls.push(path);
-      formCollection.push([path, image]);
-    });
-    setFormImages([...formImages, ...formCollection]);
-    console.log("formImages#", formImages)
-    updateRadioImagesOptions(questionIdx, imageUrls);
-    toggleDialog(questionIdx);
-  };
+  // const onClick = () => {
+  //   let images = fileInput.current.files;
+  //   let imageUrls = [];
+  //   let formCollection = [];
+  //   Object.values(images).forEach((image, idx) => {
+  //     const path = `${formId}/q${questionIdx + 1}_a${idx + 1}_${image.name}`;
+  //     imageUrls.push(path);
+  //     formCollection.push([path, image]);
+  //   });
+  //   setFormImages([...formImages, ...formCollection]);
+  //   console.log("formImages#", formImages)
+  //   updateRadioImagesOptions(questionIdx, imageUrls);
+  //   toggleDialog(questionIdx);
+  // };
 
   return (
     <Grid container justifyContent="center">
@@ -89,7 +89,7 @@ const UploadMultiplePreview = (props) => {
             variant="contained"
             color="secondary"
             style={{ marginTop: "10px" }}
-            onClick={() => onClick()}
+          // // onClick={() => onClick()}
           >
             Add Images
           </Button>

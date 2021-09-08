@@ -34,6 +34,8 @@ const FormQuestions = (props) => {
 
   const [selectedFiles, setSelectedFiles] = useState([]);
 
+  const fileInput = React.useRef();
+
   // Add question ID state for UploadMultiplePreview (RadioImages options)
   const [questionId, setQuestionId] = useState(1);
 
@@ -122,6 +124,24 @@ const FormQuestions = (props) => {
     setIsImage([...isImage, qstidx]);
   };
 
+  // Questionind is not defined +++++++++++++++++++++++++++
+
+  const onClick = (e, qstidx) => {
+    let images = fileInput.current.files;
+    let imageUrls = [];
+    let formCollection = [];
+    Object.values(images).forEach((image, idx) => {
+      const path = `${formId}/q${qstidx + 1}_a${idx + 1}_${image.name}`;
+      imageUrls.push(path);
+      formCollection.push([path, image]);
+    });
+    setFormImages([...formImages, ...formCollection]);
+    console.log("formImages#", formImages)
+    updateRadioImagesOptions(qstidx, imageUrls);
+    toggleImages(qstidx);
+    handleImageChange(e)
+  };
+
   // Update state for image preview with selected images
   const handleImageChange = (e) => {
     if (e.target.files) {
@@ -129,14 +149,14 @@ const FormQuestions = (props) => {
         URL.createObjectURL(file)
       );
       // Replace existing image files with new selected image files
-      setSelectedFiles(...selectedFiles, filesArray);
+      setSelectedFiles([...selectedFiles, ...filesArray]);
+      // onClick(qstidx);
     }
   }
 
   const renderPhotos = (source) => {
     return source.map((photo) => {
       return (
-        // <Grid item key={photo} style={{ padding: "10px" }} xs={4}>
         <img
           src={photo}
           width={80}
@@ -150,7 +170,6 @@ const FormQuestions = (props) => {
           }}
           alt=""
         />
-        // {/* </Grid> */ }
       );
     });
   };
@@ -297,8 +316,9 @@ const FormQuestions = (props) => {
                         {renderPhotos(selectedFiles)}
                         <Button
                           type="button"
-                          onClick={() => toggleImages(qstidx)}
                           variant="contained"
+                          component="label"
+                          onClick={() => toggleImages(qstidx)}
                           color="secondary"
                           sx={{
                             m: 1,
@@ -306,10 +326,19 @@ const FormQuestions = (props) => {
                           }}
                           startIcon={<Plus />}
                         >
+                          <input
+                            type="file"
+                            accept="image/png, image/gif, image/jpeg"
+                            id="file"
+                            ref={fileInput}
+                            multiple
+                            onChange={(e) => onClick(e, qstidx)}
+                            hidden
+                          />
                           Upload Images
                         </Button>
                       </Grid>
-                      {isImage.includes(qstidx) ? (
+                      {/* {isImage.includes(qstidx) ? (
                         <Dialog
                           open={() => toggleImages(qstidx)}
                           fullWidth="true"
@@ -332,7 +361,7 @@ const FormQuestions = (props) => {
                           </Box>
                         </Dialog>
                       ) : null
-                      }
+                      } */}
                     </>
                   )}
                 </Box>
