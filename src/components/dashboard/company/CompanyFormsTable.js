@@ -26,12 +26,13 @@ import {
 } from '@material-ui/core';
 // import ArrowRightIcon from '../../../icons/ArrowRight';
 // import PencilAltIcon from '../../../icons/PencilAlt';
-import SearchIcon from '../../../icons/Search';
+// import ControlPointDuplicateIcon
+//   from '@material-ui/icons/ControlPointDuplicate';
+// import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import FileCopyIcon from '@material-ui/icons/FileCopy';
 import getInitials from '../../../utils/getInitials';
 import Scrollbar from '../../Scrollbar';
-import ControlPointDuplicateIcon
-  from '@material-ui/icons/ControlPointDuplicate';
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import SearchIcon from '../../../icons/Search';
 
 // This array is no longer used. Tab label/value comes from forms.reduce function now
 const tabs = [
@@ -147,6 +148,7 @@ const applySort = (forms, sort) => {
 
 const CompanyFormsTable = (props) => {
   const {
+    userCompanies,
     forms,
     setConfirmDialog,
     handleFormDelete,
@@ -210,6 +212,12 @@ const CompanyFormsTable = (props) => {
     } else {
       setSelectedForms((prevSelected) => prevSelected.filter((id) => id !== formId));
     }
+  };
+
+  const handleDeleteSelectedForms = () => {
+    selectedForms.forEach(formId => {
+      handleFormDelete(formId)
+    });
   };
 
   const handlePageChange = (event, newPage) => {
@@ -338,6 +346,18 @@ const CompanyFormsTable = (props) => {
               color="primary"
               sx={{ ml: 2 }}
               variant="outlined"
+              onClick={() => {
+                setConfirmDialog({
+                  isOpen: true,
+                  title: 'Delete form',
+                  subtitle: `Are you sure you want to delete this 
+                  form? It will be permanently removed, along with 
+                  all associated images and responses. This action 
+                  cannot be undone.`,
+                  buttonText: 'Delete',
+                  onConfirm: handleDeleteSelectedForms,
+                })
+              }}
             >
               Delete
             </Button>
@@ -346,7 +366,7 @@ const CompanyFormsTable = (props) => {
               sx={{ ml: 2 }}
               variant="outlined"
             >
-              Edit
+              Archive
             </Button>
           </Box>
         </Box>
@@ -461,17 +481,20 @@ const CompanyFormsTable = (props) => {
                         <IconButton
                           onClick={() => handleDuplicateForm(form)}
                         >
-                          <ControlPointDuplicateIcon fontSize="small" />
+                          <FileCopyIcon fontSize="small" />
                         </IconButton>
                       </Tooltip>
 
-                      <Tooltip title="Delete">
+                      {/* <Tooltip title="Delete">
                         <IconButton
                           onClick={() => {
                             setConfirmDialog({
                               isOpen: true,
                               title: 'Delete form',
-                              subtitle: `Are you sure you want to delete this form? It will be permanently removed and this action cannot be undone.`,
+                              subtitle: `Are you sure you want to delete this 
+                              form? It will be permanently removed, along with 
+                              all associated images and responses. This action 
+                              cannot be undone.`,
                               buttonText: 'Delete',
                               onConfirm: () => handleFormDelete(form.id),
                             });
@@ -479,7 +502,7 @@ const CompanyFormsTable = (props) => {
                         >
                           <DeleteForeverIcon fontSize="small" />
                         </IconButton>
-                      </Tooltip>
+                      </Tooltip> */}
                     </TableCell>
                   </TableRow>
                 );
@@ -502,7 +525,8 @@ const CompanyFormsTable = (props) => {
 };
 
 CompanyFormsTable.propTypes = {
-  forms: PropTypes.array.isRequired,
+  userCompanies: PropTypes.array,
+  forms: PropTypes.array,
   setConfirmDialog: PropTypes.func,
   handleFormDelete: PropTypes.func,
   handleDuplicateForm: PropTypes.func,
