@@ -9,9 +9,9 @@ import {
   IconButton,
   Switch,
   Typography,
-  Row
 } from "@material-ui/core";
 import { Close, DeleteForever } from "@material-ui/icons";
+import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import PropTypes from "prop-types";
 import { Plus } from "../../../icons";
 import Controls from "../../form/controls/_controls";
@@ -32,12 +32,13 @@ const FormQuestions = (props) => {
     setFormImages,
   } = props;
 
-  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [selectedFiles, setSelectedFiles] = useState({});
 
   const fileInput = React.useRef();
 
   // Add question ID state for UploadMultiplePreview (RadioImages options)
   const [questionId, setQuestionId] = useState(1);
+  console.log("questionsState", questionsState)
 
   // Add question to form and add the new question to questionsState array
   const addQuestion = () => {
@@ -106,6 +107,24 @@ const FormQuestions = (props) => {
     setQuestionsState(updatedState);
   };
 
+  const imageDelete = (qstidx, imgidx) => {
+    const updatedState = { ...selectedFiles }; // make copy
+    console.log("updatedState", updatedState[qstidx])
+    updatedState[qstidx].splice(imgidx, 1);
+    console.log(updatedState)
+    setSelectedFiles(updatedState);
+    // const updatedState = { ...selectedFiles }
+    // const removedImageState = updatedState[qstidx].filter(image => !updatedState[qstidx].includes(image));
+    // setSelectedFiles({
+    //   ...updatedState,
+    //   [qstidx]: [updatedState, ...removedImageState],
+    // });
+    // updatedState.splice(image, 1)
+    // setSelectedFiles(updatedState)
+  }
+
+
+
   // UPLOAD RADIO IMAGES ANSWER OPTIONS
   // Sets whether images are being added to options and displays dialog if true
   const [isImage, setIsImage] = useState([]);
@@ -124,9 +143,7 @@ const FormQuestions = (props) => {
     setIsImage([...isImage, qstidx]);
   };
 
-  // Questionind is not defined +++++++++++++++++++++++++++
-
-  const onClick = (e, qstidx) => {
+  const imageStateUpdate = (e, qstidx) => {
     let images = fileInput.current.files;
     let imageUrls = [];
     let formCollection = [];
@@ -139,39 +156,46 @@ const FormQuestions = (props) => {
     console.log("formImages#", formImages)
     updateRadioImagesOptions(qstidx, imageUrls);
     toggleImages(qstidx);
-    handleImageChange(e)
+    handleImageStateChange(qstidx, e)
   };
 
   // Update state for image preview with selected images
-  const handleImageChange = (e) => {
+  const handleImageStateChange = (qstidx, e) => {
     if (e.target.files) {
       const filesArray = Array.from(e.target.files).map((file) =>
         URL.createObjectURL(file)
       );
-      // Replace existing image files with new selected image files
-      setSelectedFiles([...selectedFiles, ...filesArray]);
-      // onClick(qstidx);
+      const previouslySelectedFiles = selectedFiles[qstidx] ? selectedFiles[qstidx] : [];
+      setSelectedFiles({
+        ...selectedFiles,
+        [qstidx]: [...previouslySelectedFiles, ...filesArray],
+      });
     }
   }
 
-  const renderPhotos = (source) => {
-    return source.map((photo) => {
-      return (
-        <img
-          src={photo}
-          width={80}
-          height={80}
-          style={{
-            objectFit: "cover",
-            borderRadius: 15,
-            marginRight: 10,
-            marginLeft: 10,
-            marginBottom: 10,
-          }}
-          alt=""
-        />
-      );
-    });
+  const renderPhotos = (source, qstidx) => {
+    if (source) {
+      return source.map((photo, imgidx) => {
+        console.log("photo", photo)
+        return (
+          <img
+            src={photo}
+            width={80}
+            height={80}
+            deleteIcon={<HighlightOffIcon />}
+            style={{
+              objectFit: "cover",
+              borderRadius: 15,
+              marginRight: 10,
+              marginLeft: 10,
+              marginBottom: 10,
+            }}
+            alt=""
+            onClick={() => imageDelete(qstidx, imgidx)}
+          />
+        );
+      });
+    }
   };
 
   return (
@@ -311,9 +335,8 @@ const FormQuestions = (props) => {
                         direction="row"
                         justifyContent="flex-start"
                         alignItems="flex-start"
-
                       >
-                        {renderPhotos(selectedFiles)}
+                        {renderPhotos(selectedFiles[qstidx], qstidx)}
                         <Button
                           type="button"
                           variant="contained"
@@ -332,49 +355,19 @@ const FormQuestions = (props) => {
                             id="file"
                             ref={fileInput}
                             multiple
-                            onChange={(e) => onClick(e, qstidx)}
+                            onChange={(e) => imageStateUpdate(e, qstidx)}
                             hidden
                           />
-                          Upload Images
+                          {formImages.length > 0 ? ("Add Additional Images")
+                            : ("Upload Images")
+                          }
                         </Button>
                       </Grid>
-                      {/* {isImage.includes(qstidx) ? (
-                        <Dialog
-                          open={() => toggleImages(qstidx)}
-                          fullWidth="true"
-                        >
-                          <Box mb={1}>
-                            <UploadMultiplePreview
-                              formId={formId}
-                              questionIdx={qstidx}
-                              toggleDialog={toggleImages}
-                              updateRadioImagesOptions={
-                                updateRadioImagesOptions
-                              }
-                              formImages={formImages}
-                              setFormImages={setFormImages}
-                              handleImageChange={handleImageChange}
-                              selectedFiles={selectedFiles}
-                              setSelectedFiles={setSelectedFiles}
-                              renderPhotos={renderPhotos}
-                            />
-                          </Box>
-                        </Dialog>
-                      ) : null
-                      } */}
                     </>
                   )}
                 </Box>
               </Grid>
             </Grid>
-            {/* <Grid
-              container
-              direction="row"
-              justifyContent="flex-end"
-              alignItems="flex-start"
-            >
-              {renderPhotos(selectedFiles)}
-            </Grid> */}
           </Card>
         );
       })}
