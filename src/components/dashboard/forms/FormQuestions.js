@@ -197,9 +197,6 @@ const FormQuestions = (props) => {
                 style={{
                   objectFit: "cover",
                   borderRadius: 15,
-                  // marginRight: 10,
-                  // marginLeft: 10,
-                  // marginBottom: 10,
                 }}
                 alt=""
                 onClick={() => imageDelete(qstidx, imgidx)}
