@@ -9,9 +9,11 @@ import {
   IconButton,
   Switch,
   Typography,
+  Tooltip,
+  Zoom,
+  Paper
 } from "@material-ui/core";
-import { Close, DeleteForever } from "@material-ui/icons";
-import HighlightOffIcon from '@material-ui/icons/HighlightOff';
+import { Close, DeleteForever, Delete } from "@material-ui/icons";
 import PropTypes from "prop-types";
 import { Plus } from "../../../icons";
 import Controls from "../../form/controls/_controls";
@@ -109,21 +111,10 @@ const FormQuestions = (props) => {
 
   const imageDelete = (qstidx, imgidx) => {
     const updatedState = { ...selectedFiles }; // make copy
-    console.log("updatedState", updatedState[qstidx])
     updatedState[qstidx].splice(imgidx, 1);
     console.log(updatedState)
     setSelectedFiles(updatedState);
-    // const updatedState = { ...selectedFiles }
-    // const removedImageState = updatedState[qstidx].filter(image => !updatedState[qstidx].includes(image));
-    // setSelectedFiles({
-    //   ...updatedState,
-    //   [qstidx]: [updatedState, ...removedImageState],
-    // });
-    // updatedState.splice(image, 1)
-    // setSelectedFiles(updatedState)
   }
-
-
 
   // UPLOAD RADIO IMAGES ANSWER OPTIONS
   // Sets whether images are being added to options and displays dialog if true
@@ -178,21 +169,43 @@ const FormQuestions = (props) => {
       return source.map((photo, imgidx) => {
         console.log("photo", photo)
         return (
-          <img
-            src={photo}
-            width={80}
-            height={80}
-            deleteIcon={<HighlightOffIcon />}
-            style={{
-              objectFit: "cover",
-              borderRadius: 15,
-              marginRight: 10,
-              marginLeft: 10,
-              marginBottom: 10,
-            }}
-            alt=""
-            onClick={() => imageDelete(qstidx, imgidx)}
-          />
+          <Tooltip
+            title={<Delete />}
+            arrow
+            placement="top"
+            TransitionComponent={Zoom}
+          >
+            <Paper
+              sx={{
+                width: 80,
+                height: 80,
+                marginRight: 1,
+                marginLeft: 1,
+                marginBottom: 1,
+                opacity: 1,
+                "&:hover": {
+                  opacity: 0.50,
+                  cursor: "pointer",
+                },
+              }}
+            >
+              <img
+                pointerEvent="auto"
+                src={photo}
+                width={80}
+                height={80}
+                style={{
+                  objectFit: "cover",
+                  borderRadius: 15,
+                  // marginRight: 10,
+                  // marginLeft: 10,
+                  // marginBottom: 10,
+                }}
+                alt=""
+                onClick={() => imageDelete(qstidx, imgidx)}
+              />
+            </Paper>
+          </Tooltip >
         );
       });
     }
@@ -358,7 +371,7 @@ const FormQuestions = (props) => {
                             onChange={(e) => imageStateUpdate(e, qstidx)}
                             hidden
                           />
-                          {formImages.length > 0 ? ("Add Additional Images")
+                          {selectedFiles[qstidx] ? ("Add Additional Images")
                             : ("Upload Images")
                           }
                         </Button>
