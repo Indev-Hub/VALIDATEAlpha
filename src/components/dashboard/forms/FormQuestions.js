@@ -179,8 +179,8 @@ const FormQuestions = (props) => {
               sx={{
                 width: 80,
                 height: 80,
-                marginRight: 1,
-                marginLeft: 1,
+                // marginRight: 1,
+                marginLeft: 2.25,
                 marginBottom: 1,
                 opacity: 1,
                 "&:hover": {

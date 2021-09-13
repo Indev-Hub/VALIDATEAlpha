@@ -118,14 +118,14 @@ const FormCreate = props => {
   //==================================//
   //           UPLOAD FORM            //
   //==================================//
-  
+
   // State passed through FormQuestions to UploadMultiplePreview
   const [formImages, setFormImages] = useState([]);
 
   // Upload images to S3
   const handleImgUpload = async (path, file) => {
     try {
-      await Storage.put(path, file, {contentType: 'image'});
+      await Storage.put(path, file, { contentType: 'image' });
     } catch (error) {
       console.log('error on uploading images to s3', error);
     }
@@ -241,7 +241,7 @@ const FormCreate = props => {
   // Get company name from selected companyId, '' if none
   const getCompanyName = () => {
     console.log('userData companies', userData.companies)
-    if (detailsState.companyID !== undefined ) {
+    if (detailsState.companyID !== undefined) {
       const matchName = userData.companies.items.filter(
         item => detailsState.companyID.includes(item.id)
       );
@@ -297,7 +297,7 @@ const FormCreate = props => {
             </Box>
           </Paper>
         ) : (
-          <Alert severity="error" sx={{mt: 3, px: 10}}>
+          <Alert severity="error" sx={{ mt: 3, px: 10 }}>
             <AlertTitle variant="h5">Error creating form preview</AlertTitle>
             <Typography fontWeight="500">No Company Selected</Typography>
             <Typography>Select a company in the Form Details section. If you have more than one company, we leave the company field blank so that you don't accidentally create a form for the wrong company.</Typography>
