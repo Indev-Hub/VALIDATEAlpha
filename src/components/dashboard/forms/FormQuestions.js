@@ -34,8 +34,6 @@ const FormQuestions = (props) => {
     setFormImages,
   } = props;
 
-  const [selectedFiles, setSelectedFiles] = useState({});
-
   const fileInput = React.useRef();
 
   // Add question ID state for UploadMultiplePreview (RadioImages options)
@@ -53,6 +51,7 @@ const FormQuestions = (props) => {
   };
 
   // Remove question from mapped array
+  // may have to delete the 'key' to remove images associated with index
   const removeQuestion = (qstidx) => {
     const updatedState = [...questionsState]; // make copy
     updatedState.splice(qstidx, 1);
@@ -88,7 +87,6 @@ const FormQuestions = (props) => {
   };
 
   // Update options for Radio Images after image files are selected;
-  // function is passed to UploadeMultiplePreview
   const updateRadioImagesOptions = (qstidx, imgUrlArray) => {
     const updatedState = [...questionsState];
     updatedState[qstidx].options = [...imgUrlArray];
@@ -110,10 +108,17 @@ const FormQuestions = (props) => {
   };
 
   const imageDelete = (qstidx, imgidx) => {
-    const updatedState = { ...selectedFiles }; // make copy
-    updatedState[qstidx].splice(imgidx, 1);
-    console.log(updatedState)
-    setSelectedFiles(updatedState);
+    const updatedFilesState = { ...formImages }; // make copy
+    if (updatedFilesState[qstidx].length === 1) {
+      updatedFilesState[qstidx].splice(imgidx, 1);
+      delete updatedFilesState[qstidx]
+      setFormImages(updatedFilesState)
+      console.log('formImages', formImages);
+    } else {
+      updatedFilesState[qstidx].splice(imgidx, 1);
+      setFormImages(updatedFilesState);
+      console.log('formImages', formImages);
+    }
   }
 
   // UPLOAD RADIO IMAGES ANSWER OPTIONS
@@ -135,34 +140,31 @@ const FormQuestions = (props) => {
   };
 
   const imageStateUpdate = (e, qstidx) => {
-    let images = fileInput.current.files;
-    let imageUrls = [];
-    let formCollection = [];
-    Object.values(images).forEach((image, idx) => {
-      const path = `${formId}/q${qstidx + 1}_a${idx + 1}_${image.name}`;
-      imageUrls.push(path);
-      formCollection.push([path, image]);
-    });
-    setFormImages([...formImages, ...formCollection]);
-    console.log("formImages#", formImages)
-    updateRadioImagesOptions(qstidx, imageUrls);
-    toggleImages(qstidx);
-    handleImageStateChange(qstidx, e)
-  };
-
-  // Update state for image preview with selected images
-  const handleImageStateChange = (qstidx, e) => {
     if (e.target.files) {
-      const filesArray = Array.from(e.target.files).map((file) =>
-        URL.createObjectURL(file)
-      );
-      const previouslySelectedFiles = selectedFiles[qstidx] ? selectedFiles[qstidx] : [];
-      setSelectedFiles({
-        ...selectedFiles,
-        [qstidx]: [...previouslySelectedFiles, ...filesArray],
+      let images = e.target.files;
+      let imagePath = [];
+      let formCollection = [];
+
+      Object.values(images).forEach((image, idx) => {
+        const path = `${formId}/q${qstidx + 1}_a${idx + 1}_${image.name}`;
+        const userFacingImage = URL.createObjectURL(image);
+        imagePath.push(path);
+        formCollection.push([path, image, userFacingImage]);
+        console.log("path#", path);
       });
+
+      const previouslyAddedImages = formImages[qstidx] ? formImages[qstidx] : [];
+      setFormImages({
+        ...formImages,
+        [qstidx]: [...previouslyAddedImages, ...formCollection]
+      });
+      console.log("formImages#", formImages)
+      updateRadioImagesOptions(qstidx, imagePath);
+      toggleImages(qstidx);
+    } else {
+      console.log("formImages#", formImages)
     }
-  }
+  };
 
   const renderPhotos = (source, qstidx) => {
     if (source) {
@@ -179,7 +181,6 @@ const FormQuestions = (props) => {
               sx={{
                 width: 80,
                 height: 80,
-                // marginRight: 1,
                 marginLeft: 2.25,
                 marginBottom: 1,
                 opacity: 1,
@@ -191,7 +192,7 @@ const FormQuestions = (props) => {
             >
               <img
                 pointerEvent="auto"
-                src={photo}
+                src={photo[2]}
                 width={80}
                 height={80}
                 style={{
@@ -346,7 +347,7 @@ const FormQuestions = (props) => {
                         justifyContent="flex-start"
                         alignItems="flex-start"
                       >
-                        {renderPhotos(selectedFiles[qstidx], qstidx)}
+                        {renderPhotos(formImages[qstidx], qstidx)}
                         <Button
                           type="button"
                           variant="contained"
@@ -368,7 +369,8 @@ const FormQuestions = (props) => {
                             onChange={(e) => imageStateUpdate(e, qstidx)}
                             hidden
                           />
-                          {selectedFiles[qstidx] ? ("Add Additional Images")
+                          {formImages[qstidx] ?
+                            ("Add Additional Images")
                             : ("Upload Images")
                           }
                         </Button>
