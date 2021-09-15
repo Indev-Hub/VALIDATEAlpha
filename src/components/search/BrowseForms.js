@@ -35,7 +35,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const SearchTemplate1 = (props) => {
+const BrowseForms = (props) => {
   const classes = useStyles();
 
   // Description Popover state
@@ -201,4 +201,4 @@ const SearchTemplate1 = (props) => {
   )
 }
 
-export default SearchTemplate1
+export default BrowseForms

@@ -5,12 +5,13 @@ import { Box, Button, Container, Link, Typography } from "@material-ui/core";
 import { useTheme } from "@material-ui/core/styles";
 import Amplify, { API, graphqlOperation } from "aws-amplify";
 import awsconfig from "../../aws-exports";
+import { ArrowCircleDown } from "@material-ui/icons";
 // import CheckCircleIcon from '../../icons/CheckCircle';
 // import FormSelect from '../form/FormSelect';
 // import FormCheckbox from '../form/FormCheckbox';
+import SearchMain from 'src/components/search/SearchMain';
 import Logo from "../../images/VALIDATE PunchOut.png";
-import HomeLanding from "./HomeLanding";
-import { ArrowCircleDown } from "@material-ui/icons";
+// import HomeLanding from "./HomeLanding";
 // import CreateFormDesign from '../form/CreateFormDesign';
 // import UserList from '../user/UserList';
 // import SubmissionList from '../submissions/submissionList';
@@ -132,8 +133,8 @@ const HomeHero = (props) => {
           },
         }}
       >
-        <Box width="100%" id="HomeLanding">
-          <HomeLanding />
+        <Box width="100%" id="SearchMain">
+          <SearchMain/>
         </Box>
         {/* <UserList /> */}
         {/* <SubmissionList /> */}
