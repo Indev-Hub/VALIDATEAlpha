@@ -51,10 +51,14 @@ const FormQuestions = (props) => {
   };
 
   // Remove question from mapped array
-  // may have to delete the 'key' to remove images associated with index
   const removeQuestion = (qstidx) => {
     const updatedState = [...questionsState]; // make copy
+    const updatedImageIdx = { ...formImages }; // make copy
+    delete updatedImageIdx[qstidx];
     updatedState.splice(qstidx, 1);
+    const imageValues = Object.values(updatedImageIdx);
+    const newImageKeys = Object.assign({}, imageValues);
+    setFormImages(newImageKeys);
     setQuestionsState(updatedState);
   };
 
