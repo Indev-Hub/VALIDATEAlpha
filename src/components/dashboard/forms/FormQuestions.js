@@ -94,7 +94,11 @@ const FormQuestions = (props) => {
   // Update options for Radio Images after image files are selected;
   const updateRadioImagesOptions = (qstidx, imgUrlArray) => {
     const updatedState = [...questionsState];
-    updatedState[qstidx].options = [...imgUrlArray];
+    const currentStartingValue = updatedState[qstidx].options[0]
+    if (currentStartingValue === "") {
+      updatedState[qstidx].options.splice(0, 1)
+    }
+    updatedState[qstidx].options = [...updatedState[qstidx].options, ...imgUrlArray];
     setQuestionsState(updatedState);
   };
 
@@ -114,15 +118,18 @@ const FormQuestions = (props) => {
 
   const imageDelete = (qstidx, imgidx) => {
     const updatedFilesState = { ...formImages }; // make copy
+    const updatedQuestionsState = [...questionsState]; // make copy
     if (updatedFilesState[qstidx].length === 1) {
       updatedFilesState[qstidx].splice(imgidx, 1);
       delete updatedFilesState[qstidx]
+      updatedQuestionsState[qstidx].options = [""];
+      setQuestionsState(updatedQuestionsState)
       setFormImages(updatedFilesState)
-      console.log('formImages', formImages);
     } else {
       updatedFilesState[qstidx].splice(imgidx, 1);
+      updatedQuestionsState[qstidx].options.splice(imgidx, 1);
       setFormImages(updatedFilesState);
-      console.log('formImages', formImages);
+      setQuestionsState(updatedQuestionsState);
     }
   }
 
@@ -149,7 +156,6 @@ const FormQuestions = (props) => {
       let images = e.target.files;
       let imagePath = [];
       let formCollection = [];
-      console.log("images#", images)
 
       Object.values(images).forEach((image, idx) => {
         const path = `${formId}/q${qstidx + 1}_a${idx + 1}_${image.name}`;
@@ -160,6 +166,7 @@ const FormQuestions = (props) => {
       });
 
       const previouslyAddedImages = formImages[qstidx] ? formImages[qstidx] : [];
+
       setFormImages({
         ...formImages,
         [qstidx]: [...previouslyAddedImages, ...formCollection]

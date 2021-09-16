@@ -61,7 +61,7 @@ const FormCreate = props => {
     type: '',
     images: false,
     randomize: true,
-    options: [''],
+    options: [''] //this will need to be changed when pcking the type of image
   };
 
   let initialQuestions;
