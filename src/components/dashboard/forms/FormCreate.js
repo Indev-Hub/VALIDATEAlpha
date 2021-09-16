@@ -4,7 +4,9 @@ import PropTypes from 'prop-types';
 import { API, Auth, graphqlOperation } from 'aws-amplify';
 import { Storage } from 'aws-amplify';
 import { Formik, Form } from 'formik';
-import { Alert, AlertTitle, Box, Button, Paper, Typography } from '@material-ui/core';
+import {
+  Alert, AlertTitle, Box, Button, Paper, Typography
+} from '@material-ui/core';
 import { v4 as uuidv4 } from 'uuid';
 import { createForm } from '../../../graphql/mutations';
 import { getUser } from '../../../graphql/queries';
@@ -13,7 +15,6 @@ import FormDetails from './FormDetails';
 import FormQuestions from './FormQuestions';
 import FormSubmission from '../../form/FormSubmission';
 import Notification from '../../form/Notification';
-
 
 const FormCreate = props => {
   const navigate = useNavigate();
@@ -25,8 +26,8 @@ const FormCreate = props => {
   // Set state of upload success and failure notifications
   const [notify, setNotify] = useState({
     isOpen: false,
-    message: "",
-    type: "",
+    message: '',
+    type: '',
   });
 
   // Initialize form details state
@@ -38,6 +39,8 @@ const FormCreate = props => {
       title: selectedForm.title,
       description: selectedForm.description,
       tags: JSON.parse(selectedForm.tags),
+      isPrivate: selectedForm.isPrivate,
+      companyID: selectedForm.companyID
     };
   } else {
     initialDetails = {
@@ -54,11 +57,11 @@ const FormCreate = props => {
   // Initialize questions state
   const blankQuestion = {
     questionId: 1,
-    question: "",
-    type: "",
+    question: '',
+    type: '',
     images: false,
     randomize: true,
-    options: [""],
+    options: [''],
   };
 
   let initialQuestions;
@@ -106,9 +109,6 @@ const FormCreate = props => {
   //==================================//
   //           PREVIEW FORM           //
   //==================================//
-  console.log('detailsState', detailsState);
-  console.log('detailsState companyID', detailsState.companyID);
-  console.log('detailsState companyName', detailsState.companyName);
   const [formPreview, setFormPreview] = useState(null);
   const previewForm = () => {
     const formDesign = createFormDesignDataSet();
@@ -152,7 +152,7 @@ const FormCreate = props => {
 
     // Uncomment to console log complete form design structure
     // console.log(
-    //   "FormCreate uploadForm formDesignDataSet:",
+    //   'FormCreate uploadForm formDesignDataSet:',
     //   JSON.stringify(formDesignDataSet, null, 2)
     // );
 
@@ -163,7 +163,7 @@ const FormCreate = props => {
       setNotify({
         isOpen: true,
         message: `Submitted Successfully`,
-        type: "success",
+        type: 'success',
       });
 
       s3Upload();
@@ -172,40 +172,40 @@ const FormCreate = props => {
       // or redirect to TestList page if submitted from TestCreate route
       selectedForm ?
         setTimeout(() => handleListRefresh(), 1200)
-        : setTimeout(() => navigate("/dashboard/company/forms"), 1200);
+        : setTimeout(() => navigate('/dashboard/company/forms'), 1200);
 
     } catch (error) {
-      console.log("error uploading form", error);
+      console.log('error uploading form', error);
       setNotify({
         isOpen: true,
         message: `Upload Failed: ${JSON.stringify(error)}`,
-        type: "error",
+        type: 'error',
       });
     }
   };
 
   // Validate required form fields before uploading form to database
   const validateFormFields = () => {
-    if (detailsState.title === "") {
+    if (detailsState.title === '') {
       return setNotify({
         isOpen: true,
-        message: "Form Name Must Be Filled Out Before Submission",
-        type: "error",
+        message: 'Form Name Must Be Filled Out Before Submission',
+        type: 'error',
       });
     } else if (detailsState.companyID === undefined) {
       return setNotify({
         isOpen: true,
-        message: "Company Name Must Be Selected Before Submission",
-        type: "error",
+        message: 'Company Name Must Be Selected Before Submission',
+        type: 'error',
       });
     } else {
       for (let i = 0; i < questionsState.length; i++) {
-        if (questionsState[i].question === ""
-          || questionsState[i].type === "") {
+        if (questionsState[i].question === ''
+          || questionsState[i].type === '') {
           return setNotify({
             isOpen: true,
-            message: "Your Questions Must Have a Question and an Answer Type",
-            type: "error",
+            message: 'Your Questions Must Have a Question and an Answer Type',
+            type: 'error',
           });
         }
       }
@@ -234,30 +234,26 @@ const FormCreate = props => {
       );
       const userList = userData.data.getUser;
       setUserData(userList);
-      console.log("FormCreate getUserTable userList:", userList);
-      console.log("FormCreate getUserTable user.id:", user.id);
     } catch (error) {
-      console.log("error on fetching user table", error);
+      console.log('error on fetching user table', error);
     }
   };
 
   // Get company name from selected companyId, '' if none
   const getCompanyName = () => {
-    console.log('userData companies', userData.companies)
-    if (detailsState.companyID !== undefined) {
-      const matchName = userData.companies.items.filter(
-        item => detailsState.companyID.includes(item.id)
-      );
+    if (detailsState.companyID) {
+      const matchName = userData.companies.items
+        .filter(item => detailsState.companyID.includes(item.id));
       return matchName[0] ? matchName[0].name : '';
     } else {
-      console.log('NOTHING RETURNED')
+      console.log('FormCreate detailsState.companyID is undefined');
     }
   }
 
   return (
     <React.Fragment>
       <Formik>
-        <Form autoComplete="off">
+        <Form autoComplete='off'>
           {/* Company details part of the form */}
           <FormDetails
             userData={userData}
@@ -278,16 +274,15 @@ const FormCreate = props => {
           <Button
             sx={{ mt: 3, padding: 2 }}
             fullWidth
-            color="primary"
-            type="button"
-            variant="contained"
+            color='primary'
+            type='button'
+            variant='contained'
             onClick={validateFormFields}
           >
             CREATE FORM
           </Button>
         </Form>
       </Formik>
-      {console.log('formPreview', formPreview)}
       {formPreview ? (
         detailsState.companyID !== undefined ? (
           <Paper elevation={3} sx={{ mt: 2 }}>
@@ -300,14 +295,13 @@ const FormCreate = props => {
             </Box>
           </Paper>
         ) : (
-          <Alert severity="error" sx={{ mt: 3, px: 10 }}>
-            <AlertTitle variant="h5">Error creating form preview</AlertTitle>
-            <Typography fontWeight="500">No Company Selected</Typography>
+          <Alert severity='error' sx={{ mt: 3, px: 10 }}>
+            <AlertTitle variant='h5'>Error creating form preview</AlertTitle>
+            <Typography fontWeight='500'>No Company Selected</Typography>
             <Typography>Select a company in the Form Details section. If you have more than one company, we leave the company field blank so that you don't accidentally create a form for the wrong company.</Typography>
           </Alert>
         )
       ) : null}
-
       <Notification notify={notify} setNotify={setNotify} />
     </React.Fragment>
   );
@@ -316,7 +310,6 @@ const FormCreate = props => {
 FormCreate.propTypes = {
   selectedForm: PropTypes.object,
   handleListRefresh: PropTypes.func,
-
 };
 
 export default FormCreate;
