@@ -3,13 +3,7 @@ import { useState, useEffect } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import {
-  Box,
-  Breadcrumbs,
-  Button,
-  Container,
-  Grid,
-  Link,
-  Typography
+  Box, Breadcrumbs, Button, Container, Grid, Link, Typography
 } from '@material-ui/core';
 import { API, graphqlOperation, Storage } from 'aws-amplify';
 import { listForms } from '../../graphql/queries';
@@ -92,7 +86,7 @@ const FormList = () => {
     getForms();
     getSubmissions();
     getS3FileList();
-  }, [userCompanies,listRefresh]);
+  }, [userCompanies, listRefresh]);
 
   // Delete a form from DynamoDB Form table
   const formDelete = async (id) => {
@@ -156,7 +150,7 @@ const FormList = () => {
     } catch (error) {
       console.log('error on fetching file list', error);
     }
-  }
+  };
 
   const removeFile = async (fileName) => {
     try {
@@ -164,14 +158,14 @@ const FormList = () => {
     } catch (error) {
       console.log('error removing file', error);
     }
-  }
+  };
 
   const deleteFormImages = (formId) => {
     const fileNames = formImageFiles.filter(file => file.key.includes(formId));
     fileNames.forEach(fileName => {
       removeFile(fileName.key);
     });
-  }
+  };
 
   // Delete form and responses from database, and images from S3
   const handleFormDelete = (id) => {
@@ -182,7 +176,7 @@ const FormList = () => {
       ...confirmDialog,
       isOpen: false,
     });
-    handleListRefresh();
+    setTimeout(() => handleListRefresh(), 600);
   };
 
   // Set state for form duplication
@@ -196,13 +190,13 @@ const FormList = () => {
     setSelectedForm(null);
     setDuplicateForm(false);
     setListRefresh(!listRefresh);
-  }
+  };
 
   // Go back to list from duplicate form creation view if not submitted
   const handleReturnToList = () => {
     setSelectedForm(null);
     setDuplicateForm(false);
-  }
+  };
 
   if (duplicateForm) {
     // Show FormCreate if duplicating from an existing form
