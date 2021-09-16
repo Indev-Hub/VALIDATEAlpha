@@ -39,6 +39,7 @@ const FormQuestions = (props) => {
   // Add question ID state for UploadMultiplePreview (RadioImages options)
   const [questionId, setQuestionId] = useState(1);
   console.log("questionsState", questionsState)
+  console.log("formImages#", formImages)
 
   // Add question to form and add the new question to questionsState array
   const addQuestion = () => {
@@ -148,6 +149,7 @@ const FormQuestions = (props) => {
       let images = e.target.files;
       let imagePath = [];
       let formCollection = [];
+      console.log("images#", images)
 
       Object.values(images).forEach((image, idx) => {
         const path = `${formId}/q${qstidx + 1}_a${idx + 1}_${image.name}`;
@@ -162,11 +164,8 @@ const FormQuestions = (props) => {
         ...formImages,
         [qstidx]: [...previouslyAddedImages, ...formCollection]
       });
-      console.log("formImages#", formImages)
       updateRadioImagesOptions(qstidx, imagePath);
       toggleImages(qstidx);
-    } else {
-      console.log("formImages#", formImages)
     }
   };
 
