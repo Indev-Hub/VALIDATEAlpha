@@ -1,23 +1,12 @@
 import React, { useState } from "react";
 import {
-  Box,
-  Button,
-  Card,
-  Dialog,
-  FormControlLabel,
-  Grid,
-  IconButton,
-  Switch,
-  Typography,
-  Tooltip,
-  Zoom,
-  Paper
+  Box, Button, Card, FormControlLabel, Grid, IconButton,
+  Switch, Typography, Tooltip, Zoom, Paper
 } from "@material-ui/core";
 import { Close, DeleteForever, Delete } from "@material-ui/icons";
 import PropTypes from "prop-types";
 import { Plus } from "../../../icons";
 import Controls from "../../form/controls/_controls";
-import UploadMultiplePreview from "./UploadMultiplePreview";
 import { INPUT_CONTROLS } from "./FormConstants";
 
 // VALIDATION QUESTIONS SECTION OF FormCreate
@@ -36,10 +25,8 @@ const FormQuestions = (props) => {
 
   const fileInput = React.useRef();
 
-  // Add question ID state for UploadMultiplePreview (RadioImages options)
+  // Set static question ID for use in FormSubmission and AnalyticsSubmissions
   const [questionId, setQuestionId] = useState(1);
-  console.log("questionsState", questionsState)
-  console.log("formImages#", formImages)
 
   // Add question to form and add the new question to questionsState array
   const addQuestion = () => {
@@ -91,14 +78,17 @@ const FormQuestions = (props) => {
     setQuestionsState(updatedState);
   };
 
-  // Update options for Radio Images after image files are selected;
-  const updateRadioImagesOptions = (qstidx, imgUrlArray) => {
+  // Update options for Image answer type after image files are selected;
+  const updateImageOptions = (qstidx, imgUrlArray) => {
     const updatedState = [...questionsState];
     const currentStartingValue = updatedState[qstidx].options[0]
     if (currentStartingValue === "") {
       updatedState[qstidx].options.splice(0, 1)
     }
-    updatedState[qstidx].options = [...updatedState[qstidx].options, ...imgUrlArray];
+    updatedState[qstidx].options = [
+      ...updatedState[qstidx].options, 
+      ...imgUrlArray
+    ];
     setQuestionsState(updatedState);
   };
 
@@ -116,15 +106,14 @@ const FormQuestions = (props) => {
     setQuestionsState(updatedState);
   };
 
-  const imageDelete = (qstidx, imgidx) => {
+  const removeImage = (qstidx, imgidx) => {
     const updatedFilesState = { ...formImages }; // make copy
     const updatedQuestionsState = [...questionsState]; // make copy
     if (updatedFilesState[qstidx].length === 1) {
-      updatedFilesState[qstidx].splice(imgidx, 1);
-      delete updatedFilesState[qstidx]
+      delete updatedFilesState[qstidx];
       updatedQuestionsState[qstidx].options = [""];
-      setQuestionsState(updatedQuestionsState)
-      setFormImages(updatedFilesState)
+      setQuestionsState(updatedQuestionsState);
+      setFormImages(updatedFilesState);
     } else {
       updatedFilesState[qstidx].splice(imgidx, 1);
       updatedQuestionsState[qstidx].options.splice(imgidx, 1);
@@ -133,53 +122,37 @@ const FormQuestions = (props) => {
     }
   }
 
-  // UPLOAD RADIO IMAGES ANSWER OPTIONS
-  // Sets whether images are being added to options and displays dialog if true
-  const [isImage, setIsImage] = useState([]);
-
-  // Update isImage state to toggle UploadMultiplePreveiw dialog component
-  const toggleImages = async (qstidx) => {
-    // Remove if question index is already in state
-    if (isImage.includes(qstidx)) {
-      const removeImageOption = isImage.filter((items) => {
-        return items !== qstidx;
-      });
-      setIsImage(removeImageOption);
-      return;
-    }
-    // Otherwise, add the index to isImage state 
-    setIsImage([...isImage, qstidx]);
-  };
-
+  // ADD IMAGES ANSWER OPTIONS
+  // Get selected image files and add file, path, or blob to associated state
   const imageStateUpdate = (e, qstidx) => {
     if (e.target.files) {
       let images = e.target.files;
-      let imagePath = [];
-      let formCollection = [];
+      let imagePaths = [];
+      let imageCollection = [];
 
       Object.values(images).forEach((image, idx) => {
+        // Create unique filename for S3 path to avoid name collisions
         const path = `${formId}/q${qstidx + 1}_a${idx + 1}_${image.name}`;
-        const userFacingImage = URL.createObjectURL(image);
-        imagePath.push(path);
-        formCollection.push([path, image, userFacingImage]);
-        console.log("path#", path);
+        imagePaths.push(path);
+        // Create blob for thumbnail render
+        const imageThumbnail = URL.createObjectURL(image);
+        imageCollection.push([path, image, imageThumbnail]);
       });
 
-      const previouslyAddedImages = formImages[qstidx] ? formImages[qstidx] : [];
+      // Checks for prior images before adding more images to qst array
+      const previousImages = formImages[qstidx] ? formImages[qstidx] : [];
 
       setFormImages({
         ...formImages,
-        [qstidx]: [...previouslyAddedImages, ...formCollection]
+        [qstidx]: [...previousImages, ...imageCollection]
       });
-      updateRadioImagesOptions(qstidx, imagePath);
-      toggleImages(qstidx);
+      updateImageOptions(qstidx, imagePaths);
     }
   };
 
-  const renderPhotos = (source, qstidx) => {
-    if (source) {
-      return source.map((photo, imgidx) => {
-        console.log("photo", photo)
+  const renderImages = (selectedImages, qstidx) => {
+    if (selectedImages) {
+      return selectedImages.map((image, imgidx) => {
         return (
           <Tooltip
             title={<Delete />}
@@ -202,7 +175,7 @@ const FormQuestions = (props) => {
             >
               <img
                 pointerEvent="auto"
-                src={photo[2]}
+                src={image[2]}
                 width={80}
                 height={80}
                 style={{
@@ -210,7 +183,7 @@ const FormQuestions = (props) => {
                   borderRadius: 15,
                 }}
                 alt=""
-                onClick={() => imageDelete(qstidx, imgidx)}
+                onClick={() => removeImage(qstidx, imgidx)}
               />
             </Paper>
           </Tooltip >
@@ -222,7 +195,7 @@ const FormQuestions = (props) => {
   return (
     <React.Fragment>
       {questionsState.map((_qst, qstidx) => {
-        const questionId = `question-${qstidx}`;
+        const qstId = `question-${qstidx}`;
         const typeId = `type-${qstidx}`;
         return (
           <Card key={`input-${qstidx}`} sx={{ my: 1 }}>
@@ -262,7 +235,7 @@ const FormQuestions = (props) => {
                   <Controls.TextField
                     label="Question"
                     type="text"
-                    name={questionId}
+                    name={qstId}
                     placeholder={`Question #${qstidx + 1}`}
                     data-idx={qstidx}
                     id="question"
@@ -301,7 +274,7 @@ const FormQuestions = (props) => {
               </Grid>
               <Grid item xs={12} md={4}>
                 <Box>
-                  {/* Start mapping the validation answer options & alternate text and image upload */}
+                  {/* Map through answer options, alternate text or images */}
                   {questionsState[qstidx].type !== "Images" ? (
                     <>
                       {questionsState[qstidx].options.map((_opt, optidx) => {
@@ -357,12 +330,11 @@ const FormQuestions = (props) => {
                         justifyContent="flex-start"
                         alignItems="flex-start"
                       >
-                        {renderPhotos(formImages[qstidx], qstidx)}
+                        {renderImages(formImages[qstidx], qstidx)}
                         <Button
                           type="button"
                           variant="contained"
                           component="label"
-                          onClick={() => toggleImages(qstidx)}
                           color="secondary"
                           sx={{
                             m: 1,
@@ -422,7 +394,7 @@ FormQuestions.propTypes = {
   setQuestionsState: PropTypes.func,
   blankQuestion: PropTypes.object,
   previewForm: PropTypes.func,
-  formImages: PropTypes.array,
+  formImages: PropTypes.object,
   setFormImages: PropTypes.func,
 };
 
