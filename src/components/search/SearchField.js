@@ -3,30 +3,34 @@ import {
   Box,
   Button,
   TextField,
+  InputAdornment,
 } from "@material-ui/core";
 import PropTypes from 'prop-types';
+import SearchIcon from 'src/icons/Search';
+import { property } from 'lodash';
+
 
 
 const SearchField = (props) => {
   const {
-    string,
+    stringQuery,
     setString,
     forms,
     setSelectedForms
   } = props;
 
-  const applyFilters = (forms, string) => forms
+  const applyFilters = (forms, stringQuery) => forms
   .filter((form) => {
     let matches = true;
 
-    if (string) {
+    if (stringQuery) {
       // "properties" determines the fields that are searched 
       // for matching values in the string
       const properties = ['title', 'description', 'companyName'];
       let containsString = false;
 
       properties.forEach((property) => {
-        if (form[property].toLowerCase().includes(string.toLowerCase())) {
+        if (form[property].toLowerCase().includes(stringQuery.toLowerCase())) {
           containsString = true;
         }
       });
@@ -40,9 +44,10 @@ const SearchField = (props) => {
   });
 
   useEffect(() => {
-    setSelectedForms(applyFilters(forms, string));
+    setSelectedForms(applyFilters(forms, stringQuery));
 
-  },[forms, setSelectedForms, string])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[stringQuery])
 
   const handleStringChange = (event) => {
     setString(event.target.value);
@@ -50,15 +55,36 @@ const SearchField = (props) => {
 
   return(
     <>
-      <TextField
-        onChange={handleStringChange}
-      />
+      <Box
+        sx={{
+          m: 1,
+          maxWidth: '100%',
+          width: 500,
+          display: 'flex',
+          justifycontent: 'center'
+        }}
+      >
+        <TextField
+          fullWidth
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon fontSize="small" />
+              </InputAdornment>
+            )
+          }}
+          onChange={handleStringChange}
+          placeholder="Search forms"
+          value={stringQuery}
+          variant="outlined"
+        />
+      </Box>
     </>
   )
 }
 
 SearchField.propTypes = {
-  string: PropTypes.string,
+  stringQuery: PropTypes.string,
   setString: PropTypes.func,
   forms: PropTypes.array,
   setSelectedForms: PropTypes.func

@@ -123,7 +123,7 @@ const HomeHero = (props) => {
       <Container
         maxWidth="100%"
         sx={{
-          backgroundColor: "#666",
+          backgroundColor: "black",
           alignItems: "center",
           display: "flex",
           flexDirection: "column",
