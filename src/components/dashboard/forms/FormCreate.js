@@ -61,7 +61,7 @@ const FormCreate = props => {
     type: '',
     images: false,
     randomize: true,
-    options: [''],
+    options: [''] //this will need to be changed when pcking the type of image
   };
 
   let initialQuestions;
@@ -87,8 +87,7 @@ const FormCreate = props => {
       description,
       tags,
       isPrivate,
-      companyID,
-      companyName
+      companyID
     } = detailsState;
 
     // The input data to be sent in our createForm request
@@ -119,8 +118,8 @@ const FormCreate = props => {
   //           UPLOAD FORM            //
   //==================================//
 
-  // State passed through FormQuestions to UploadMultiplePreview
-  const [formImages, setFormImages] = useState([]);
+  // State passed to FormQuestions, primarily managed by imageStateUpdate
+  const [formImages, setFormImages] = useState({});
 
   // Upload images to S3
   const handleImgUpload = async (path, file) => {
@@ -133,9 +132,11 @@ const FormCreate = props => {
 
   // Map through image/url pairs and pass to S3 upload function
   const s3Upload = () => {
-    formImages.map(pair => {
-      handleImgUpload(pair[0], pair[1]);
-    })
+    Object.values(formImages).map(imageArray => {
+      imageArray.map(imagePair => {
+        handleImgUpload(imagePair[0], imagePair[1])
+      })
+    });
   };
 
   const uploadForm = async () => {

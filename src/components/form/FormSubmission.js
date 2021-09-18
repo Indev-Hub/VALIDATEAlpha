@@ -10,6 +10,7 @@ import Controls from './controls/_controls';
 import Notification from './Notification';
 
 const FormSubmission = props => {
+
   const navigate = useNavigate();
 
   // Destructure formDesign (=FormCreate form object) and other props
@@ -83,6 +84,7 @@ const FormSubmission = props => {
     };
   });
 
+
   return (
     <React.Fragment>
       <Grid
@@ -121,7 +123,6 @@ const FormSubmission = props => {
               validationSchema={Yup.object({
                 ...validationSchema
               })}
-
               onSubmit={async (values, { setSubmitting }) => {
                 // Add user input values into submission data structure
                 let formSubmission = { ...submitStructure };

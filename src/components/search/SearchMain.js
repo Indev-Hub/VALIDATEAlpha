@@ -41,34 +41,36 @@ const SearchMain = () => {
   };
 
   return (
-    <Grid container spacing={2} xs={12}>
-      {forms.map((form, index) => {
-        if (!form.isPrivate) {
-          return (
-            <Grid
-              item
-              xs={12}
-              sm={6}
-              md={4}
-              key={index}
-              href={`/form/${form.id}`}
-            >
-              <Link
+    <>
+      <Grid container spacing={2} xs={12}>
+        {forms.map((form, index) => {
+          if (!form.isPrivate) {
+            return (
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                md={4}
+                key={index}
                 href={`/form/${form.id}`}
-                sx={{
-                  "&:hover": {
-                    textDecoration: 'none',
-                  }
-                }}
               >
-                {/* <SearchForms form={form} index={index} /> */}
-                <SearchTemplate1 form={form} submissions={submissions} index={index} />
-              </Link>
-            </Grid>
-          )
-        }
-      })}
-    </Grid>
+                <Link
+                  href={`/form/${form.id}`}
+                  sx={{
+                    "&:hover": {
+                      textDecoration: 'none',
+                    }
+                  }}
+                >
+                  {/* <SearchForms form={form} index={index} /> */}
+                  <SearchTemplate1 form={form} submissions={submissions} index={index} />
+                </Link>
+              </Grid>
+            )
+          }
+        })}
+      </Grid>
+    </>
   )
 }
 

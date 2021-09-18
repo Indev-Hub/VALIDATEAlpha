@@ -1,20 +1,12 @@
 import React, { useState } from "react";
 import {
-  Box,
-  Button,
-  Card,
-  Dialog,
-  FormControlLabel,
-  Grid,
-  IconButton,
-  Switch,
-  Typography,
+  Box, Button, Card, FormControlLabel, Grid, IconButton,
+  Switch, Typography, Tooltip, Zoom, Paper
 } from "@material-ui/core";
-import { Close, DeleteForever } from "@material-ui/icons";
+import { Close, DeleteForever, Delete } from "@material-ui/icons";
 import PropTypes from "prop-types";
 import { Plus } from "../../../icons";
 import Controls from "../../form/controls/_controls";
-import UploadMultiplePreview from "./UploadMultiplePreview";
 import { INPUT_CONTROLS } from "./FormConstants";
 
 // VALIDATION QUESTIONS SECTION OF FormCreate
@@ -31,7 +23,9 @@ const FormQuestions = (props) => {
     setFormImages,
   } = props;
 
-  // Add question ID state for UploadMultiplePreview (RadioImages options)
+  const fileInput = React.useRef();
+
+  // Set static question ID for use in FormSubmission and AnalyticsSubmissions
   const [questionId, setQuestionId] = useState(1);
 
   // Add question to form and add the new question to questionsState array
@@ -47,7 +41,12 @@ const FormQuestions = (props) => {
   // Remove question from mapped array
   const removeQuestion = (qstidx) => {
     const updatedState = [...questionsState]; // make copy
+    const updatedImageIdx = { ...formImages }; // make copy
+    delete updatedImageIdx[qstidx];
     updatedState.splice(qstidx, 1);
+    const imageValues = Object.values(updatedImageIdx);
+    const newImageKeys = Object.assign({}, imageValues);
+    setFormImages(newImageKeys);
     setQuestionsState(updatedState);
   };
 
@@ -79,11 +78,17 @@ const FormQuestions = (props) => {
     setQuestionsState(updatedState);
   };
 
-  // Update options for Radio Images after image files are selected;
-  // function is passed to UploadeMultiplePreview
-  const updateRadioImagesOptions = (qstidx, imgUrlArray) => {
+  // Update options for Image answer type after image files are selected;
+  const updateImageOptions = (qstidx, imgUrlArray) => {
     const updatedState = [...questionsState];
-    updatedState[qstidx].options = [...imgUrlArray];
+    const currentStartingValue = updatedState[qstidx].options[0]
+    if (currentStartingValue === "") {
+      updatedState[qstidx].options.splice(0, 1)
+    }
+    updatedState[qstidx].options = [
+      ...updatedState[qstidx].options, 
+      ...imgUrlArray
+    ];
     setQuestionsState(updatedState);
   };
 
@@ -101,28 +106,96 @@ const FormQuestions = (props) => {
     setQuestionsState(updatedState);
   };
 
-  // UPLOAD RADIO IMAGES ANSWER OPTIONS
-  // Sets whether images are being added to options and displays dialog if true
-  const [isImage, setIsImage] = useState([]);
-
-  // Update isImage state to toggle UploadMultiplePreveiw dialog component
-  const toggleImages = async (qstidx) => {
-    // Remove if question index is already in state
-    if (isImage.includes(qstidx)) {
-      const removeImageOption = isImage.filter((items) => {
-        return items !== qstidx;
-      });
-      setIsImage(removeImageOption);
-      return;
+  const removeImage = (qstidx, imgidx) => {
+    const updatedFilesState = { ...formImages }; // make copy
+    const updatedQuestionsState = [...questionsState]; // make copy
+    if (updatedFilesState[qstidx].length === 1) {
+      delete updatedFilesState[qstidx];
+      updatedQuestionsState[qstidx].options = [""];
+      setQuestionsState(updatedQuestionsState);
+      setFormImages(updatedFilesState);
+    } else {
+      updatedFilesState[qstidx].splice(imgidx, 1);
+      updatedQuestionsState[qstidx].options.splice(imgidx, 1);
+      setFormImages(updatedFilesState);
+      setQuestionsState(updatedQuestionsState);
     }
-    // Otherwise, add the index to isImage state 
-    setIsImage([...isImage, qstidx]);
+  }
+
+  // ADD IMAGES ANSWER OPTIONS
+  // Get selected image files and add file, path, or blob to associated state
+  const imageStateUpdate = (e, qstidx) => {
+    if (e.target.files) {
+      let images = e.target.files;
+      let imagePaths = [];
+      let imageCollection = [];
+
+      Object.values(images).forEach((image, idx) => {
+        // Create unique filename for S3 path to avoid name collisions
+        const path = `${formId}/q${qstidx + 1}_a${idx + 1}_${image.name}`;
+        imagePaths.push(path);
+        // Create blob for thumbnail render
+        const imageThumbnail = URL.createObjectURL(image);
+        imageCollection.push([path, image, imageThumbnail]);
+      });
+
+      // Checks for prior images before adding more images to qst array
+      const previousImages = formImages[qstidx] ? formImages[qstidx] : [];
+
+      setFormImages({
+        ...formImages,
+        [qstidx]: [...previousImages, ...imageCollection]
+      });
+      updateImageOptions(qstidx, imagePaths);
+    }
+  };
+
+  const renderImages = (selectedImages, qstidx) => {
+    if (selectedImages) {
+      return selectedImages.map((image, imgidx) => {
+        return (
+          <Tooltip
+            title={<Delete />}
+            arrow
+            placement="top"
+            TransitionComponent={Zoom}
+          >
+            <Paper
+              sx={{
+                width: 80,
+                height: 80,
+                marginLeft: 2.25,
+                marginBottom: 1,
+                opacity: 1,
+                "&:hover": {
+                  opacity: 0.50,
+                  cursor: "pointer",
+                },
+              }}
+            >
+              <img
+                pointerEvent="auto"
+                src={image[2]}
+                width={80}
+                height={80}
+                style={{
+                  objectFit: "cover",
+                  borderRadius: 15,
+                }}
+                alt=""
+                onClick={() => removeImage(qstidx, imgidx)}
+              />
+            </Paper>
+          </Tooltip >
+        );
+      });
+    }
   };
 
   return (
     <React.Fragment>
       {questionsState.map((_qst, qstidx) => {
-        const questionId = `question-${qstidx}`;
+        const qstId = `question-${qstidx}`;
         const typeId = `type-${qstidx}`;
         return (
           <Card key={`input-${qstidx}`} sx={{ my: 1 }}>
@@ -162,7 +235,7 @@ const FormQuestions = (props) => {
                   <Controls.TextField
                     label="Question"
                     type="text"
-                    name={questionId}
+                    name={qstId}
                     placeholder={`Question #${qstidx + 1}`}
                     data-idx={qstidx}
                     id="question"
@@ -201,7 +274,7 @@ const FormQuestions = (props) => {
               </Grid>
               <Grid item xs={12} md={4}>
                 <Box>
-                  {/* Start mapping the validation answer options & alternate text and image upload */}
+                  {/* Map through answer options, alternate text or images */}
                   {questionsState[qstidx].type !== "Images" ? (
                     <>
                       {questionsState[qstidx].options.map((_opt, optidx) => {
@@ -251,36 +324,39 @@ const FormQuestions = (props) => {
                     </>
                   ) : (
                     <>
-                      <Button
-                        type="button"
-                        onClick={() => toggleImages(qstidx)}
-                        padding="5 30 5 30"
-                        variant="contained"
-                        color="secondary"
-                        sx={{ m: 1, pr: 3 }}
-                        startIcon={<Plus />}
+                      <Grid
+                        container
+                        direction="row"
+                        justifyContent="flex-start"
+                        alignItems="flex-start"
                       >
-                        Upload Images
-                      </Button>
-                      {isImage.includes(qstidx) ? (
-                        <Dialog
-                          open={() => toggleImages(qstidx)}
-                          fullWidth="true"
+                        {renderImages(formImages[qstidx], qstidx)}
+                        <Button
+                          type="button"
+                          variant="contained"
+                          component="label"
+                          color="secondary"
+                          sx={{
+                            m: 1,
+                            width: "100%",
+                          }}
+                          startIcon={<Plus />}
                         >
-                          <Box mb={1}>
-                            <UploadMultiplePreview
-                              formId={formId}
-                              questionIdx={qstidx}
-                              toggleDialog={toggleImages}
-                              updateRadioImagesOptions={
-                                updateRadioImagesOptions
-                              }
-                              formImages={formImages}
-                              setFormImages={setFormImages}
-                            />
-                          </Box>
-                        </Dialog>
-                      ) : null}
+                          <input
+                            type="file"
+                            accept="image/png, image/gif, image/jpeg"
+                            id="file"
+                            ref={fileInput}
+                            multiple
+                            onChange={(e) => imageStateUpdate(e, qstidx)}
+                            hidden
+                          />
+                          {formImages[qstidx] ?
+                            ("Add Additional Images")
+                            : ("Upload Images")
+                          }
+                        </Button>
+                      </Grid>
                     </>
                   )}
                 </Box>
@@ -318,7 +394,7 @@ FormQuestions.propTypes = {
   setQuestionsState: PropTypes.func,
   blankQuestion: PropTypes.object,
   previewForm: PropTypes.func,
-  formImages: PropTypes.array,
+  formImages: PropTypes.object,
   setFormImages: PropTypes.func,
 };
 
