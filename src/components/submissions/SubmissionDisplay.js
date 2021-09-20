@@ -16,8 +16,9 @@ const SubmissionDisplay = () => {
 
   useEffect(() => {
     getFormInfo();
-  }, []);  
-  
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const getFormInfo = async () => {
     try {
       const getFormData = await API.graphql(graphqlOperation(getForm, { id: formId }));
@@ -38,7 +39,7 @@ const SubmissionDisplay = () => {
         {isLoading ? (
           <Typography>Form is loading...</Typography>
         ) : (
-          <FormSubmission formDesign = {formData} /> 
+          <FormSubmission formDesign={formData} />
         )}
         {/* <FormSubmission formDesign = {formData} /> */}
         {console.log('after submission', formData)}

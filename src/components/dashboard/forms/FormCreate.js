@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { API, Auth, graphqlOperation } from 'aws-amplify';
-import { createForm } from '../../../graphql/mutations';
-import { getUser } from 'src/graphql/queries';
-import { Formik, Form } from 'formik';
 import PropTypes from 'prop-types';
-import { Box, Paper } from '@material-ui/core';
+import { API, Auth, graphqlOperation } from 'aws-amplify';
+import { Storage } from 'aws-amplify';
+import { Formik, Form } from 'formik';
+import {
+  Alert, AlertTitle, Box, Button, Paper, Typography
+} from '@material-ui/core';
 import { v4 as uuidv4 } from 'uuid';
+import { createForm } from '../../../graphql/mutations';
+import { getUser } from '../../../graphql/queries';
 import useAuth from '../../../hooks/useAuth';
-import FormSubmission from '../../form/FormSubmission';
-import Notification from '../../form/Notification';
 import FormDetails from './FormDetails';
 import FormQuestions from './FormQuestions';
+import FormSubmission from '../../form/FormSubmission';
+import Notification from '../../form/Notification';
 
 const FormCreate = props => {
   const navigate = useNavigate();
@@ -20,41 +23,36 @@ const FormCreate = props => {
   // This is used if duplicating from existing form in TestList
   const { selectedForm = null, handleListRefresh } = props;
 
-  // Create unique form id (also passed through to UploadMultiplePreview)
-  const formId = `form-${uuidv4()}`;
-
   // Set state of upload success and failure notifications
   const [notify, setNotify] = useState({
     isOpen: false,
     message: '',
-    type: ''
-  })
+    type: '',
+  });
 
   // Initialize form details state
   let initialDetails;
   if (selectedForm) {
     // If duplicating from existing form
     initialDetails = {
+      formId: `form-${uuidv4()}`,
       title: selectedForm.title,
       description: selectedForm.description,
-      companyID: selectedForm.companyID,
-      isPrivate: selectedForm.isPrivate,
-      randomize: selectedForm.randomize,
       tags: JSON.parse(selectedForm.tags),
-    }
+      isPrivate: selectedForm.isPrivate,
+      companyID: selectedForm.companyID
+    };
   } else {
     initialDetails = {
+      formId: `form-${uuidv4()}`,
       title: '',
       description: '',
-      companyID: [''],
+      tags: [],
       isPrivate: false,
-      randomize: '',
-      tags: [''],
-    }
-  };
+    };
+  }
 
   const [detailsState, setDetailsState] = useState(initialDetails);
-  console.log('Details State', detailsState)
 
   // Initialize questions state
   const blankQuestion = {
@@ -62,8 +60,8 @@ const FormCreate = props => {
     question: '',
     type: '',
     images: false,
-    randomize: '',
-    options: [''],
+    randomize: true,
+    options: [''] //this will need to be changed when pcking the type of image
   };
 
   let initialQuestions;
@@ -76,34 +74,31 @@ const FormCreate = props => {
 
   const [questionsState, setQuestionsState] = useState(initialQuestions);
 
-
   //==================================//
   //           CREATE FORM            //
   //==================================//
 
   // Construct data object to be used as output for DB and prop for form preview
   const createFormDesignDataSet = () => {
-    // Create random number for ID (temp solution for unique ID — will add company name and form number later on)
-    function getRandomInt(min, max) {
-      min = Math.ceil(min);
-      max = Math.floor(max);
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-
     // Deconstruct form properties
-    const { title, companyID, description, isPrivate, randomize, tags } = detailsState;
-    // const formID = getRandomInt(1000, 9999); // replaced by uuid for UploadMulitplePreview (form subdirectory in S3)
-    const compID = getRandomInt(1000, 9999);
+    const {
+      formId,
+      title,
+      description,
+      tags,
+      isPrivate,
+      companyID
+    } = detailsState;
 
-    // The input data to be sent in our createForm request 
+    // The input data to be sent in our createForm request
     const formDesignDataSet = {
       id: formId,
-      companyID: companyID,
-      companyName: getCompanyName(),
       title: title,
       description: description,
-      isPrivate: isPrivate,
       tags: JSON.stringify(tags),
+      isPrivate: isPrivate,
+      companyID: userData.companies.items.length > 1 ? companyID : userData.companies.items[0].id,
+      companyName: userData.companies.items.length > 1 ? getCompanyName() : userData.companies.items[0].name,
       validations: JSON.stringify(questionsState),
     };
 
@@ -111,52 +106,110 @@ const FormCreate = props => {
   };
 
   //==================================//
-  //           FORM PREVIEW           //
+  //           PREVIEW FORM           //
   //==================================//
-
-  // Form preview
   const [formPreview, setFormPreview] = useState(null);
   const previewForm = () => {
     const formDesign = createFormDesignDataSet();
     setFormPreview(formDesign);
   };
 
+  //==================================//
+  //           UPLOAD FORM            //
+  //==================================//
+
+  // State passed to FormQuestions, primarily managed by imageStateUpdate
+  const [formImages, setFormImages] = useState({});
+
+  // Upload images to S3
+  const handleImgUpload = async (path, file) => {
+    try {
+      await Storage.put(path, file, { contentType: 'image' });
+    } catch (error) {
+      console.log('error on uploading images to s3', error);
+    }
+  };
+
+  // Map through image/url pairs and pass to S3 upload function
+  const s3Upload = () => {
+    Object.values(formImages).map(imageArray => {
+      imageArray.map(imagePair => {
+        handleImgUpload(imagePair[0], imagePair[1])
+      })
+    });
+  };
+
   const uploadForm = async () => {
     // Get user attributes
     const { signInUserSession } = await Auth.currentAuthenticatedUser();
     const userName = signInUserSession.accessToken.payload.username;
-    const userId = signInUserSession.accessToken.payload.sub
+    const userId = signInUserSession.accessToken.payload.sub;
 
     // Get form design schema and output to DynamoDB
     const formDesignDataSet = createFormDesignDataSet();
 
-    console.log(
-      'FormCreate#uploadForm', JSON.stringify(formDesignDataSet, null, 2)
-    );
+    // Uncomment to console log complete form design structure
+    // console.log(
+    //   'FormCreate uploadForm formDesignDataSet:',
+    //   JSON.stringify(formDesignDataSet, null, 2)
+    // );
 
     try {
-      await API.graphql(graphqlOperation(
-        createForm, { input: formDesignDataSet }
-      ));
+      await API.graphql(
+        graphqlOperation(createForm, { input: formDesignDataSet })
+      );
       setNotify({
         isOpen: true,
         message: `Submitted Successfully`,
-        type: 'success'
+        type: 'success',
       });
+
+      s3Upload();
+
       // Refresh if submitted from TestList page (i.e., starting from duplicate)
       // or redirect to TestList page if submitted from TestCreate route
       selectedForm ?
         setTimeout(() => handleListRefresh(), 1200)
-        : setTimeout(() => navigate("/dashboard/form-collection"), 1200);
+        : setTimeout(() => navigate('/dashboard/company/forms'), 1200);
+
     } catch (error) {
       console.log('error uploading form', error);
       setNotify({
         isOpen: true,
         message: `Upload Failed: ${JSON.stringify(error)}`,
-        type: 'error'
+        type: 'error',
       });
     }
   };
+
+  // Validate required form fields before uploading form to database
+  const validateFormFields = () => {
+    if (detailsState.title === '') {
+      return setNotify({
+        isOpen: true,
+        message: 'Form Name Must Be Filled Out Before Submission',
+        type: 'error',
+      });
+    } else if (detailsState.companyID === undefined) {
+      return setNotify({
+        isOpen: true,
+        message: 'Company Name Must Be Selected Before Submission',
+        type: 'error',
+      });
+    } else {
+      for (let i = 0; i < questionsState.length; i++) {
+        if (questionsState[i].question === ''
+          || questionsState[i].type === '') {
+          return setNotify({
+            isOpen: true,
+            message: 'Your Questions Must Have a Question and an Answer Type',
+            type: 'error',
+          });
+        }
+      }
+    }
+    return uploadForm();
+  }
 
   //==================================//
   //      USER TABLE INFORMATION      //
@@ -168,30 +221,37 @@ const FormCreate = props => {
   // Load User table data
   useEffect(() => {
     getUserTable();
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // API call to get User table data
   const getUserTable = async () => {
     try {
-      const userData = await API.graphql(graphqlOperation(getUser, { id: user.id }));
+      const userData = await API.graphql(
+        graphqlOperation(getUser, { id: user.id })
+      );
       const userList = userData.data.getUser;
       setUserData(userList);
-      console.log('user info', userList);
-      console.log('user sub', user.id)
     } catch (error) {
       console.log('error on fetching user table', error);
     }
   };
 
+  // Get company name from selected companyId, '' if none
   const getCompanyName = () => {
-    const matchName = userData.companies.items.filter(item => detailsState.companyID.includes(item.id));
-    return matchName[0].name;
+    if (detailsState.companyID) {
+      const matchName = userData.companies.items
+        .filter(item => detailsState.companyID.includes(item.id));
+      return matchName[0] ? matchName[0].name : '';
+    } else {
+      console.log('FormCreate detailsState.companyID is undefined');
+    }
   }
 
   return (
     <React.Fragment>
       <Formik>
-        <Form autoComplete="off">
+        <Form autoComplete='off'>
           {/* Company details part of the form */}
           <FormDetails
             userData={userData}
@@ -200,32 +260,47 @@ const FormCreate = props => {
           />
           {/* Start mapping the validation questions */}
           <FormQuestions
-            formId={formId}
+            formId={detailsState.formId}
             questionsState={questionsState}
             setQuestionsState={setQuestionsState}
             blankQuestion={blankQuestion}
             previewForm={previewForm}
             uploadForm={uploadForm}
+            formImages={formImages}
+            setFormImages={setFormImages}
           />
+          <Button
+            sx={{ mt: 3, padding: 2 }}
+            fullWidth
+            color='primary'
+            type='button'
+            variant='contained'
+            onClick={validateFormFields}
+          >
+            CREATE FORM
+          </Button>
         </Form>
-      </Formik >
-
+      </Formik>
       {formPreview ? (
-        <Paper elevation={3} sx={{ mt: 2 }}>
-          <Box p={4}>
-            <FormSubmission
-              formDesign={formPreview}
-              displaySubmitButton={false}
-              userData={userData}
-            />
-          </Box>
-        </Paper>
+        detailsState.companyID !== undefined ? (
+          <Paper elevation={3} sx={{ mt: 2 }}>
+            <Box p={4}>
+              <FormSubmission
+                formDesign={formPreview}
+                displaySubmitButton={false}
+                userData={userData}
+              />
+            </Box>
+          </Paper>
+        ) : (
+          <Alert severity='error' sx={{ mt: 3, px: 10 }}>
+            <AlertTitle variant='h5'>Error creating form preview</AlertTitle>
+            <Typography fontWeight='500'>No Company Selected</Typography>
+            <Typography>Select a company in the Form Details section. If you have more than one company, we leave the company field blank so that you don't accidentally create a form for the wrong company.</Typography>
+          </Alert>
+        )
       ) : null}
-
-      <Notification
-        notify={notify}
-        setNotify={setNotify}
-      />
+      <Notification notify={notify} setNotify={setNotify} />
     </React.Fragment>
   );
 };

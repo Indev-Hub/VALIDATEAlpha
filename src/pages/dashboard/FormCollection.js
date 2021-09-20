@@ -65,6 +65,7 @@ const FormCollection = () => {
   useEffect(() => {
     fetchForms();
     fetchUserData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchForms = async () => {
@@ -138,26 +139,19 @@ const FormCollection = () => {
         query: getUser,
         variables: { id: user.id }
       });
-      console.log("FormCollection#fetchedUserData", fetchedUserData);
       setUserData(fetchedUserData);
-      console.log("FormCollection#userData", userData);
     } catch (error) {
       console.log('error on fetching user', error);
     }
   }
 
   const getUserCompanyIds = () => {
-    // If Else statement to prevent error on initial load when userData has not been set yet
-    if (userData !== null) {
-      const companies = userData.data.getUser.companies.items;
-      let companyIds = [];
-      companies.forEach(company => {
-        companyIds.push(company.id)
-      })
-      return companyIds;
-    } else {
-      return console.log("User data is not set yet")
-    }
+    const companies = userData.data.getUser.companies.items;
+    let companyIds = [];
+    companies.forEach(company => {
+      companyIds.push(company.id)
+    })
+    return companyIds;
   }
 
   if (duplicateForm) {
@@ -197,13 +191,25 @@ const FormCollection = () => {
             fullWidth
             onClick={handleReturnToList}
           />
-          <FormSubmission formDesign={selectedForm} displaySubmitButton={false} />
+          <FormSubmission
+            formDesign={selectedForm}
+            displaySubmitButton={false}
+          />
           <FormSubmissionsList id={selectedForm.id} />
         </Box>
       </Container>
     );
+  } else if (!userData) {
+    return (
+      <Typography
+        variant="h4"
+        m={2}
+      >
+        Loading forms...
+      </Typography>
+    )
   } else {
-    // Show list of all forms
+    // Show list of all forms associated with a user's companies
     return (
       <React.Fragment>
         <Box
@@ -212,93 +218,89 @@ const FormCollection = () => {
           justify="center"
           margin="auto"
         >
-          {
-            forms.map((form, idx) => {
-              console.log('FormCollection#user', user);
-              console.log('user companies', user.companies);
-              if (getUserCompanyIds().includes(form.companyID)) {
-                return (
-                  <Paper
-                    variant="outlined"
-                    sx={{ py: 2, px: 5, m: 1 }}
-                    key={`form_${idx}`}
+          {forms.map((form, idx) => {
+            if (getUserCompanyIds().includes(form.companyID)) {
+              return (
+                <Paper
+                  variant="outlined"
+                  sx={{ py: 2, px: 5, m: 1 }}
+                  key={`form_${idx}`}
+                >
+                  <Grid
+                    container
+                    display="flex"
+                    className="formCard"
+                    direction="column"
+                    alignItems="left"
+                    justify="center"
                   >
-                    <Grid
-                      container
-                      display="flex"
-                      className="formCard"
-                      direction="column"
-                      alignItems="left"
-                      justify="center"
-                    >
-                      <Grid item xs={12}>
-                        {/* <Tooltip title="Preview form"> */}
-                        <Link
-                          color="text.reverse"
-                          component={RouterLink}
-                          to={`/dashboard/form-analytics/${form.id}`}
-                          underline="none"
-                          variant="body1"
-                        >
-                          <Typography
-                            variant="h4"
-                            className="formTitle"
-                            sx={{
-                              "&:hover": {
-                                cursor: 'pointer',
-                              }
-                            }}
-                          // onClick={() => setSelectedForm(form)}
-                          >
-                            {form.title}
-                          </Typography>
-                        </Link>
-                        {/* </Tooltip> */}
-
-                        <Typography variant="h5" className="formTitle">
-                          {form.id} - {form.isPrivate ? "Private Form" : "Public Form"}
-                        </Typography>
-
-                        <Typography className="formTitle">
-                          {`URL: https://validatehub.com/form/${form.id}`}
-                        </Typography>
-
-                        <Typography className="formTitle">
-                          {form.description}
-                        </Typography>
-                      </Grid>
-
-                      <Tooltip title="Delete">
-                        <IconButton
-                          className={classes.deleteButton}
-                          onClick={() => {
-                            setConfirmDialog({
-                              isOpen: true,
-                              title: 'Delete form',
-                              subtitle: `Are you sure you want to delete this form? It will be permanently removed and this action cannot be undone.`,
-                              buttonText: 'Delete',
-                              onConfirm: () => handleFormDelete(form.id, idx),
-                            });
+                    <Grid item xs={12}>
+                      {/* <Tooltip title="Preview form"> */}
+                      <Link
+                        color="text.reverse"
+                        component={RouterLink}
+                        to={`/dashboard/form-analytics/${form.id}`}
+                        underline="none"
+                        variant="body1"
+                      >
+                        <Typography
+                          variant="h4"
+                          className="formTitle"
+                          sx={{
+                            "&:hover": {
+                              cursor: 'pointer',
+                            }
                           }}
+                        // onClick={() => setSelectedForm(form)}
                         >
-                          <DeleteForeverIcon fontSize="large" />
-                        </IconButton>
-                      </Tooltip>
+                          {form.title}
+                        </Typography>
+                      </Link>
+                      {/* </Tooltip> */}
 
-                      <Tooltip title="Duplicate">
-                        <IconButton
-                          className={classes.duplicateButton}
-                          onClick={() => handleDuplicateForm(form)}
-                        >
-                          <ControlPointDuplicateIcon fontSize="large" />
-                        </IconButton>
-                      </Tooltip>
+                      <Typography variant="h5" className="formTitle">
+                        {form.id} - {form.isPrivate ? "Private Form" : "Public Form"}
+                      </Typography>
+
+                      <Typography className="formTitle">
+                        {`URL: https://validatehub.com/form/${form.id}`}
+                      </Typography>
+
+                      <Typography className="formTitle">
+                        {form.description}
+                      </Typography>
                     </Grid>
-                  </Paper>
-                )
-              }
-            })
-          }
+
+                    <Tooltip title="Delete">
+                      <IconButton
+                        className={classes.deleteButton}
+                        onClick={() => {
+                          setConfirmDialog({
+                            isOpen: true,
+                            title: 'Delete form',
+                            subtitle: `Are you sure you want to delete this form? It will be permanently removed and this action cannot be undone.`,
+                            buttonText: 'Delete',
+                            onConfirm: () => handleFormDelete(form.id, idx),
+                          });
+                        }}
+                      >
+                        <DeleteForeverIcon fontSize="large" />
+                      </IconButton>
+                    </Tooltip>
+
+                    <Tooltip title="Duplicate">
+                      <IconButton
+                        className={classes.duplicateButton}
+                        onClick={() => handleDuplicateForm(form)}
+                      >
+                        <ControlPointDuplicateIcon fontSize="large" />
+                      </IconButton>
+                    </Tooltip>
+                  </Grid>
+                </Paper>
+              )
+            }
+          })}
         </Box>
 
         {/* Notify of deletion success or failure */}

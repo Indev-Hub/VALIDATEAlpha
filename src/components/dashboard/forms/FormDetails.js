@@ -1,66 +1,116 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
 import {
-  Box,
-  Button,
   Card,
   Grid,
-  IconButton,
   MenuItem,
   TextField,
-  Typography
-} from '@material-ui/core';
-import { Close } from '@material-ui/icons';
-import PropTypes from 'prop-types';
-import { Plus } from '../../../icons';
-import Controls from '../../form/controls/_controls';
+  Typography,
+  Chip,
+  Button
+} from "@material-ui/core";
+import PropTypes from "prop-types";
+import Controls from "../../form/controls/_controls";
+import { TAGS } from "./FormConstants.js";
 
 // FORM DETAILS SECTION OF FormCreate.js
-
-const FormDetails = props => {
+const FormDetails = (props) => {
   // Deconstruct state props from FormCreate.js
   const { userData, detailsState, setDetailsState } = props;
 
+  //updates the list of available tags once the state of tags is changed
+  const [availableTags, setAvailableTags] = useState([]);
+
+  useEffect(() => {
+    const filteredTags = TAGS.filter(tag => !detailsState.tags.includes(tag));
+    setAvailableTags(filteredTags)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [detailsState.tags])
+
   // Update details portion of form every time a field is modified
-  const handleDetailsInput = (e) => setDetailsState({
-    ...detailsState, // make copy
-    [e.target.name]: e.target.value,
-  });
-
-  // Update public/private state when toggled
-  const handlePublicPrivateChange = (e) => setDetailsState({
-    ...detailsState, // make copy
-    [e.target.name]: e.target.checked,
-  });
-
-  // Add tag to form and add the new tag to detailsState array
-  const addTag = () => {
+  const handleDetailsInput = (e) =>
     setDetailsState({
       ...detailsState, // make copy
-      tags: [...detailsState.tags, '']
-    })
+      [e.target.name]: e.target.value,
+    });
+
+  // Update public/private state when toggled
+  const handlePublicPrivateChange = (e) =>
+    setDetailsState({
+      ...detailsState, // make copy
+      [e.target.name]: e.target.checked,
+    });
+
+  // Add tag to form and add the new tag to detailsState array
+  const addTag = (tagidx) => {
+    const tagToAdd = availableTags[tagidx];
+    setDetailsState({
+      ...detailsState, // make copy
+      tags: [...detailsState.tags, tagToAdd],
+    });
   };
 
   // Remove tag from mapped array
   const removeTag = (tagidx) => {
-    const updatedState = { ...detailsState }; // make copy
-    updatedState.tags.splice(tagidx, 1);
-    setDetailsState(updatedState);
+    const tagToRemove = detailsState.tags[tagidx];
+    const newTags = detailsState.tags.filter(e => e !== tagToRemove)
+    setDetailsState({
+      ...detailsState,
+      tags: newTags,
+    });
   };
 
-  // Update tag input every time a field is modified
-  const handleTagInput = (tagidx, e) => {
-    const updatedState = { ...detailsState }; // make copy
-    updatedState.tags[tagidx] = e.target.value;
-    setDetailsState(updatedState);
-  };
-  
+  // Conditionally renders list of companies if user has created them
+  const listCompanies = () => {
+    if (userData.companies.items.length === 1 ) {
+      return (
+        <>
+          <TextField
+            fullWidth
+            disabled
+            label="Company"
+            name="companyID"
+            value={userData.companies.items[0].name}
+            onChange={handleDetailsInput}
+          />
+          <input type="hidden" value={detailsState.companyID = userData.companies.items[0].id} />
+        </>
+      )
+    } else if (userData.companies.items.length > 1) {
+      return (
+        <>
+          <TextField
+            select
+            fullWidth
+            label="Company"
+            name="companyID"
+            value={detailsState.companyID}
+            onChange={handleDetailsInput}
+          >
+            {userData.companies.items.map((company) => (
+              <MenuItem value={company.id}>{company.name}</MenuItem>
+            ))}
+          </TextField>
+        </>
+      )
+    } else {
+      return (
+        <Button
+          variant="contained"
+          color="primary"
+          fullWidth={true}
+          type="button"
+          href="/dashboard/company/new"
+        >
+          Create Company
+        </Button>
+      )
+    }
+  }
+
   // Render form details section of FormCreate.js
   return (
     <React.Fragment>
-      <Grid container
-        alignItems="flex-start"
-        justifyContent='space-between'
-      >
+      <Grid container alignItems="flex-start" justifyContent="space-between">
         <Grid item xs={9}>
           <Grid container>
             <Grid item xs={12}>
@@ -72,7 +122,7 @@ const FormDetails = props => {
                 value={detailsState.title}
                 onChange={handleDetailsInput}
                 fullWidth
-              />            
+              />
             </Grid>
             <Grid item xs={12} mt={2}>
               <Controls.TextField
@@ -86,65 +136,42 @@ const FormDetails = props => {
               />
             </Grid>
             <Grid item xs={12} mt={2}>
-              <Grid
-                container
-                alignItems="center"
-              >
-                {/* Start mapping tags */}
-                {detailsState.tags.map((_tag, tagidx) => {
-                  return (
-                    <Box key={`tag-${tagidx}`} sx={{ my: 0 }}>
-                      <Grid container display="flex" sx={{ pb: 1 }}>
-                        <Grid item xs={8}>
-                          <Controls.TextField
-                            label={`Tag ${tagidx + 1}`}
-                            type="text"
-                            name={`tag-${tagidx + 1}`}
-                            data-idx={tagidx}
-                            id={`${tagidx}`}
-                            fullWidth
-                            className="tag"
-                            value={detailsState.tags[tagidx]}
-                            onChange={(e) => handleTagInput(tagidx, e)}
-                            fullWidth
-                          />
-                        </Grid>
-                        <Grid item>
-                          <IconButton
-                            type="button"
-                            id={`${tagidx}`}
-                            onClick={() => removeTag(tagidx)}
-                          >
-                            <Close />
-                          </IconButton>
-                        </Grid>
-                      </Grid>
-                    </Box>
-                  );
-                })}
+              <Grid alignItems="center">
+                <Card
+                  sx={{
+                    p: 3,
+                  }}
+                >
+                  <Typography>
+                    Available tags for form validation:
+                  </Typography>
+                  {/* Start mapping though the available tags */}
+                  {availableTags.map((_tag, tagidx) => {
+                    return (
+                      <Chip
+                        key={tagidx}
+                        label={availableTags[tagidx]}
+                        type="text"
+                        name={`tag-${tagidx + 1}`}
+                        data-idx={tagidx}
+                        id={`${tagidx}`}
+                        className="tag"
+                        value={availableTags[tagidx]}
+                        onClick={() => addTag(tagidx)}
+                        sx={{ m: 1 }}
+                        color="secondary"
+                      />
+                    )
+                  })}
+                </Card>
               </Grid>
-              <Button
-                type="button"
-                onClick={addTag}
-                variant="contained"
-                color="inherit"
-                sx={{ m: 1, pr: 3 }}
-                startIcon={<Plus />}
-              >
-                Add Tag
-              </Button>
             </Grid>
           </Grid>
         </Grid>
-        <Grid
-          item
-          px={2}
-          xs={3}
-        >
+        <Grid item px={2} xs={3}>
           <Card
             sx={{
-              // backgroundColor: 'blue',
-              p: 3
+              p: 3,
             }}
           >
             <Controls.Switch
@@ -156,26 +183,28 @@ const FormDetails = props => {
               value={detailsState.isPrivate ? "Private" : "Public"}
               onChange={handlePublicPrivateChange}
             />
-            <TextField
-              select
-              fullWidth
-              label="Company"
-              name="companyID"
-              value={detailsState.companyID}
-              onChange={handleDetailsInput}
-              required
-            >
-              { userData ? (
-                userData.companies.items.map(company => (
-                  <MenuItem value={company.id}>{company.name}</MenuItem>
-                ))
-              ) : (
-                <Typography>Loading Companies</Typography>
-              )
-              }
-            </TextField>
-            {console.log('userData', userData)}
-            {console.log('detailsState', detailsState)}
+            {userData ? (
+              listCompanies()
+            ) : (
+              <Typography>Loading Companies</Typography>
+            )}
+            {detailsState.tags.map((_tag, tagidx) => {
+              return (
+                <Chip
+                  key={tagidx}
+                  label={detailsState.tags[tagidx]}
+                  type="text"
+                  name={`tag-${tagidx + 1}`}
+                  data-idx={tagidx}
+                  id={`${tagidx}`}
+                  className="tag"
+                  value={detailsState.tags[tagidx]}
+                  onDelete={() => removeTag(tagidx)}
+                  sx={{ m: 1 }}
+                  color="primary"
+                />
+              );
+            })}
           </Card>
         </Grid>
       </Grid>
@@ -184,6 +213,7 @@ const FormDetails = props => {
 };
 
 FormDetails.propTypes = {
+  userData: PropTypes.object,
   detailsState: PropTypes.object,
   setDetailsState: PropTypes.func,
 };

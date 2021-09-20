@@ -1,16 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import {
-  Box, Breadcrumbs, Button, Container, Grid, Link, Typography
+  Box,
+  Breadcrumbs,
+  Button,
+  Container,
+  Grid,
+  Link,
+  Typography
 } from '@material-ui/core';
 import { API, graphqlOperation, Storage } from 'aws-amplify';
 import { listForms } from '../../graphql/queries';
 import { deleteForm } from '../../graphql/mutations';
-import { getUser, listFormSubmissions } from '../../graphql/queries';
-import { deleteFormSubmission } from '../../graphql/mutations';
-import useAuth from '../../hooks/useAuth';
+import useIsMountedRef from '../../hooks/useIsMountedRef';
 import useSettings from '../../hooks/useSettings';
 import gtm from '../../lib/gtm';
 import ChevronRightIcon from '../../icons/ChevronRight';
@@ -24,9 +28,8 @@ import FormCreate from '../../components/dashboard/forms/FormCreate';
 import Notification from '../../components/form/Notification';
 
 const FormList = () => {
+  const isMountedRef = useIsMountedRef();
   const { settings } = useSettings();
-  const { user } = useAuth();
-  const [userCompanies, setUserCompanies] = useState();
   const [forms, setForms] = useState([]);
   const [selectedForm, setSelectedForm] = useState(null);
   const [duplicateForm, setDuplicateForm] = useState(false);
@@ -43,52 +46,48 @@ const FormList = () => {
     subtitle: ''
   })
 
-  // Get user data from DynamoDB to access associated company info
-  const getUserCompanies = async () => {
-    try {
-      const fetchedUserData = await API.graphql({
-        query: getUser,
-        variables: { id: user.id }
-      });
-      const companies = fetchedUserData.data.getUser.companies.items;
-      const companyNames = [];
-      companies.forEach(company => {
-        companyNames.push(company.name)
-      })
-      setUserCompanies(companyNames);
-    } catch (error) {
-      console.log('error on fetching user companies', error);
-    }
-  };
-
-  // Fetch user data from DB to filter forms list on initial render
   useEffect(() => {
-    getUserCompanies();
     gtm.push({ event: 'page_view' });
   }, []);
 
-  // Fetch forms array and filter to only include user associated forms
-  const getForms = async () => {
+  // const getCustomers = useCallback(async () => {
+  //   try {
+  //     const response = await axios.get('/api/customers');
+
+  //     if (isMountedRef.current) {
+  //       setCustomers(response.data.customers);
+  //     }
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // }, [isMountedRef]);
+
+  // useEffect(() => {
+  //   getCustomers();
+  // }, [getCustomers]);
+
+  // useCallback hook to make api call to receive forms
+  const getForms = useCallback(async () => {
     try {
       const formData = await API.graphql(graphqlOperation(listForms));
       const formList = formData.data.listForms.items;
-      if (userCompanies) {
-        const filteredList = formList.filter(form => userCompanies.includes(form.companyName));
-        setForms(filteredList);
+
+      if (isMountedRef.current) {
+        setForms(formList);
+        console.log("formList", formList);
       }
     } catch (err) {
       console.log('error on fetching forms', err);
+      console.error(err);
     }
-  };
+  }, [isMountedRef]);
 
-  // Fetch forms, form submissions, and S3 file list after getUserCompanies
   useEffect(() => {
     getForms();
-    getSubmissions();
-    getS3FileList();
-  }, [userCompanies, listRefresh]);
+    getFileList();
+  }, [listRefresh]);
 
-  // Delete a form from DynamoDB Form table
+  // Delete a form from DynamoDB
   const formDelete = async (id) => {
     try {
       await API.graphql(graphqlOperation(deleteForm, { input: { id: id } }));
@@ -107,50 +106,15 @@ const FormList = () => {
     }
   };
 
-  // Delete a form's responses from DynamoDB FormSubmission table
-  // Get all form submissions and set in state
-  const [submissions, setSubmissions] = useState([]);
-  const getSubmissions = async () => {
-    try {
-      const submissionsData = await API.graphql(
-        graphqlOperation(listFormSubmissions)
-      );
-      const submissionsList = submissionsData.data.listFormSubmissions.items;
-      setSubmissions(submissionsList);
-    } catch (error) {
-      console.log('error on fetching submissions', error);
-    }
-  };
-
-  // Delete a submission from the DynamoDB FormSubmission table
-  const deleteSubmission = async (submissionId) => {
-    try {
-      await API.graphql(
-        graphqlOperation(deleteFormSubmission, { input: { id: submissionId } })
-      );
-    } catch (error) {
-      console.log('error deleting submissions', error);
-    }
-  };
-
-  // Call deleteSubmission for all forms associated with formId
-  const deleteFormSubmissions = (formId) => {
-    submissions.forEach(submission => {
-      if (submission.formID === formId) {
-        deleteSubmission(submission.id)
-      };
-    });
-  };
-
   // Delete a form's associated S3 files
-  const getS3FileList = async () => {
+  const getFileList = async () => {
     try {
       const fileList = await Storage.list('');
       setFormImageFiles(fileList);
     } catch (error) {
       console.log('error on fetching file list', error);
     }
-  };
+  }
 
   const removeFile = async (fileName) => {
     try {
@@ -158,25 +122,25 @@ const FormList = () => {
     } catch (error) {
       console.log('error removing file', error);
     }
-  };
+  }
 
   const deleteFormImages = (formId) => {
     const fileNames = formImageFiles.filter(file => file.key.includes(formId));
     fileNames.forEach(fileName => {
+      console.log("FormList#deleteFormImages removed file:", fileName.key)
       removeFile(fileName.key);
     });
-  };
+  }
 
-  // Delete form and responses from database, and images from S3
+  // Delete form from database, images from S3, with success/failure alert
   const handleFormDelete = (id) => {
     deleteFormImages(id);
-    deleteFormSubmissions(id);
     formDelete(id);
     setConfirmDialog({
       ...confirmDialog,
       isOpen: false,
     });
-    setTimeout(() => handleListRefresh(), 600);
+    handleListRefresh();
   };
 
   // Set state for form duplication
@@ -190,13 +154,13 @@ const FormList = () => {
     setSelectedForm(null);
     setDuplicateForm(false);
     setListRefresh(!listRefresh);
-  };
+  }
 
   // Go back to list from duplicate form creation view if not submitted
   const handleReturnToList = () => {
     setSelectedForm(null);
     setDuplicateForm(false);
-  };
+  }
 
   if (duplicateForm) {
     // Show FormCreate if duplicating from an existing form
@@ -204,6 +168,7 @@ const FormList = () => {
       <Container maxWidth={settings.compact ? 'xl' : false}>
         <Box sx={{ mt: 3 }}>
           <Controls.Button
+            // className={classes.componentSpacing}
             marginBottom="40px"
             text="Return to forms list"
             color="secondary"
@@ -211,6 +176,7 @@ const FormList = () => {
             onClick={handleReturnToList}
           />
           <Typography
+            // className={classes.componentSpacing}
             margin="40px 0px 40px 10px"
             color="textPrimary"
             variant="h5"
@@ -219,8 +185,7 @@ const FormList = () => {
           </Typography>
           <FormCreate
             selectedForm={selectedForm}
-            handleListRefresh={handleListRefresh}
-          />
+            handleListRefresh={handleListRefresh} />
         </Box>
       </Container>
     )
