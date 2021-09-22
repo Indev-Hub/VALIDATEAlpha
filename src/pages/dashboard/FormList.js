@@ -73,7 +73,8 @@ const FormList = () => {
       const formData = await API.graphql(graphqlOperation(listForms));
       const formList = formData.data.listForms.items;
       if (userCompanies) {
-        const filteredList = formList.filter(form => userCompanies.includes(form.companyName));
+        const filteredList = formList
+          .filter(form => userCompanies.includes(form.companyName));
         setForms(filteredList);
       }
     } catch (err) {
@@ -107,7 +108,6 @@ const FormList = () => {
     }
   };
 
-  // Delete a form's responses from DynamoDB FormSubmission table
   // Get all form submissions and set in state
   const [submissions, setSubmissions] = useState([]);
   const getSubmissions = async () => {
@@ -120,6 +120,11 @@ const FormList = () => {
     } catch (error) {
       console.log('error on fetching submissions', error);
     }
+  };
+
+  // Count submissions based on formID
+  const countSubmissions = (formId) => {
+    return  submissions.filter(item => item.formID === formId).length;
   };
 
   // Delete a submission from the DynamoDB FormSubmission table
@@ -319,6 +324,7 @@ const FormList = () => {
             <Box sx={{ mt: 3 }}>
               <CompanyFormsTable
                 forms={forms}
+                countSubmissions={countSubmissions}
                 setConfirmDialog={setConfirmDialog}
                 handleFormDelete={handleFormDelete}
                 handleDuplicateForm={handleDuplicateForm}

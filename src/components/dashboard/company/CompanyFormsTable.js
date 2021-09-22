@@ -2,26 +2,9 @@ import { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {
-  Avatar,
-  Box,
-  Button,
-  Card,
-  Checkbox,
-  Divider,
-  IconButton,
-  InputAdornment,
-  Link,
-  Tab,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TablePagination,
-  TableRow,
-  Tabs,
-  TextField,
-  Tooltip,
-  Typography
+  Avatar, Box, Button, Card, Checkbox, Divider, IconButton, InputAdornment,
+  Link, Tab, Table, TableBody, TableCell, TableHead, TablePagination, TableRow,
+  Tabs, TextField, Tooltip, Typography
 } from '@material-ui/core';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import getInitials from '../../../utils/getInitials';
@@ -124,6 +107,7 @@ const applySort = (forms, sort) => {
 const CompanyFormsTable = (props) => {
   const {
     forms,
+    countSubmissions,
     setConfirmDialog,
     handleFormDelete,
     handleDuplicateForm,
@@ -346,6 +330,9 @@ const CompanyFormsTable = (props) => {
                 <TableCell>
                   Name
                 </TableCell>
+                <TableCell align="center">
+                  Submissions
+                </TableCell>
                 <TableCell>
                   Company
                 </TableCell>
@@ -408,6 +395,9 @@ const CompanyFormsTable = (props) => {
                         </Box>
                       </Box>
                     </TableCell>
+                    <TableCell align="center">
+                      {`${countSubmissions(form.id)}`}
+                    </TableCell>
                     <TableCell>
                       {form.company.name}
                     </TableCell>
@@ -446,6 +436,7 @@ const CompanyFormsTable = (props) => {
 
 CompanyFormsTable.propTypes = {
   forms: PropTypes.array,
+  countSubmissions: PropTypes.func,
   setConfirmDialog: PropTypes.func,
   handleFormDelete: PropTypes.func,
   handleDuplicateForm: PropTypes.func,
