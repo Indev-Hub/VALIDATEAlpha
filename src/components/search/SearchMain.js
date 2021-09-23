@@ -18,15 +18,20 @@ const SearchMain = () => {
   useEffect(() => {
     fetchForms();
     fetchSubmission();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
 
   const fetchForms = async () => {
     try {
       const formData = await API.graphql(graphqlOperation(listForms));
+      console.log('SearchMain formData:', formData);
       const formList = formData.data.listForms.items;
       // console.log('form list', formList);
       setForms(formList);
       setSelectedForms(formList);
+      console.log("SearchMain formList", formList);
+      console.log("SearchMain selectedForms", selectedForms);
     } catch (error) {
       console.log('error on fetching forms', error);
     }
@@ -53,6 +58,7 @@ const SearchMain = () => {
     setAvailableTags(postFilteredTags);
     const taggedForms = updateFilteredForms();
     setSelectedForms(taggedForms);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tagsToFilter])
 
@@ -73,14 +79,30 @@ const SearchMain = () => {
 
   return (
     <>
-      <Container>
-        <Box>
+      <Container
+        sx={{
+          display: 'flex',
+          justifycontent: 'center',
+          // alignItems: "center"
+          padding: '20px',
+          width: 'auto',
+          margin: 'auto'
+        }}
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            justifycontent: 'center',
+            width:'auto',
+            margin:'auto'
+          }}
+        >
           <SearchField
-            string={string}
+            stringQuery={string}
             setString={setString}
             forms={forms}
             selectedForms={selectedForms}
-            setSelectedForms={setSelectedForms}
+            setSelectedForms={setSelectedForms} 
           />
         </Box>
       </Container>
@@ -173,4 +195,4 @@ const SearchMain = () => {
   )
 }
 
-export default SearchMain
+export default SearchMain;
