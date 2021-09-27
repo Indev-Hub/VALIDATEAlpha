@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {
-  Avatar, Box, Button, Card, Checkbox, Divider, IconButton, InputAdornment,
-  Link, Tab, Table, TableBody, TableCell, TableHead, TablePagination, TableRow,
-  Tabs, TextField, Tooltip, Typography
+  Avatar, Box, Button, Card, Checkbox, Divider, FormControlLabel, Grid, 
+  IconButton, InputAdornment, Link, Switch, Tab, Table, TableBody, TableCell,
+  TableHead, TablePagination, TableRow, Tabs, TextField, Tooltip, Typography
 } from '@material-ui/core';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import getInitials from '../../../utils/getInitials';
@@ -32,7 +32,7 @@ const sortOptions = [
 ];
 
 // Filter forms list based on search query or 'filters' object for tabs
-const applyFilters = (forms, query, filters) => forms
+const applyFilters = (forms, query, filters, showArchived) => forms
   .filter((form) => {
     let matches = true;
 
@@ -60,6 +60,13 @@ const applyFilters = (forms, query, filters) => forms
         matches = false;
       }
     });
+
+    // Filter out archived forms unless showArchived is toggled on
+    if (!showArchived) {
+      if (form.isPrivate) {  // update to 'isArchived' once added to schema
+        matches = false;
+      }
+    };
 
     return matches;
   });
@@ -124,6 +131,7 @@ const CompanyFormsTable = (props) => {
     isProspect: null,
     isReturning: null
   });
+  const [showArchived, setShowArchived] = useState(false);
 
   // When a tab is selected, update filters state to be the tab value 
   // (i.e., company name) as key with a value of true; 
@@ -137,6 +145,10 @@ const CompanyFormsTable = (props) => {
     setFilters(updatedFilters);
     setSelectedForms([]);
     setCurrentTab(value);
+  };
+
+  const handleShowArchived = (_event) => {
+    setShowArchived(!showArchived);
   };
 
   const handleQueryChange = (event) => {
@@ -176,7 +188,7 @@ const CompanyFormsTable = (props) => {
     setLimit(parseInt(event.target.value, 10));
   };
 
-  const filteredForms = applyFilters(forms, query, filters);
+  const filteredForms = applyFilters(forms, query, filters, showArchived);
   const sortedForms = applySort(filteredForms, sort);
   const paginatedForms = applyPagination(sortedForms, page, limit);
   const enableBulkActions = selectedForms.length > 0;
@@ -186,29 +198,56 @@ const CompanyFormsTable = (props) => {
 
   return (
     <Card {...other}>
-      <Tabs
-        indicatorColor="primary"
-        onChange={handleTabsChange}
-        scrollButtons="auto"
-        textColor="primary"
-        value={currentTab}
-        variant="scrollable"
-      >
-        <Tab
-          key="all"
-          label="All"
-          value="all"
-        />
-        {Object.keys(
-          forms.reduce((acc, it) => (acc[it.company.name] = it, acc), []))
-          .map((comp) => (
+      <Grid container display="flex">
+        <Grid item xs={9}>
+          <Tabs
+            indicatorColor="primary"
+            onChange={handleTabsChange}
+            scrollButtons="auto"
+            textColor="primary"
+            value={currentTab}
+            variant="scrollable"
+          >
             <Tab
-              key={comp}
-              label={comp}
-              value={comp}
+              key="all"
+              label="All"
+              value="all"
             />
-          ))}
-      </Tabs>
+            {Object.keys(
+              forms.reduce((acc, it) => (acc[it.company.name] = it, acc), []))
+              .map((comp) => (
+                <Tab
+                  key={comp}
+                  label={comp}
+                  value={comp}
+                />
+              ))}
+          </Tabs>
+        </Grid>
+        <Grid
+          item xs={3}
+          container
+          direction="column"
+          alignItems="flex-end"
+          justify="flex-end"
+          sx={{
+            paddingTop: "6px",
+            paddingRight: "16px",
+            color: "primary"
+          }}
+        >
+          <FormControlLabel
+            control={
+              <Switch
+                color="primary"
+                onChange={handleShowArchived}
+              />
+            }
+            label="Show archived forms"
+            labelPlacement="start"
+          />
+        </Grid>
+      </Grid>
       <Divider />
       <Box
         sx={{
@@ -330,14 +369,14 @@ const CompanyFormsTable = (props) => {
                 <TableCell>
                   Name
                 </TableCell>
-                <TableCell align="center">
-                  Submissions
-                </TableCell>
                 <TableCell>
                   Company
                 </TableCell>
                 <TableCell>
                   Description
+                </TableCell>
+                <TableCell align="center">
+                  Submissions
                 </TableCell>
                 <TableCell align="center">
                   Actions
@@ -395,15 +434,15 @@ const CompanyFormsTable = (props) => {
                         </Box>
                       </Box>
                     </TableCell>
-                    <TableCell align="center">
-                      {`${countSubmissions(form.id)}`}
-                    </TableCell>
                     <TableCell>
                       {form.company.name}
                     </TableCell>
                     <TableCell>
                       {`${form.description.substring(0, 80)}
                       ${form.description.length > 80 ? '...' : ''}`}
+                    </TableCell>
+                    <TableCell align="center">
+                      {`${countSubmissions(form.id)}`}
                     </TableCell>
                     <TableCell align="center">
                       <Tooltip title="Duplicate">
