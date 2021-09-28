@@ -6,10 +6,10 @@ import {
   Box, Breadcrumbs, Button, Container, Grid, Link, Typography
 } from '@material-ui/core';
 import { API, graphqlOperation, Storage } from 'aws-amplify';
-import { listForms } from '../../graphql/queries';
-import { deleteForm } from '../../graphql/mutations';
-import { getUser, listFormSubmissions } from '../../graphql/queries';
-import { deleteFormSubmission } from '../../graphql/mutations';
+import {
+  deleteForm, deleteFormSubmission, updateForm
+} from '../../graphql/mutations';
+import { getUser, listForms, listFormSubmissions } from '../../graphql/queries';
 import useAuth from '../../hooks/useAuth';
 import useSettings from '../../hooks/useSettings';
 import gtm from '../../lib/gtm';
@@ -108,6 +108,28 @@ const FormList = () => {
     }
   };
 
+  // Update fields in a form based on an 'input' object (id: is required)
+  const formUpdate = async (input) => {
+    try {
+      await API.graphql(graphqlOperation(
+        updateForm,
+        { input: input }
+      ));
+      setNotify({
+        isOpen: true,
+        message: 'Updated Successfully',
+        type: 'success'
+      });
+    } catch (error) {
+      setNotify({
+        isOpen: true,
+        message: `Failed to Update Form: ${error}`,
+        type: 'error'
+      });
+      console.log('error updating form', error);
+    }
+  };
+
   // Get all form submissions and set in state
   const [submissions, setSubmissions] = useState([]);
   const getSubmissions = async () => {
@@ -124,7 +146,7 @@ const FormList = () => {
 
   // Count submissions based on formID
   const countSubmissions = (formId) => {
-    return  submissions.filter(item => item.formID === formId).length;
+    return submissions.filter(item => item.formID === formId).length;
   };
 
   // Delete a submission from the DynamoDB FormSubmission table
@@ -181,6 +203,12 @@ const FormList = () => {
       ...confirmDialog,
       isOpen: false,
     });
+    setTimeout(() => handleListRefresh(), 600);
+  };
+
+  // Update a form (used by CompanyFormsTable to update Public/Private status)
+  const handleFormUpdate = (input) => {
+    formUpdate(input);
     setTimeout(() => handleListRefresh(), 600);
   };
 
@@ -327,6 +355,7 @@ const FormList = () => {
                 countSubmissions={countSubmissions}
                 setConfirmDialog={setConfirmDialog}
                 handleFormDelete={handleFormDelete}
+                handleFormUpdate={handleFormUpdate}
                 handleDuplicateForm={handleDuplicateForm}
               />
             </Box>

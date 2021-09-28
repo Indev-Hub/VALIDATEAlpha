@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {
-  Avatar, Box, Button, Card, Checkbox, Divider, FormControlLabel, Grid, 
+  Avatar, Box, Button, Card, Checkbox, Divider, FormControlLabel, Grid,
   IconButton, InputAdornment, Link, Switch, Tab, Table, TableBody, TableCell,
   TableHead, TablePagination, TableRow, Tabs, TextField, Tooltip, Typography
 } from '@material-ui/core';
@@ -21,18 +21,10 @@ const sortOptions = [
     label: 'Last update (oldest)',
     value: 'updatedAt|asc'
   },
-  {
-    label: 'Total orders (highest)',
-    value: 'orders|desc'
-  },
-  {
-    label: 'Total orders (lowest)',
-    value: 'orders|asc'
-  }
 ];
 
 // Filter forms list based on search query or 'filters' object for tabs
-const applyFilters = (forms, query, filters, showArchived) => forms
+const applyFilters = (forms, query, filters, showPrivate) => forms
   .filter((form) => {
     let matches = true;
 
@@ -61,9 +53,9 @@ const applyFilters = (forms, query, filters, showArchived) => forms
       }
     });
 
-    // Filter out archived forms unless showArchived is toggled on
-    if (!showArchived) {
-      if (form.isPrivate) {  // update to 'isArchived' once added to schema
+    // Filter out private forms unless showPrivate is toggled on
+    if (!showPrivate) {
+      if (form.isPrivate) {
         matches = false;
       }
     };
@@ -117,6 +109,7 @@ const CompanyFormsTable = (props) => {
     countSubmissions,
     setConfirmDialog,
     handleFormDelete,
+    handleFormUpdate,
     handleDuplicateForm,
     ...other
   } = props;
@@ -131,7 +124,7 @@ const CompanyFormsTable = (props) => {
     isProspect: null,
     isReturning: null
   });
-  const [showArchived, setShowArchived] = useState(false);
+  const [showPrivate, setShowPrivate] = useState(true);
 
   // When a tab is selected, update filters state to be the tab value 
   // (i.e., company name) as key with a value of true; 
@@ -147,8 +140,8 @@ const CompanyFormsTable = (props) => {
     setCurrentTab(value);
   };
 
-  const handleShowArchived = (_event) => {
-    setShowArchived(!showArchived);
+  const handleShowPrivate = (_event) => {
+    setShowPrivate(!showPrivate);
   };
 
   const handleQueryChange = (event) => {
@@ -180,6 +173,20 @@ const CompanyFormsTable = (props) => {
     });
   };
 
+  // Change Public/Private status to add/remove a form from home page;
+  // make Private to 'archive' a form in a company's FormList
+  const handleMakePublicPrivate = () => {
+    const checkedForms = forms.filter(form => selectedForms.includes(form.id));
+    checkedForms.forEach(form => {
+      const input = {
+        id: form.id,
+        isPrivate: !form.isPrivate
+      };
+      handleFormUpdate(input);
+    });
+    setSelectedForms([]);
+  };
+
   const handlePageChange = (_event, newPage) => {
     setPage(newPage);
   };
@@ -188,7 +195,7 @@ const CompanyFormsTable = (props) => {
     setLimit(parseInt(event.target.value, 10));
   };
 
-  const filteredForms = applyFilters(forms, query, filters, showArchived);
+  const filteredForms = applyFilters(forms, query, filters, showPrivate);
   const sortedForms = applySort(filteredForms, sort);
   const paginatedForms = applyPagination(sortedForms, page, limit);
   const enableBulkActions = selectedForms.length > 0;
@@ -239,11 +246,12 @@ const CompanyFormsTable = (props) => {
           <FormControlLabel
             control={
               <Switch
+                defaultChecked
                 color="primary"
-                onChange={handleShowArchived}
+                onChange={handleShowPrivate}
               />
             }
-            label="Show archived forms"
+            label="Show private forms"
             labelPlacement="start"
           />
         </Grid>
@@ -347,8 +355,9 @@ const CompanyFormsTable = (props) => {
               color="primary"
               sx={{ ml: 2 }}
               variant="outlined"
+              onClick={handleMakePublicPrivate}
             >
-              Archive
+              Make public/private
             </Button>
           </Box>
         </Box>
