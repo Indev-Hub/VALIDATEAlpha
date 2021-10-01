@@ -108,12 +108,12 @@ const FormList = () => {
     }
   };
 
-  // Update fields in a form based on an 'input' object (id: is required)
-  const formUpdate = async (input) => {
+  // Update fields in a form based on an 'updateFields' object (id is required)
+  const formUpdate = async (formId, updateFields) => {
     try {
       await API.graphql(graphqlOperation(
         updateForm,
-        { input: input }
+        { input: {id: formId, ...updateFields} }
       ));
       setNotify({
         isOpen: true,
@@ -207,8 +207,8 @@ const FormList = () => {
   };
 
   // Update a form (used by CompanyFormsTable to update Public/Private status)
-  const handleFormUpdate = (input) => {
-    formUpdate(input);
+  const handleFormUpdate = (formId, updateFields) => {
+    formUpdate(formId, updateFields);
     setTimeout(() => handleListRefresh(), 600);
   };
 
@@ -216,6 +216,25 @@ const FormList = () => {
   const handleDuplicateForm = (form) => {
     setSelectedForm(form);
     setDuplicateForm(true);
+  };
+
+  // Copy form URL to send independently to 'private' users
+  const handleCopyFormUrl = (formId) => {
+    try {
+      navigator.clipboard.writeText(`${window.location.protocol}//${window.location.host}/form/${formId}`);
+      setNotify({
+        isOpen: true,
+        message: 'URL copied to clipboard',
+        type: 'success'
+      });
+    } catch (error) {
+      setNotify({
+        isOpen: true,
+        message: `Failed to copy URL to clipboard: ${error}`,
+        type: 'error'
+      });
+      console.log('error copying URL to clipboard', error);
+    }
   };
 
   // Refresh list after a form is deleted or duplicated
@@ -357,6 +376,7 @@ const FormList = () => {
                 handleFormDelete={handleFormDelete}
                 handleFormUpdate={handleFormUpdate}
                 handleDuplicateForm={handleDuplicateForm}
+                handleCopyFormUrl={handleCopyFormUrl}
               />
             </Box>
           </Container>
