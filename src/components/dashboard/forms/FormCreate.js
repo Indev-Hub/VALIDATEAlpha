@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { API, Auth, graphqlOperation } from 'aws-amplify';
+import { API, graphqlOperation } from 'aws-amplify';
 import { Storage } from 'aws-amplify';
 import { Formik, Form } from 'formik';
 import {
@@ -132,19 +132,14 @@ const FormCreate = props => {
 
   // Map through image/url pairs and pass to S3 upload function
   const s3Upload = () => {
-    Object.values(formImages).map(imageArray => {
-      imageArray.map(imagePair => {
+    Object.values(formImages).forEach(imageArray => {
+      imageArray.forEach(imagePair => {
         handleImgUpload(imagePair[0], imagePair[1])
       })
     });
   };
 
   const uploadForm = async () => {
-    // Get user attributes
-    const { signInUserSession } = await Auth.currentAuthenticatedUser();
-    const userName = signInUserSession.accessToken.payload.username;
-    const userId = signInUserSession.accessToken.payload.sub;
-
     // Get form design schema and output to DynamoDB
     const formDesignDataSet = createFormDesignDataSet();
 

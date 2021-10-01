@@ -86,8 +86,8 @@ const FormDetails = (props) => {
             value={detailsState.companyID}
             onChange={handleDetailsInput}
           >
-            {userData.companies.items.map((company) => (
-              <MenuItem value={company.id}>{company.name}</MenuItem>
+            {userData.companies.items.map((company, idx) => (
+              <MenuItem key={idx} value={company.id}>{company.name}</MenuItem>
             ))}
           </TextField>
         </>

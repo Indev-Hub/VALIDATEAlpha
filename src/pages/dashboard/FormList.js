@@ -6,10 +6,10 @@ import {
   Box, Breadcrumbs, Button, Container, Grid, Link, Typography
 } from '@material-ui/core';
 import { API, graphqlOperation, Storage } from 'aws-amplify';
-import { listForms } from '../../graphql/queries';
-import { deleteForm } from '../../graphql/mutations';
-import { getUser, listFormSubmissions } from '../../graphql/queries';
-import { deleteFormSubmission } from '../../graphql/mutations';
+import {
+  deleteForm, deleteFormSubmission, updateForm
+} from '../../graphql/mutations';
+import { getUser, listForms, listFormSubmissions } from '../../graphql/queries';
 import useAuth from '../../hooks/useAuth';
 import useSettings from '../../hooks/useSettings';
 import gtm from '../../lib/gtm';
@@ -73,7 +73,8 @@ const FormList = () => {
       const formData = await API.graphql(graphqlOperation(listForms));
       const formList = formData.data.listForms.items;
       if (userCompanies) {
-        const filteredList = formList.filter(form => userCompanies.includes(form.companyName));
+        const filteredList = formList
+          .filter(form => userCompanies.includes(form.companyName));
         setForms(filteredList);
       }
     } catch (err) {
@@ -107,7 +108,28 @@ const FormList = () => {
     }
   };
 
-  // Delete a form's responses from DynamoDB FormSubmission table
+  // Update fields in a form based on an 'updateFields' object (id is required)
+  const formUpdate = async (formId, updateFields) => {
+    try {
+      await API.graphql(graphqlOperation(
+        updateForm,
+        { input: {id: formId, ...updateFields} }
+      ));
+      setNotify({
+        isOpen: true,
+        message: 'Updated Successfully',
+        type: 'success'
+      });
+    } catch (error) {
+      setNotify({
+        isOpen: true,
+        message: `Failed to Update Form: ${error}`,
+        type: 'error'
+      });
+      console.log('error updating form', error);
+    }
+  };
+
   // Get all form submissions and set in state
   const [submissions, setSubmissions] = useState([]);
   const getSubmissions = async () => {
@@ -120,6 +142,11 @@ const FormList = () => {
     } catch (error) {
       console.log('error on fetching submissions', error);
     }
+  };
+
+  // Count submissions based on formID
+  const countSubmissions = (formId) => {
+    return submissions.filter(item => item.formID === formId).length;
   };
 
   // Delete a submission from the DynamoDB FormSubmission table
@@ -179,10 +206,35 @@ const FormList = () => {
     setTimeout(() => handleListRefresh(), 600);
   };
 
+  // Update a form (used by CompanyFormsTable to update Public/Private status)
+  const handleFormUpdate = (formId, updateFields) => {
+    formUpdate(formId, updateFields);
+    setTimeout(() => handleListRefresh(), 600);
+  };
+
   // Set state for form duplication
   const handleDuplicateForm = (form) => {
     setSelectedForm(form);
     setDuplicateForm(true);
+  };
+
+  // Copy form URL to send independently to 'private' users
+  const handleCopyFormUrl = (formId) => {
+    try {
+      navigator.clipboard.writeText(`${window.location.protocol}//${window.location.host}/form/${formId}`);
+      setNotify({
+        isOpen: true,
+        message: 'URL copied to clipboard',
+        type: 'success'
+      });
+    } catch (error) {
+      setNotify({
+        isOpen: true,
+        message: `Failed to copy URL to clipboard: ${error}`,
+        type: 'error'
+      });
+      console.log('error copying URL to clipboard', error);
+    }
   };
 
   // Refresh list after a form is deleted or duplicated
@@ -319,9 +371,12 @@ const FormList = () => {
             <Box sx={{ mt: 3 }}>
               <CompanyFormsTable
                 forms={forms}
+                countSubmissions={countSubmissions}
                 setConfirmDialog={setConfirmDialog}
                 handleFormDelete={handleFormDelete}
+                handleFormUpdate={handleFormUpdate}
                 handleDuplicateForm={handleDuplicateForm}
+                handleCopyFormUrl={handleCopyFormUrl}
               />
             </Box>
           </Container>
