@@ -1,13 +1,18 @@
 import { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {
-  Avatar, Box, Button, Card, Checkbox, Divider, FormControlLabel, Grid,
-  IconButton, InputAdornment, Link, Switch, Tab, Table, TableBody, TableCell,
-  TableHead, TablePagination, TableRow, Tabs, TextField, Tooltip, Typography
+  Avatar, Box, Button, Card, Checkbox, Divider, Grid, IconButton, 
+  InputAdornment, Link, Tab, Table, TableBody, TableCell, TableHead, 
+  TablePagination, TableRow, Tabs, TextField, Tooltip
 } from '@material-ui/core';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
-import getInitials from '../../../utils/getInitials';
+import HttpIcon from '@material-ui/icons/Http';
+import LaunchIcon from '@material-ui/icons/Launch';
+import PublicTwoToneIcon from '@material-ui/icons/PublicTwoTone';
+import VpnLockTwoToneIcon from '@material-ui/icons/VpnLockTwoTone';
+// import getInitials from '../../../utils/getInitials';
 import Scrollbar from '../../Scrollbar';
 import SearchIcon from '../../../icons/Search';
 
@@ -29,8 +34,7 @@ const applyFilters = (forms, query, filters, showPrivate) => forms
     let matches = true;
 
     if (query) {
-      // "properties" determines the fields that are searched 
-      // for matching values in the query
+      // The 'properties' variable determines the fields that are searched 
       const properties = ['title', 'description'];
       let containsQuery = false;
 
@@ -53,7 +57,7 @@ const applyFilters = (forms, query, filters, showPrivate) => forms
       }
     });
 
-    // Filter out private forms unless showPrivate is toggled on
+    // Filter out private forms when showPrivate is false
     if (!showPrivate) {
       if (form.isPrivate) {
         matches = false;
@@ -104,6 +108,8 @@ const applySort = (forms, sort) => {
 };
 
 const CompanyFormsTable = (props) => {
+  const navigate = useNavigate();
+
   const {
     forms,
     countSubmissions,
@@ -111,8 +117,10 @@ const CompanyFormsTable = (props) => {
     handleFormDelete,
     handleFormUpdate,
     handleDuplicateForm,
+    handleCopyFormUrl,
     ...other
   } = props;
+
   const [currentTab, setCurrentTab] = useState('all');
   const [selectedForms, setSelectedForms] = useState([]);
   const [page, setPage] = useState(0);
@@ -126,10 +134,7 @@ const CompanyFormsTable = (props) => {
   });
   const [showPrivate, setShowPrivate] = useState(true);
 
-  // When a tab is selected, update filters state to be the tab value 
-  // (i.e., company name) as key with a value of true; 
-  // this state is passed to applyFilters when it is invoked upon  
-  // assignment to filteredForms with every component render
+  // Update filters state for applyFilters (invoked by filteredForms on render)
   const handleTabsChange = (_event, value) => {
     const updatedFilters = {};
     if (value !== 'all') {
@@ -138,10 +143,6 @@ const CompanyFormsTable = (props) => {
     setFilters(updatedFilters);
     setSelectedForms([]);
     setCurrentTab(value);
-  };
-
-  const handleShowPrivate = (_event) => {
-    setShowPrivate(!showPrivate);
   };
 
   const handleQueryChange = (event) => {
@@ -173,16 +174,14 @@ const CompanyFormsTable = (props) => {
     });
   };
 
-  // Change Public/Private status to add/remove a form from home page;
-  // make Private to 'archive' a form in a company's FormList
+  // Change Public/Private status to add/remove a form from home page
   const handleMakePublicPrivate = () => {
     const checkedForms = forms.filter(form => selectedForms.includes(form.id));
     checkedForms.forEach(form => {
-      const input = {
-        id: form.id,
+      const updateFields = {
         isPrivate: !form.isPrivate
       };
-      handleFormUpdate(input);
+      handleFormUpdate(form.id, updateFields);
     });
     setSelectedForms([]);
   };
@@ -221,8 +220,9 @@ const CompanyFormsTable = (props) => {
               value="all"
             />
             {Object.keys(
-              forms.reduce((acc, it) => (acc[it.company.name] = it, acc), []))
-              .map((comp) => (
+              forms.reduce(
+                (acc, it) => (acc[it.company.name] = it, acc), []
+              )).map((comp) => (
                 <Tab
                   key={comp}
                   label={comp}
@@ -243,17 +243,14 @@ const CompanyFormsTable = (props) => {
             color: "primary"
           }}
         >
-          <FormControlLabel
-            control={
-              <Switch
-                defaultChecked
-                color="primary"
-                onChange={handleShowPrivate}
-              />
-            }
-            label="Show private forms"
-            labelPlacement="start"
-          />
+          <Button
+            onClick={() => setShowPrivate(!showPrivate)}
+            color="primary"
+            sx={{ ml: 2 }}
+            variant="outlined"
+          >
+            {showPrivate ? 'Hide Private Forms' : 'Show All Forms'}
+          </Button>
         </Grid>
       </Grid>
       <Divider />
@@ -357,7 +354,7 @@ const CompanyFormsTable = (props) => {
               variant="outlined"
               onClick={handleMakePublicPrivate}
             >
-              Make public/private
+              Make Public/Private
             </Button>
           </Box>
         </Box>
@@ -385,15 +382,15 @@ const CompanyFormsTable = (props) => {
                   Description
                 </TableCell>
                 <TableCell align="center">
-                  Submissions
+                  Responses
                 </TableCell>
                 <TableCell align="center">
-                  Actions
+                  Form Actions
                 </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {paginatedForms.map((form, idx) => {
+              {paginatedForms.map(form => {
                 const isFormSelected = selectedForms.includes(form.id);
                 return (
                   <TableRow
@@ -416,7 +413,7 @@ const CompanyFormsTable = (props) => {
                           display: 'flex'
                         }}
                       >
-                        <Avatar
+                        {/* <Avatar
                           src={form.avatar}
                           sx={{
                             height: 42,
@@ -424,7 +421,11 @@ const CompanyFormsTable = (props) => {
                           }}
                         >
                           {getInitials(form.title)}
-                        </Avatar>
+                        </Avatar> */}
+                        {form.isPrivate ?
+                          <VpnLockTwoToneIcon fontSize="large" />
+                          : <PublicTwoToneIcon fontSize="large" />
+                        }
                         <Box sx={{ ml: 1 }}>
                           <Link
                             color="inherit"
@@ -434,12 +435,6 @@ const CompanyFormsTable = (props) => {
                           >
                             {form.title}
                           </Link>
-                          <Typography
-                            color="textSecondary"
-                            variant="body2"
-                          >
-                            {form.email}
-                          </Typography>
                         </Box>
                       </Box>
                     </TableCell>
@@ -447,13 +442,25 @@ const CompanyFormsTable = (props) => {
                       {form.company.name}
                     </TableCell>
                     <TableCell>
-                      {`${form.description.substring(0, 80)}
-                      ${form.description.length > 80 ? '...' : ''}`}
+                      {`${form.description.substring(0, 60)}
+                      ${form.description.length > 60 ? '...' : ''}`}
                     </TableCell>
                     <TableCell align="center">
                       {`${countSubmissions(form.id)}`}
                     </TableCell>
                     <TableCell align="center">
+                      <Tooltip title="Copy URL">
+                        <IconButton
+                          onClick={() => handleCopyFormUrl(form.id)}>
+                          <HttpIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Go to">
+                        <IconButton
+                          onClick={() => navigate(`/form/${form.id}`)}>
+                          <LaunchIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
                       <Tooltip title="Duplicate">
                         <IconButton
                           onClick={() => handleDuplicateForm(form)}
