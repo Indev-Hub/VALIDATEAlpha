@@ -349,9 +349,9 @@ const DashboardSidebar = (props) => {
         </Box>
         <Divider />
         <Box sx={{ p: 2 }}>
-          {sections.map((section) => (
+          {sections.map((section, idx) => (
             <NavSection
-              key={section.title}
+              key={idx}
               pathname={location.pathname}
               sx={{
                 '& + &': {
