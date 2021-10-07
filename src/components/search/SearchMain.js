@@ -12,7 +12,7 @@ const SearchMain = () => {
   const [selectedForms, setSelectedForms] = useState([]);
   const [availableTags, setAvailableTags] = useState([]);
   const [tagsToFilter, setTagsToFilter] = useState([]);
-  const [filterDisplay, setFilterDisplay] = useState();
+  
 
 
   useEffect(() => {
@@ -25,19 +25,13 @@ const SearchMain = () => {
   const fetchForms = async () => {
     try {
       const formData = await API.graphql(graphqlOperation(listForms));
-      console.log('SearchMain formData:', formData);
       const formList = formData.data.listForms.items;
-      // console.log('form list', formList);
       setForms(formList);
-      setSelectedForms(formList);
-      console.log("SearchMain formList", formList);
-      console.log("SearchMain selectedForms", selectedForms);
-    } catch (error) {
+      setSelectedForms(formList);    } catch (error) {
       console.log('error on fetching forms', error);
     }
   }
 
-  // Get number of submissions for each form (this could get ridiculously expensive so may have to find another way to determine this)
   const [submissions, setSubmissions] = useState();
 
   const fetchSubmission = async () => {
@@ -45,9 +39,6 @@ const SearchMain = () => {
       const subData = await API.graphql(graphqlOperation(listFormSubmissions));
       const subInfo = subData.data.listFormSubmissions.items;
       setSubmissions(subInfo);
-      // setForms(subInfo);
-      console.log("submission information:", subInfo);
-
     } catch (error) {
       console.log('error on fetching submission', error);
     }
@@ -56,22 +47,15 @@ const SearchMain = () => {
   useEffect(() => {
     const postFilteredTags = TAGS.filter(tag => !tagsToFilter.includes(tag));
     setAvailableTags(postFilteredTags);
-    const taggedForms = updateFilteredForms();
-    setSelectedForms(taggedForms);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tagsToFilter])
-
-  const updateFilteredForms = () => {
-    const filtered = forms.filter(form => tagsToFilter.every(tag => form.tags.includes(tag)));
-    return filtered;
-  }
 
   const addTag = (tag) => {
     setTagsToFilter([...tagsToFilter, tag]);
   };
 
-  // Remove tag from mapped array
+  
   const removeTag = (tag) => {
     const newTags = tagsToFilter.filter(e => e !== tag);
     setTagsToFilter(newTags)
@@ -83,7 +67,6 @@ const SearchMain = () => {
         sx={{
           display: 'flex',
           justifycontent: 'center',
-          // alignItems: "center"
           padding: '20px',
           width: 'auto',
           margin: 'auto'
@@ -103,6 +86,7 @@ const SearchMain = () => {
             forms={forms}
             selectedForms={selectedForms}
             setSelectedForms={setSelectedForms} 
+            tagsToFilter={tagsToFilter}
           />
         </Box>
       </Container>

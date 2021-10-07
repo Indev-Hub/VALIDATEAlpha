@@ -1,0 +1,38 @@
+{
+  "feat": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-validatealpha-feat-33808-authRole",
+      "UnauthRoleArn": "arn:aws:iam::207069825571:role/amplify-validatealpha-feat-33808-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::207069825571:role/amplify-validatealpha-feat-33808-authRole",
+      "Region": "us-west-2",
+      "DeploymentBucketName": "amplify-validatealpha-feat-33808-deployment",
+      "UnauthRoleName": "amplify-validatealpha-feat-33808-unauthRole",
+      "StackName": "amplify-validatealpha-feat-33808",
+      "StackId": "arn:aws:cloudformation:us-west-2:207069825571:stack/amplify-validatealpha-feat-33808/1a08ca40-d8c6-11eb-a513-0a58752105fd",
+      "AmplifyAppId": "d3diibklg9s1w0"
+    },
+    "categories": {
+      "auth": {
+        "validatealpha72ca26bb": {
+          "userPoolId": "us-west-2_3EBw6uUX2",
+          "userPoolName": "ValidateUserPool",
+          "webClientId": "6va9mhndec3rfsd4t9mv0g9rvq",
+          "nativeClientId": "1r16g9sfqip0c0i2u3rmj91s7r",
+          "identityPoolId": "us-west-2:df34f322-a2f9-4c34-9f0b-54cdcac02610",
+          "identityPoolName": "validateIdPool",
+          "allowUnauthenticatedIdentities": true,
+          "authRoleArn": "arn:aws:iam::207069825571:role/Cognito_validateIdPool_Auth_Role",
+          "authRoleName": "Cognito_validateIdPool_Auth_Role",
+          "unauthRoleArn": "arn:aws:iam::207069825571:role/Cognito_validateIdPool_Unauth_Role",
+          "unauthRoleName": "Cognito_validateIdPool_Unauth_Role"
+        }
+      },
+      "function": {
+        "validateAddCognitoUserToUserTable": {
+          "deploymentBucketName": "amplify-validatealpha-feat-33808-deployment",
+          "s3Key": "amplify-builds/validateAddCognitoUserToUserTable-4e544e6a636555337244-build.zip"
+        }
+      }
+    }
+  }
+}

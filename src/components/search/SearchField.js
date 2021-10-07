@@ -1,13 +1,11 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {
   Box,
-  Button,
   TextField,
   InputAdornment,
 } from "@material-ui/core";
 import PropTypes from 'prop-types';
 import SearchIcon from 'src/icons/Search';
-import { property } from 'lodash';
 
 
 
@@ -16,16 +14,15 @@ const SearchField = (props) => {
     stringQuery,
     setString,
     forms,
-    setSelectedForms
+    setSelectedForms,
+    tagsToFilter
   } = props;
 
-  const applyFilters = (forms, stringQuery) => forms
-  .filter((form) => {
+  const applyFilters = (forms, stringQuery, tagsToFilter) => forms.filter((form) => {
     let matches = true;
 
     if (stringQuery) {
-      // "properties" determines the fields that are searched 
-      // for matching values in the string
+      // The "properties" variable determines the fields that are searched 
       const properties = ['title', 'description', 'companyName'];
       let containsString = false;
 
@@ -38,16 +35,22 @@ const SearchField = (props) => {
       if (!containsString) {
         matches = false;
       }
+    };
+    
+    if(tagsToFilter){
+      if (!tagsToFilter.every(tag => form.tags.includes(tag))) {
+        matches = false;
+      };
     }
 
     return matches;
   });
 
   useEffect(() => {
-    setSelectedForms(applyFilters(forms, stringQuery));
+    setSelectedForms(applyFilters(forms, stringQuery, tagsToFilter));
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[stringQuery])
+  },[stringQuery, tagsToFilter])
 
   const handleStringChange = (event) => {
     setString(event.target.value);
@@ -87,7 +90,8 @@ SearchField.propTypes = {
   stringQuery: PropTypes.string,
   setString: PropTypes.func,
   forms: PropTypes.array,
-  setSelectedForms: PropTypes.func
+  setSelectedForms: PropTypes.func,
+  tagsToFilter: PropTypes.array
 };
 
 export default SearchField;
