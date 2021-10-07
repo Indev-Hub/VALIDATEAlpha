@@ -268,6 +268,7 @@ const FormCreate = props => {
             uploadForm={uploadForm}
             formImages={formImages}
             setFormImages={setFormImages}
+            selectedForm={selectedForm}
           />
           <Button
             sx={{ mt: 3, padding: 2 }}

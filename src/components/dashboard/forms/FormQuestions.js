@@ -21,9 +21,16 @@ const FormQuestions = (props) => {
     previewForm,
     formImages,
     setFormImages,
+    selectedForm
   } = props;
 
   const fileInput = React.useRef();
+
+  // If duplicating the form, I can call S3 to get the full files back to pass them though formImages
+
+  console.log("selectedForm", selectedForm)
+  console.log("questionsState", questionsState)
+  console.log("formImages", formImages)
 
   // Set static question ID for use in FormSubmission and AnalyticsSubmissions
   const [questionId, setQuestionId] = useState(1);
@@ -86,7 +93,7 @@ const FormQuestions = (props) => {
       updatedState[qstidx].options.splice(0, 1)
     }
     updatedState[qstidx].options = [
-      ...updatedState[qstidx].options, 
+      ...updatedState[qstidx].options,
       ...imgUrlArray
     ];
     setQuestionsState(updatedState);
@@ -150,6 +157,16 @@ const FormQuestions = (props) => {
     }
   };
 
+  // Will run if duplicating form for images to be added back into state and id's changed
+  const handleImageDuplication = (images, qstidx) => {
+    if (selectedForm) {
+      let question = questionsState[qstidx] // This will gain access to the key for formImages to be set to
+
+    } else {
+      console.log("this form was not duplicated")
+    }
+  }
+
   const renderImages = (selectedImages, qstidx) => {
     if (selectedImages) {
       return selectedImages.map((image, imgidx) => {
@@ -195,6 +212,7 @@ const FormQuestions = (props) => {
   return (
     <React.Fragment>
       {questionsState.map((_qst, qstidx) => {
+        handleImageDuplication(qstidx)
         const qstId = `question-${qstidx}`;
         const typeId = `type-${qstidx}`;
         return (
