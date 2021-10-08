@@ -68,6 +68,9 @@ const SearchField = (props) => {
         }}
       >
         <TextField
+          sx={{
+            textColor: 'white'
+          }}
           fullWidth
           InputProps={{
             startAdornment: (

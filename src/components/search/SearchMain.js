@@ -5,6 +5,9 @@ import { API, graphqlOperation } from 'aws-amplify';
 import BrowseForms from './BrowseForms';
 import SearchField from './SearchField';
 import { TAGS } from '../dashboard/forms/FormConstants.js';
+import {Delete} from '@material-ui/icons';
+import {HighlightOffTwoTone} from '@material-ui/icons'; 
+
 
 const SearchMain = () => {
   const [forms, setForms] = useState([]);
@@ -95,12 +98,16 @@ const SearchMain = () => {
           mb: 5,
           pt: 3,
           mr: "auto",
-          ml: "auto"
+          ml: "auto",
+          backgroundColor: "black",
+          border: 2,
+          borderColor: "white",
+          zIndex: 1
         }}>
         {
           availableTags.map(tag => {
             return (
-              <Chip
+              <Chip 
                 label={tag}
                 type="text"
                 id={tag}
@@ -111,7 +118,10 @@ const SearchMain = () => {
                   mr: 5,
                   mb: 3,
                   p: 2,
-                  width: 100
+                  width: 100,
+                  borderColor: "white",
+                  zIndex: 2,
+                  color: "white"
                 }}
                 variant="outlined"
                 color="primary"
@@ -135,10 +145,16 @@ const SearchMain = () => {
                   mr: 5,
                   mb: 3,
                   p: 2,
+                  zIndex: 2,
+                  backgroundColor: 'white',
+                  color: 'black',
+                  '&: hover': {
+                    color: 'black',
+                    cursor: 'pointer'
+                  }
                 }}
-                color="primary"
-                clickable
                 onDelete={() => removeTag(tag)}
+                deleteIcon={<HighlightOffTwoTone/>}
               />
             )
           })
