@@ -5,7 +5,6 @@ import { API, graphqlOperation } from 'aws-amplify';
 import BrowseForms from './BrowseForms';
 import SearchField from './SearchField';
 import { TAGS } from '../dashboard/forms/FormConstants.js';
-import {Delete} from '@material-ui/icons';
 import {HighlightOffTwoTone} from '@material-ui/icons'; 
 
 
