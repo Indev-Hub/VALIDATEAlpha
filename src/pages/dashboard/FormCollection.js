@@ -65,6 +65,7 @@ const FormCollection = () => {
   useEffect(() => {
     fetchForms();
     fetchUserData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchForms = async () => {
