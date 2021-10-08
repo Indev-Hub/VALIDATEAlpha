@@ -62,14 +62,16 @@ const SearchField = (props) => {
         sx={{
           m: 1,
           maxWidth: '100%',
-          width: 500,
+          minWidth: 400,
           display: 'flex',
           justifycontent: 'center'
         }}
       >
         <TextField
           sx={{
-            textColor: 'white'
+            maxWidth: '100%',
+            display: 'flex',
+            color: 'white'
           }}
           fullWidth
           InputProps={{
