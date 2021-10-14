@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
 import { Grid, Link, Box, Container, Card, Chip } from '@material-ui/core';
-import { listForms, listFormSubmissions } from 'src/graphql/queries';
+import { HighlightOffTwoTone } from '@material-ui/icons'; 
 import { API, graphqlOperation } from 'aws-amplify';
+
+import { listForms, listFormSubmissions } from 'src/graphql/queries';
 import BrowseForms from './BrowseForms';
 import SearchField from './SearchField';
 import { TAGS } from '../dashboard/forms/FormConstants.js';
-import {HighlightOffTwoTone} from '@material-ui/icons'; 
-
 
 const SearchMain = () => {
   const [forms, setForms] = useState([]);
@@ -14,27 +14,24 @@ const SearchMain = () => {
   const [selectedForms, setSelectedForms] = useState([]);
   const [availableTags, setAvailableTags] = useState([]);
   const [tagsToFilter, setTagsToFilter] = useState([]);
+  const [submissions, setSubmissions] = useState();
   
-
-
   useEffect(() => {
     fetchForms();
     fetchSubmission();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
 
   const fetchForms = async () => {
     try {
       const formData = await API.graphql(graphqlOperation(listForms));
       const formList = formData.data.listForms.items;
       setForms(formList);
-      setSelectedForms(formList);    } catch (error) {
+      setSelectedForms(formList);    
+    } catch (error) {
       console.log('error on fetching forms', error);
     }
   }
-
-  const [submissions, setSubmissions] = useState();
 
   const fetchSubmission = async () => {
     try {
@@ -49,14 +46,12 @@ const SearchMain = () => {
   useEffect(() => {
     const postFilteredTags = TAGS.filter(tag => !tagsToFilter.includes(tag));
     setAvailableTags(postFilteredTags);
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tagsToFilter])
 
   const addTag = (tag) => {
     setTagsToFilter([...tagsToFilter, tag]);
   };
-
   
   const removeTag = (tag) => {
     const newTags = tagsToFilter.filter(e => e !== tag);
@@ -183,7 +178,11 @@ const SearchMain = () => {
                     }
                   }}
                 >
-                  <BrowseForms form={form} submissions={submissions} index={index} />
+                  <BrowseForms 
+                    form={form} 
+                    submissions={submissions} 
+                    index={index} 
+                  />
                 </Link>
               </Grid>
             )
