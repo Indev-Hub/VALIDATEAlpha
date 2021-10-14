@@ -1,13 +1,8 @@
 import React, {useEffect} from 'react';
-import {
-  Box,
-  TextField,
-  InputAdornment,
-} from "@material-ui/core";
+import { Box, TextField, InputAdornment } from "@material-ui/core";
 import PropTypes from 'prop-types';
+
 import SearchIcon from 'src/icons/Search';
-
-
 
 const SearchField = (props) => {
   const {
@@ -37,7 +32,7 @@ const SearchField = (props) => {
       }
     };
     
-    if(tagsToFilter){
+    if (tagsToFilter) {
       if (!tagsToFilter.every(tag => form.tags.includes(tag))) {
         matches = false;
       };
@@ -48,7 +43,6 @@ const SearchField = (props) => {
 
   useEffect(() => {
     setSelectedForms(applyFilters(forms, stringQuery, tagsToFilter));
-
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[stringQuery, tagsToFilter])
 
