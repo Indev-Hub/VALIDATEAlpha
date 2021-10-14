@@ -9,7 +9,6 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
-
 const useStyles = makeStyles(theme => ({
   // Limit title and description to one line; truncate with ellipsis
   singleLine: {
@@ -169,7 +168,15 @@ const BrowseForms = (props) => {
         </Box>
         <Divider sx={{ color: 'background.dark', mt:4 }} />
         <Box align="center" sx={{ mt:-1.3, mb:4}}>
-          <Typography variant="h8" sx={{ color: 'text.light', backgroundColor: 'background.dark', px: 2, py: .5, borderRadius: 2 }}>
+          <Typography 
+            variant="h8" 
+            sx={{ 
+              color: 'text.light', 
+              backgroundColor: 'background.dark', 
+              px: 2, 
+              py: .5,
+              borderRadius: 2
+            }}>
             Submissions: {countSubmissions}
           </Typography>
         </Box>
