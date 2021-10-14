@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import {
   Box,
   Card,
@@ -35,20 +35,17 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const SearchTemplate1 = (props) => {
+const BrowseForms = (props) => {
   const classes = useStyles();
 
   // Description Popover state
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   // Receive form data and index from search mapping in SearchMain component
-  const { form, submissions, index } = props;
-  // console.log('form', form);
+  const { form, submissions} = props;
 
   // Parse first 3 tags from form data; mapped through below
   const tags = JSON.parse(form.tags).slice(0, 3);
-  // const tags = {items: JSON.parse(form.tags)};
-
 
   // Handle Popover display of full description
   const handlePopoverOpen = (event) => {
@@ -68,9 +65,7 @@ const SearchTemplate1 = (props) => {
   if (submissions !== undefined && subSet === false) {
     const newSubmissions = submissions.filter(item => item.formID === form.id).length;
     setCountSubmissions(newSubmissions)
-    setSubSet(true)
-    console.log(form.id, countSubmissions)
-    console.log(subSet)     
+    setSubSet(true)     
   }  
 
   return (
@@ -79,7 +74,6 @@ const SearchTemplate1 = (props) => {
         style={{
           backgroundColor: 'black',
           backgroundImage: `url('https://source.unsplash.com/1900x900/?${form.title}')`,
-          // background: `linear-gradient(90deg, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.3)), url('https://source.unsplash.com/1900x900/?${form.title}')`,
           backgroundSize: 'cover',
           height: '150px'
         }}
@@ -88,21 +82,6 @@ const SearchTemplate1 = (props) => {
           {tags[0] !== "" ? (
             tags.map((tag, _index) => (
               <>
-                {/* <Typography
-                  display="inline"
-                  sx={{
-                    fontSize: '11px',
-                    fontWeight: '600',
-                    color: 'white',
-                    backgroundColor: 'blue',
-                    borderRadius: '60px',
-                    px: 2,
-                    py: .5,
-                    mr: 0.5,
-                  }}
-                >
-                  {tag}
-                </Typography> */}
                 <Chip
                   sx={{
                     color: 'white',
@@ -132,7 +111,6 @@ const SearchTemplate1 = (props) => {
             sx={{
               color: 'text.primary',
               fontWeight: 500
-              // textShadow: '#000000 4px 2px 6px'
             }}
           >{form.title}
           </Typography>
@@ -145,7 +123,6 @@ const SearchTemplate1 = (props) => {
               pb: 2,
               color: 'text.primary',
               fontWeight: 500
-              // textShadow: '#000000 4px 2px 6px'
             }}
           >
             {form.company.name}
@@ -201,4 +178,4 @@ const SearchTemplate1 = (props) => {
   )
 }
 
-export default SearchTemplate1
+export default BrowseForms

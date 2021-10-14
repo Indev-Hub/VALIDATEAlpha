@@ -1,30 +1,39 @@
 import React, { useState, useEffect } from 'react'
-import { Grid, Link, } from '@material-ui/core';
+import { Grid, Link, Box, Container, Card, Chip } from '@material-ui/core';
 import { listForms, listFormSubmissions } from 'src/graphql/queries';
 import { API, graphqlOperation } from 'aws-amplify';
-import SearchForms from './SearchForms';
-import SearchTemplate1 from './SearchTemplate1';
+import BrowseForms from './BrowseForms';
+import SearchField from './SearchField';
+import { TAGS } from '../dashboard/forms/FormConstants.js';
+import {HighlightOffTwoTone} from '@material-ui/icons'; 
+
 
 const SearchMain = () => {
   const [forms, setForms] = useState([]);
+  const [string, setString ] = useState('');
+  const [selectedForms, setSelectedForms] = useState([]);
+  const [availableTags, setAvailableTags] = useState([]);
+  const [tagsToFilter, setTagsToFilter] = useState([]);
+  
+
 
   useEffect(() => {
     fetchForms();
     fetchSubmission();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
 
   const fetchForms = async () => {
     try {
       const formData = await API.graphql(graphqlOperation(listForms));
       const formList = formData.data.listForms.items;
-      // console.log('form list', formList);
       setForms(formList);
-    } catch (error) {
+      setSelectedForms(formList);    } catch (error) {
       console.log('error on fetching forms', error);
     }
   }
 
-  // Get number of submissions for each form (this could get ridiculously expensive so may have to find another way to determine this)
   const [submissions, setSubmissions] = useState();
 
   const fetchSubmission = async () => {
@@ -32,18 +41,130 @@ const SearchMain = () => {
       const subData = await API.graphql(graphqlOperation(listFormSubmissions));
       const subInfo = subData.data.listFormSubmissions.items;
       setSubmissions(subInfo);
-      // setForms(subInfo);
-      console.log("submission information:", subInfo);
-
     } catch (error) {
       console.log('error on fetching submission', error);
     }
   };
 
+  useEffect(() => {
+    const postFilteredTags = TAGS.filter(tag => !tagsToFilter.includes(tag));
+    setAvailableTags(postFilteredTags);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tagsToFilter])
+
+  const addTag = (tag) => {
+    setTagsToFilter([...tagsToFilter, tag]);
+  };
+
+  
+  const removeTag = (tag) => {
+    const newTags = tagsToFilter.filter(e => e !== tag);
+    setTagsToFilter(newTags)
+  };
+
   return (
     <>
-      <Grid container spacing={2} xs={12}>
-        {forms.map((form, index) => {
+      <Container
+        sx={{
+          display: 'flex',
+          justifycontent: 'center',
+          padding: '20px',
+          width: 'auto',
+          margin: 'auto'
+        }}
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            justifycontent: 'center',
+            width:'auto',
+            margin:'auto'
+          }}
+        >
+          <SearchField
+            stringQuery={string}
+            setString={setString}
+            forms={forms}
+            selectedForms={selectedForms}
+            setSelectedForms={setSelectedForms} 
+            tagsToFilter={tagsToFilter}
+          />
+        </Box>
+      </Container>
+      <Card
+        sx={{
+          mb: 5,
+          pt: 3,
+          mr: "auto",
+          ml: "auto",
+          backgroundColor: "black",
+          border: 2,
+          borderColor: "white",
+          zIndex: 1
+        }}>
+        {
+          availableTags.map(tag => {
+            return (
+              <Chip 
+                label={tag}
+                type="text"
+                id={tag}
+                className={tag}
+                value={tag}
+                sx={{
+                  ml: 5,
+                  mr: 5,
+                  mb: 3,
+                  p: 2,
+                  width: 100,
+                  borderColor: "white",
+                  zIndex: 2,
+                  color: "white"
+                }}
+                variant="outlined"
+                color="primary"
+                clickable
+                onClick={() => addTag(tag)}
+              />
+            )
+          })
+        }
+        {
+          tagsToFilter.map(tag => {
+            return (
+              <Chip
+                label={tag}
+                type="text"
+                id={tag}
+                className={tag}
+                value={tag}
+                sx={{
+                  ml: 5,
+                  mr: 5,
+                  mb: 3,
+                  p: 2,
+                  zIndex: 2,
+                  backgroundColor: 'white',
+                  color: 'black',
+                  '&: hover': {
+                    color: 'black',
+                    cursor: 'pointer'
+                  }
+                }}
+                onDelete={() => removeTag(tag)}
+                deleteIcon={<HighlightOffTwoTone/>}
+              />
+            )
+          })
+        }
+      </Card>
+      <Grid 
+        container 
+        spacing={2} 
+        xs={12}
+      >
+        {selectedForms.map((form, index) => {
           if (!form.isPrivate) {
             return (
               <Grid
@@ -62,8 +183,7 @@ const SearchMain = () => {
                     }
                   }}
                 >
-                  {/* <SearchForms form={form} index={index} /> */}
-                  <SearchTemplate1 form={form} submissions={submissions} index={index} />
+                  <BrowseForms form={form} submissions={submissions} index={index} />
                 </Link>
               </Grid>
             )
@@ -74,4 +194,4 @@ const SearchMain = () => {
   )
 }
 
-export default SearchMain
+export default SearchMain;
