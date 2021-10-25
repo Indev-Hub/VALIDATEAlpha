@@ -8,6 +8,7 @@ import PropTypes from "prop-types";
 import { Plus } from "../../../icons";
 import Controls from "../../form/controls/_controls";
 import { INPUT_CONTROLS } from "./FormConstants";
+import { AmplifyS3Image } from "@aws-amplify/ui-react";
 
 // VALIDATION QUESTIONS SECTION OF FormCreate
 
@@ -21,7 +22,8 @@ const FormQuestions = (props) => {
     previewForm,
     formImages,
     setFormImages,
-    selectedForm
+    selectedForm,
+    handleImgAccess
   } = props;
 
   const fileInput = React.useRef();
@@ -158,12 +160,19 @@ const FormQuestions = (props) => {
   };
 
   // Will run if duplicating form for images to be added back into state and id's changed
-  const handleImageDuplication = (images, qstidx) => {
+  const handleImageDuplication = () => {
+    let imagePaths = [];
     if (selectedForm) {
-      let question = questionsState[qstidx] // This will gain access to the key for formImages to be set to
-
+      questionsState.map(question => {
+        return (
+          imagePaths.push(question.options)
+        )
+      });
+      const test = handleImgAccess(imagePaths[0][0])
+      console.log(<AmplifyS3Image imgKey={test} />)
+      console.log('imagePaths', imagePaths);
     } else {
-      console.log("this form was not duplicated")
+      console.log("this form was not duplicated");
     }
   }
 
@@ -212,7 +221,7 @@ const FormQuestions = (props) => {
   return (
     <React.Fragment>
       {questionsState.map((_qst, qstidx) => {
-        handleImageDuplication(qstidx)
+        handleImageDuplication()
         const qstId = `question-${qstidx}`;
         const typeId = `type-${qstidx}`;
         return (

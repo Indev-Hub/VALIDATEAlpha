@@ -139,6 +139,26 @@ const FormCreate = props => {
     });
   };
 
+  const handleImgAccess = async (path) => {
+    try {
+      let image = await Storage.get(path, { contentType: 'image' });
+      console.log('image', image);
+      return image;
+    } catch (error) {
+      console.log('unable to access images from S3', error);
+    }
+  }
+
+  // const handleImgAccess = async () => {
+  //   try {
+  //     const fileList = await Storage.list('');
+  //     // setFormImageFiles(fileList);
+  //     console.log('getS3FileList', fileList)
+  //   } catch (error) {
+  //     console.log('error on fetching file list', error);
+  //   }
+  // };
+
   const uploadForm = async () => {
     // Get form design schema and output to DynamoDB
     const formDesignDataSet = createFormDesignDataSet();
@@ -264,6 +284,7 @@ const FormCreate = props => {
             formImages={formImages}
             setFormImages={setFormImages}
             selectedForm={selectedForm}
+            handleImgAccess={handleImgAccess}
           />
           <Button
             sx={{ mt: 3, padding: 2 }}
