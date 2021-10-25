@@ -8,7 +8,6 @@ import PropTypes from "prop-types";
 import { Plus } from "../../../icons";
 import Controls from "../../form/controls/_controls";
 import { INPUT_CONTROLS } from "./FormConstants";
-import { AmplifyS3Image } from "@aws-amplify/ui-react";
 
 // VALIDATION QUESTIONS SECTION OF FormCreate
 
@@ -23,16 +22,9 @@ const FormQuestions = (props) => {
     formImages,
     setFormImages,
     selectedForm,
-    handleImgAccess
   } = props;
 
   const fileInput = React.useRef();
-
-  // If duplicating the form, I can call S3 to get the full files back to pass them though formImages
-
-  console.log("selectedForm", selectedForm)
-  console.log("questionsState", questionsState)
-  console.log("formImages", formImages)
 
   // Set static question ID for use in FormSubmission and AnalyticsSubmissions
   const [questionId, setQuestionId] = useState(1);
@@ -159,23 +151,6 @@ const FormQuestions = (props) => {
     }
   };
 
-  // Will run if duplicating form for images to be added back into state and id's changed
-  const handleImageDuplication = () => {
-    let imagePaths = [];
-    if (selectedForm) {
-      questionsState.map(question => {
-        return (
-          imagePaths.push(question.options)
-        )
-      });
-      const test = handleImgAccess(imagePaths[0][0])
-      console.log(<AmplifyS3Image imgKey={test} />)
-      console.log('imagePaths', imagePaths);
-    } else {
-      console.log("this form was not duplicated");
-    }
-  }
-
   const renderImages = (selectedImages, qstidx) => {
     if (selectedImages) {
       return selectedImages.map((image, imgidx) => {
@@ -215,13 +190,19 @@ const FormQuestions = (props) => {
           </Tooltip >
         );
       });
-    }
+      // if duplicating a form, this branch will remove all previous images from questionsState
+    } else if (selectedForm) {
+      questionsState.map(question => {
+        if (question.type === 'Images') {
+          question.options.splice(0, 1);
+        }
+      });
+    };
   };
 
   return (
     <React.Fragment>
       {questionsState.map((_qst, qstidx) => {
-        handleImageDuplication()
         const qstId = `question-${qstidx}`;
         const typeId = `type-${qstidx}`;
         return (

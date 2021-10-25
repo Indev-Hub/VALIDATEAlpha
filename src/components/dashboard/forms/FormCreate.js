@@ -149,16 +149,6 @@ const FormCreate = props => {
     }
   }
 
-  // const handleImgAccess = async () => {
-  //   try {
-  //     const fileList = await Storage.list('');
-  //     // setFormImageFiles(fileList);
-  //     console.log('getS3FileList', fileList)
-  //   } catch (error) {
-  //     console.log('error on fetching file list', error);
-  //   }
-  // };
-
   const uploadForm = async () => {
     // Get form design schema and output to DynamoDB
     const formDesignDataSet = createFormDesignDataSet();
