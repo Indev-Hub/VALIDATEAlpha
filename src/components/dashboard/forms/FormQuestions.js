@@ -27,25 +27,6 @@ const FormQuestions = (props) => {
 
   const fileInput = useRef();
 
-  useEffect(() => {
-    if (selectedForm) {
-      handleDuplicateForm();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  // if duplicating a form, this will remove all previous images 
-  // from questionsState and keep the questions
-  const handleDuplicateForm = () => {
-    const updatedState = [...questionsState]; // make copy
-    updatedState.map(question => {
-      if (question.type === "Images") {
-        question.options = [""];
-      }
-    });
-    setQuestionsState(updatedState);
-  };
-
   // Set static question ID for use in FormSubmission and AnalyticsSubmissions
   const [questionId, setQuestionId] = useState(1);
 

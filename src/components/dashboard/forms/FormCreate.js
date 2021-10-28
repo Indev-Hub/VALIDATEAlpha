@@ -68,6 +68,12 @@ const FormCreate = props => {
   if (selectedForm) {
     // If duplicating from existing form
     initialQuestions = JSON.parse(selectedForm.validations);
+    // Remove any images from image answer types
+    initialQuestions.map(question => {
+      if (question.type === "Images") {
+        question.options = [""];
+      }
+    });
   } else {
     initialQuestions = [blankQuestion];
   }
