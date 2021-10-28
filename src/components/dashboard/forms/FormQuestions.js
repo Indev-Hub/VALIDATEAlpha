@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   Box, Button, Card, FormControlLabel, Grid, IconButton,
   Switch, Typography, Tooltip, Zoom, Paper,
