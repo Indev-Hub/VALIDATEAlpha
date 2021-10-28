@@ -14,7 +14,12 @@ const FormSubmission = props => {
   const navigate = useNavigate();
 
   // Destructure formDesign (=FormCreate form object) and other props
-  const { formDesign, userData, displaySubmitButton = true } = props;
+  const {
+    formDesign,
+    userData,
+    displaySubmitButton = true,
+    formImages,
+  } = props;
 
   // Form Design variables
   const marginUp = 2;
@@ -49,6 +54,8 @@ const FormSubmission = props => {
     let rando = questions[index].options;
     const randoSort = rando.sort(() => Math.random() - 0.5);
     console.log('Random Array Sorting:', randoSort);
+    console.log('formImages', formImages);
+    console.log('questions', questions);
     return randoSort;
   }
 
