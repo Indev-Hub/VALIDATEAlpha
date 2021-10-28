@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box, Button, Card, FormControlLabel, Grid, IconButton,
   Switch, Typography, Tooltip, Zoom, Paper
@@ -25,6 +25,25 @@ const FormQuestions = (props) => {
   } = props;
 
   const fileInput = React.useRef();
+
+  useEffect(() => {
+    if (selectedForm) {
+      handleDuplicateForm();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // if duplicating a form, this will remove all previous images 
+  // from questionsState and keep the questions
+  const handleDuplicateForm = () => {
+    const updatedState = [...questionsState]; // make copy
+    updatedState.map(question => {
+      if (question.type === "Images") {
+        question.options = [""];
+      }
+    });
+    setQuestionsState(updatedState);
+  };
 
   // Set static question ID for use in FormSubmission and AnalyticsSubmissions
   const [questionId, setQuestionId] = useState(1);
@@ -121,7 +140,7 @@ const FormQuestions = (props) => {
       setFormImages(updatedFilesState);
       setQuestionsState(updatedQuestionsState);
     }
-  }
+  };
 
   // ADD IMAGES ANSWER OPTIONS
   // Get selected image files and add file, path, or blob to associated state
@@ -190,14 +209,7 @@ const FormQuestions = (props) => {
           </Tooltip >
         );
       });
-      // if duplicating a form, this branch will remove all previous images from questionsState
-    } else if (selectedForm) {
-      questionsState.map(question => {
-        if (question.type === 'Images') {
-          question.options.splice(0, 1);
-        }
-      });
-    };
+    }
   };
 
   return (

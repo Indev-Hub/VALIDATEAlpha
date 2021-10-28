@@ -285,6 +285,7 @@ const FormCreate = props => {
                 formDesign={formPreview}
                 displaySubmitButton={false}
                 userData={userData}
+                formImages={formImages}
               />
             </Box>
           </Paper>
