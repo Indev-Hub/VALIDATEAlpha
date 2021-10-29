@@ -175,7 +175,9 @@ const FormCollection = () => {
           </Typography>
           <FormCreate
             selectedForm={selectedForm}
-            handleListRefresh={handleListRefresh} />
+            handleListRefresh={handleListRefresh}
+            duplicateForm={duplicateForm}
+          />
         </Box>
       </Container>
     )

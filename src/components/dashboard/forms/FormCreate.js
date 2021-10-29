@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import { API, graphqlOperation } from 'aws-amplify';
-import { Storage } from 'aws-amplify';
-import { Formik, Form } from 'formik';
 import {
   Alert, AlertTitle, Box, Button, Paper, Typography
 } from '@material-ui/core';
+import { API, graphqlOperation, Storage } from 'aws-amplify';
+import { Formik, Form } from 'formik';
+import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { createForm } from '../../../graphql/mutations';
 import { getUser } from '../../../graphql/queries';
@@ -68,6 +67,12 @@ const FormCreate = props => {
   if (selectedForm) {
     // If duplicating from existing form
     initialQuestions = JSON.parse(selectedForm.validations);
+    // Remove any images from image answer types
+    initialQuestions.map(question => {
+      if (question.type === 'Images') {
+        question.options = [''];
+      }
+    });
   } else {
     initialQuestions = [blankQuestion];
   }
@@ -244,7 +249,7 @@ const FormCreate = props => {
   }
 
   return (
-    <React.Fragment>
+    <>
       <Formik>
         <Form autoComplete='off'>
           {/* Company details part of the form */}
@@ -263,6 +268,7 @@ const FormCreate = props => {
             uploadForm={uploadForm}
             formImages={formImages}
             setFormImages={setFormImages}
+            selectedForm={selectedForm}
           />
           <Button
             sx={{ mt: 3, padding: 2 }}
@@ -276,14 +282,15 @@ const FormCreate = props => {
           </Button>
         </Form>
       </Formik>
-      {formPreview ? (
-        detailsState.companyID !== undefined ? (
+      {formPreview && (
+        detailsState.companyID ? (
           <Paper elevation={3} sx={{ mt: 2 }}>
             <Box p={4}>
               <FormSubmission
                 formDesign={formPreview}
                 displaySubmitButton={false}
                 userData={userData}
+                formImages={formImages}
               />
             </Box>
           </Paper>
@@ -294,9 +301,9 @@ const FormCreate = props => {
             <Typography>Select a company in the Form Details section. If you have more than one company, we leave the company field blank so that you don't accidentally create a form for the wrong company.</Typography>
           </Alert>
         )
-      ) : null}
+      )}
       <Notification notify={notify} setNotify={setNotify} />
-    </React.Fragment>
+    </>
   );
 };
 
