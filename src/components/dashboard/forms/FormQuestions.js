@@ -22,7 +22,6 @@ const FormQuestions = (props) => {
     previewForm,
     formImages,
     setFormImages,
-    selectedForm,
   } = props;
 
   const fileInput = useRef();
@@ -408,7 +407,6 @@ FormQuestions.propTypes = {
   previewForm: PropTypes.func,
   formImages: PropTypes.object,
   setFormImages: PropTypes.func,
-  selectedForm: PropTypes.bool,
 };
 
 export default FormQuestions;
