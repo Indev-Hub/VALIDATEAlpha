@@ -125,7 +125,7 @@ const BrowseForms = (props) => {
               fontWeight: 500
             }}
           >
-            {form.company.name}
+            {form.company ? form.company.name : 'NO COMPANY'}
           </Typography>
         </Box>
         <Box
