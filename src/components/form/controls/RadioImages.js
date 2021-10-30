@@ -1,105 +1,81 @@
-import React from 'react';
-import { AmplifyS3Image } from "@aws-amplify/ui-react";
+import React, { useEffect, useState } from 'react';
 import {
-  Box,
-  Grid,
-  FormControl,
-  FormControlLabel,
-  FormHelperText,
-  FormLabel,
-  Radio,
-  RadioGroup as MuiRadioGroup,
-  Typography
+  FormControl, FormControlLabel, FormHelperText, Grid, 
+  Radio, RadioGroup as MuiRadioGroup, Typography,
 } from '@material-ui/core';
+import { Storage } from 'aws-amplify';
 import { useField, useFormikContext } from 'formik';
 
-// Use aws-sdk
-const AWS = require('aws-sdk')
+const RadioImages = (props) => {
+  const { name, options, previewImages, ...other } = props;
+  const [imageFileKeyAndBlob, setImageFileKeyAndBlob] = useState({});
 
-// Set which bucket to pull images from
-const myBucket = process.env.REACT_APP_S3_BUCKET
-
-// The myKey variable is not used here because we get the key dynamically in the .map below
-// const myKey = 'FILE_NAME.JPG' 
-
-// Set the time limit for how long the signed url will be good for
-const signedUrlExpireSeconds = 60 * 1
-
-// Set up function to retrieve images from S3 (used in .map below)
-const s3 = new AWS.S3({
-  accessKeyId: process.env.REACT_APP_ACCESS_ID,
-  signatureVersion: 'v4',
-  region: process.env.REACT_APP_REGION,
-  secretAccessKey: process.env.REACT_APP_ACCESS_KEY
-});
-
-const RadioImages = ({
-  name,
-  options,
-  ...other
-}) => {
+  // Use formik to manage form controls
   const { setFieldValue } = useFormikContext();
   const [field, meta] = useField(name);
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     const { value } = e.target;
     setFieldValue(name, value);
-  }
+  };
 
   const config = {
     ...field,
-    onChange: handleChange
-  }
+    onChange: handleChange,
+  };
 
   if (meta && meta.touched && meta.error) {
     config.error = true;
   }
 
+  // Get blob from S3 for non-preview forms and set fileKey/blob pair in state
+  const getS3Image = async (fileKey) => {
+    try {
+      const image = await Storage.get(fileKey, { download: true });
+      setImageFileKeyAndBlob((prevState) => ({
+        ...prevState,
+        [fileKey]: URL.createObjectURL(image.Body),
+      }));
+    } catch (error) {
+      console.log('Error fetching S3 image', error);
+    }
+  };
+
+  // Set fileKey/blob object pairs in state on mount
+  useEffect(() => {
+    // If previewing an image during form creation
+    if (previewImages) {
+      Object.values(previewImages).forEach((imageSet) => {
+        imageSet.forEach((nestedSet) => {
+          setImageFileKeyAndBlob((prevState) => ({
+            ...prevState,
+            [nestedSet[0]]: nestedSet[2],
+          }));
+        });
+      });
+    } else {
+      // If rendering a full form for submission
+      options.forEach((option) => {
+        getS3Image(option);
+      });
+    }
+  }, []);
+
   return (
-    <div className="form-group">
-      <FormControl component="fieldset">
-        {/* <FormLabel component="legend">{other.label}</FormLabel> */}
+    <div className='form-group'>
+      <FormControl component='fieldset'>
         <Typography>{other.altlabel}</Typography>
         <MuiRadioGroup {...config}>
-          {/* Set up grid so we can define how the images are displayed based on screen width */}
-          <Grid
-            container
-            spacing={3}
-            mt={2}
-          >
-            {options.map((option, index) => {
-              const id = `${option.id}opt${index + 1}`;
-              const optionURL = s3.getSignedUrl('getObject', {
-                Bucket: myBucket,
-                Key: option,
-                Expires: signedUrlExpireSeconds
-              })
-          
-              console.log(optionURL)
-              return (
-                // <Box display="column" align="left" mb={2}>
-                // Switch from Box to Grid to allow for more than one image to be displayed on each row
-                // Switch out AmplifyS3Image with optionURL variable
-                <Grid
-                  item
-                  align="center"
-                  xs={6}
-                >
-                  {/* <Box width="500px"> */}
-                    <img src={optionURL} width="100%" />
-                  {/* </Box> */}
-                  {/* <AmplifyS3Image imgKey={option} /> */}
-                  {console.log('option', option)}
+          <Grid container spacing={3} mt={2}>
+            {options.map((option) => (
+                <Grid key={option} item align='center' xs={6}>
+                  <img src={imageFileKeyAndBlob[option]} width='100%' alt='' />
                   <FormControlLabel
-                    key={id}
                     value={option}
                     control={<Radio />}
-                  >
-                  </FormControlLabel>
+                  ></FormControlLabel>
                 </Grid>
-                // </Box>
-              )
-            })}
+            ))}
           </Grid>
         </MuiRadioGroup>
       </FormControl>
