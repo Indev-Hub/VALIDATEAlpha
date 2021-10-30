@@ -60,9 +60,18 @@ const FormQuestions = (props) => {
 
   // Update answer type when selected
   const handleSelectChange = (qstidx, e) => {
-    const updatedState = [...questionsState]; // make copy
-    updatedState[qstidx].type = e.target.value;
-    setQuestionsState(updatedState);
+    const updatedQuestionsState = [...questionsState]; // make copy
+    // Remove any images from questionsState and formImages if switching to 
+    // and from image aswer types
+    if (updatedQuestionsState[qstidx].type === "Images"
+      || e.target.value === "Images") {
+      const updatedFilesState = { ...formImages }; // make copy
+      updatedQuestionsState[qstidx].options = [""];
+      delete updatedFilesState[qstidx];
+      setFormImages(updatedFilesState);
+    }
+    updatedQuestionsState[qstidx].type = e.target.value;
+    setQuestionsState(updatedQuestionsState);
   };
 
   // Update answer type when selected
@@ -112,7 +121,7 @@ const FormQuestions = (props) => {
     const updatedQuestionsState = [...questionsState]; // make copy
     if (updatedFilesState[qstidx].length === 1) {
       delete updatedFilesState[qstidx];
-      updatedQuestionsState[qstidx].options = [''];
+      updatedQuestionsState[qstidx].options = [""];
       setQuestionsState(updatedQuestionsState);
       setFormImages(updatedFilesState);
     } else {
