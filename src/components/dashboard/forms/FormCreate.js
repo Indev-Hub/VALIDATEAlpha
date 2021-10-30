@@ -288,9 +288,8 @@ const FormCreate = props => {
             <Box p={4}>
               <FormSubmission
                 formDesign={formPreview}
+                previewImages={formImages}
                 displaySubmitButton={false}
-                userData={userData}
-                formImages={formImages}
               />
             </Box>
           </Paper>
