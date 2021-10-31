@@ -100,24 +100,19 @@ const CompanyDisplay = () => {
           <Typography>Company is loading...</Typography>
         ) : (
           <>
-          <Grid
-            container
-            justifyContent="center"
-            justifyItems="center"
-            xs={12}
-            // sx={{
-            //   backgroundColor: 'black',
-            //   backgroundImage: `url('https://source.unsplash.com/1900x900/?${companyData.title}')`,
-            //   backgroundSize: 'cover',
-            //   height: '300px'
-            // }}
-          >
-            {/* <Card sx={{ p:4, width:'100%', justifyContent:'center', justifyItems:'center' }}> */}
+            <Grid
+              container
+              justifyContent="center"
+              justifyItems="center"
+              xs={12}
+
+            >
               <Grid
                 container
                 // justifyContent="center"
                 // justifyItems="center"
-                my={6}
+                mt={2}
+                mb={4}
                 xs={12}
               >
                 <Grid
@@ -191,79 +186,76 @@ const CompanyDisplay = () => {
                   </Box>
                 </Grid>
               </Grid>
-            {/* </Card> */}
-          </Grid>
+            </Grid>
 
-          <Box className="container" sx={{ }}>
-            <Box className="navStyle" sx={{ bgcolor:'black', display:'flex', justifyContent:'center' }}>
-              <Box className="navBar" sx={{ width:'700px' }}>
-                <AppBar position="static">
-                  <Tabs
-                    value={value}
-                    onChange={handleChange}
-                    indicatorColor="secondary"
-                    textColor="inherit"
-                    variant="fullWidth"
-                    aria-label="full width tabs example"
-                  >
-                    <Tab label="ABOUT" {...tabContent(0)} />
-                    <Tab label="MARKET" {...tabContent(1)} />
-                    <Tab label="COMPETITION" {...tabContent(2)} />
-                    <Tab label="FORMS" {...tabContent(3)} />
-                  </Tabs>
-                </AppBar>
+            <Box className="container" sx={{ }}>
+              <Box className="navStyle" sx={{ bgcolor:'black', display:'flex', justifyContent:'center' }}>
+                <Box className="navBar" sx={{ width:'700px' }}>
+                  <AppBar position="static">
+                    <Tabs
+                      value={value}
+                      onChange={handleChange}
+                      indicatorColor="secondary"
+                      textColor="inherit"
+                      variant="fullWidth"
+                      aria-label="full width tabs example"
+                    >
+                      <Tab label="ABOUT" {...tabContent(0)} />
+                      <Tab label="MARKET" {...tabContent(1)} />
+                      <Tab label="COMPETITION" {...tabContent(2)} />
+                      <Tab label="FORMS" {...tabContent(3)} />
+                    </Tabs>
+                  </AppBar>
+                </Box>
               </Box>
-            </Box>
-            <Box>
-              <SwipeableViews
-                axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-                index={value}
-                onChangeIndex={handleChangeIndex}
-              >
-                <TabPanel value={value} index={0} dir={theme.direction}>
-                  <Grid container sx={{ justifyContent:'center', justifyItems:'center' }}>
-                    <Grid container xs={10} md={8}>
-                      <Grid item xs={12}>
-                        <CompanyAbout companyData={companyData} />
+              <Box>
+                <SwipeableViews
+                  axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+                  index={value}
+                  onChangeIndex={handleChangeIndex}
+                >
+                  <TabPanel value={value} index={0} dir={theme.direction}>
+                    <Grid container sx={{ justifyContent:'center', justifyItems:'center' }}>
+                      <Grid container xs={10} md={8}>
+                        <Grid item xs={12}>
+                          <CompanyAbout companyData={companyData} />
+                        </Grid>
                       </Grid>
                     </Grid>
-                  </Grid>
-                </TabPanel>
-                <TabPanel value={value} index={1} dir={theme.direction}>
-                  <Grid container sx={{ justifyContent:'center', justifyItems:'center' }}>
-                    <Grid container xs={10} md={8}>
-                      <Grid item xs={12}>
-                        <CompanyMarket companyData={companyData} />
+                  </TabPanel>
+                  <TabPanel value={value} index={1} dir={theme.direction}>
+                    <Grid container sx={{ justifyContent:'center', justifyItems:'center' }}>
+                      <Grid container xs={10} md={8}>
+                        <Grid item xs={12}>
+                          <CompanyMarket companyData={companyData} />
+                        </Grid>
+                      </Grid>
+                    </Grid>            
+                  </TabPanel>
+                  <TabPanel value={value} index={2} dir={theme.direction}>
+                    <Grid container sx={{ justifyContent:'center', justifyItems:'center' }}>
+                      <Grid container xs={10} md={8}>
+                        <Grid item xs={12}>
+                          <CompanyCompetition companyData={companyData} />
+                        </Grid>
                       </Grid>
                     </Grid>
-                  </Grid>            
-                </TabPanel>
-                <TabPanel value={value} index={2} dir={theme.direction}>
-                  <Grid container sx={{ justifyContent:'center', justifyItems:'center' }}>
-                    <Grid container xs={10} md={8}>
-                      <Grid item xs={12}>
-                        <CompanyCompetition companyData={companyData} />
+                  </TabPanel>
+                  <TabPanel value={value} index={3} dir={theme.direction}>
+                    <Grid container sx={{ justifyContent:'center', justifyItems:'center' }}>
+                      <Grid container xs={10} md={8}>
+                        <Grid item xs={12}>
+                          <CompanyForms companyData={companyData} />
+                        </Grid>
                       </Grid>
                     </Grid>
-                  </Grid>
-                </TabPanel>
-                <TabPanel value={value} index={3} dir={theme.direction}>
-                  <Grid container sx={{ justifyContent:'center', justifyItems:'center' }}>
-                    <Grid container xs={10} md={8}>
-                      <Grid item xs={12}>
-                        <CompanyForms companyData={companyData} />
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                </TabPanel>
-              </SwipeableViews>
-            </Box>
-          </Box>     
-        </>
+                  </TabPanel>
+                </SwipeableViews>
+              </Box>
+            </Box>     
+          </>
         )}
       </Box>
-
- 
     </>
   )
 }

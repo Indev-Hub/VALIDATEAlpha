@@ -1,20 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { API, graphqlOperation } from 'aws-amplify';
-import { createFormSubmission } from '../../graphql/mutations';
+import React, { useState } from 'react';
 import { Alert, Box, Card, Grid, Typography } from '@material-ui/core';
+import { API, graphqlOperation } from 'aws-amplify';
 import { Formik, Form } from 'formik';
-import * as Yup from 'yup';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
+import * as Yup from 'yup';
 import Controls from './controls/_controls';
+import { createFormSubmission } from '../../graphql/mutations';
 import Notification from './Notification';
 
-const FormSubmission = props => {
-
+const FormSubmission = (props) => {
   const navigate = useNavigate();
 
   // Destructure formDesign (=FormCreate form object) and other props
-  const { formDesign, userData, displaySubmitButton = true } = props;
+  const {
+    formDesign,
+    previewImages = null,
+    displaySubmitButton = true,
+  } = props;
 
   // Form Design variables
   const marginUp = 2;
@@ -23,8 +26,8 @@ const FormSubmission = props => {
   const [notify, setNotify] = useState({
     isOpen: false,
     message: '',
-    type: ''
-  })
+    type: '',
+  });
 
   // Format structure for form submission
   const submitStructure = {
@@ -32,7 +35,7 @@ const FormSubmission = props => {
     answers: {},
   };
 
-  // De-stringify "validations" single-field dataset
+  // De-stringify 'validations' single-field dataset
   const questions = JSON.parse(formDesign.validations);
 
   // Add question-answer pair, with question value, for each set of answers
@@ -41,21 +44,20 @@ const FormSubmission = props => {
       question: questions[i].question,
       answerType: questions[i].type,
       answer: '',
-    }
-  };
+    };
+  }
 
   // Randomize options for display
   const randomizeOptions = (index) => {
     let rando = questions[index].options;
     const randoSort = rando.sort(() => Math.random() - 0.5);
-    console.log('Random Array Sorting:', randoSort);
     return randoSort;
-  }
+  };
 
   // Create initial field values (answer types) for Formik
   const initialValues = {};
-  questions.forEach(input => {
-    const name = `q${input.questionId}`
+  questions.forEach((input) => {
+    const name = `q${input.questionId}`;
     if (input.type === 'Checkbox') {
       initialValues[name] = [];
     } else if (input.type === 'Rating') {
@@ -64,47 +66,51 @@ const FormSubmission = props => {
       initialValues[name] = false;
     } else {
       initialValues[name] = '';
-    };
+    }
   });
 
   // Create Formik/Yup validation schema
   const validationSchema = {};
-  questions.forEach(input => {
-    const name = `q${input.questionId}`
+  questions.forEach((input) => {
+    const name = `q${input.questionId}`;
     if (input.type === 'Checkbox') {
-      validationSchema[name] = Yup.array()
-        .min(1, 'Please select one or more items.');
+      validationSchema[name] = Yup.array().min(
+        1,
+        'Please select one or more items.'
+      );
     } else if (input.type === 'Rating') {
-      validationSchema[name] = Yup.number()
-        .moreThan(0, 'Please rate this item.')
+      validationSchema[name] = Yup.number().moreThan(
+        0,
+        'Please rate this item.'
+      );
     } else if (input.type === 'Switch') {
       validationSchema[name] = Yup.boolean().required('Required');
     } else {
       validationSchema[name] = Yup.string().required('Required');
-    };
+    }
   });
 
-
   return (
-    <React.Fragment>
+    <>
       <Grid
         container
-        display="column"
-        justifyContent="center"
+        display='column'
+        justifyContent='center'
         spacing={2}
         xs={11}
         md={10}
         lg={10}
         mx='auto'
-        my={2}>
+        my={2}
+      >
         <Grid item xs={12} md={4}>
           <Card
             sx={{
               p: 4,
-              width: '100%'
+              width: '100%',
             }}
           >
-            <Typography variant="h4">{formDesign.title}</Typography>
+            <Typography variant='h4'>{formDesign.title}</Typography>
             <Typography>{formDesign.companyName}</Typography>
             <Typography pt={2}>{formDesign.description}</Typography>
           </Card>
@@ -113,21 +119,22 @@ const FormSubmission = props => {
           <Card
             sx={{
               p: 4,
-              width: '100%'
+              width: '100%',
             }}
           >
             <Formik
               initialValues={{
-                ...initialValues
+                ...initialValues,
               }}
               validationSchema={Yup.object({
-                ...validationSchema
+                ...validationSchema,
               })}
               onSubmit={async (values, { setSubmitting }) => {
                 // Add user input values into submission data structure
                 let formSubmission = { ...submitStructure };
-                Object.keys(formSubmission.answers).forEach(questionId => {
-                  formSubmission.answers[questionId]['answer'] = values[`q${questionId}`];
+                Object.keys(formSubmission.answers).forEach((questionId) => {
+                  formSubmission.answers[questionId]['answer'] =
+                    values[`q${questionId}`];
                 });
 
                 // Stringify 'answers' collection for single DynamoDB field
@@ -141,14 +148,15 @@ const FormSubmission = props => {
 
                 // POST to DynamoDB
                 try {
-                  await API.graphql(graphqlOperation(
-                    createFormSubmission,
-                    { input: formSubmission }
-                  ));
+                  await API.graphql(
+                    graphqlOperation(createFormSubmission, {
+                      input: formSubmission,
+                    })
+                  );
                   setNotify({
                     isOpen: true,
                     message: `Submitted Successfully`,
-                    type: 'success'
+                    type: 'success',
                   });
                   setTimeout(() => navigate('/#form-search'), 1200);
                 } catch (error) {
@@ -156,89 +164,100 @@ const FormSubmission = props => {
                   setNotify({
                     isOpen: true,
                     message: `Submission Failed: ${error}`,
-                    type: 'error'
+                    type: 'error',
                   });
                 }
                 setSubmitting(false);
               }}
             >
-              <Form autoComplete="off">
+              <Form autoComplete='off'>
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
                     {questions.map((question, index) => {
                       switch (question.type) {
                         case 'Checkbox':
                           return (
-                            <Box mt={marginUp}>
+                            <Box mt={marginUp} key={`${question} ${index}`}>
                               <Controls.Checkbox
-                                key={index}
                                 id={`q${question.questionId}`}
                                 name={`q${question.questionId}`}
                                 altlabel={question.question}
-                                options={question.randomize ? randomizeOptions(index) : question.options}
+                                options={
+                                  question.randomize
+                                    ? randomizeOptions(index)
+                                    : question.options
+                                }
                               />
                             </Box>
                           );
                           break;
                         case 'Dropdown':
                           return (
-                            <Box mt={marginUp}>
+                            <Box mt={marginUp} key={`${question} ${index}`}>
                               <Controls.Select
-                                key={index}
                                 id={`q${question.questionId}`}
                                 name={`q${question.questionId}`}
                                 altlabel={question.question}
-                                options={question.randomize ? randomizeOptions(index) : question.options}
+                                options={
+                                  question.randomize
+                                    ? randomizeOptions(index)
+                                    : question.options
+                                }
                               />
                             </Box>
                           );
                           break;
                         case 'Number':
                           return (
-                            <Box mt={marginUp}>
+                            <Box mt={marginUp} key={`${question} ${index}`}>
                               <Controls.TextField
-                                key={index}
                                 id={`q${question.questionId}`}
                                 name={`q${question.questionId}`}
                                 altlabel={question.question}
                                 fullWidth
-                                type="number"
-                                placeholder="Enter a number"
+                                type='number'
+                                placeholder='Enter a number'
                               />
                             </Box>
                           );
                           break;
                         case 'Radio Group':
                           return (
-                            <Box mt={marginUp}>
+                            <Box mt={marginUp} key={`${question} ${index}`}>
                               <Controls.RadioGroup
-                                key={index}
                                 id={`q${question.questionId}`}
                                 name={`q${question.questionId}`}
                                 altlabel={question.question}
-                                options={question.randomize ? randomizeOptions(index) : question.options}
+                                options={
+                                  question.randomize
+                                    ? randomizeOptions(index)
+                                    : question.options
+                                }
                               />
                             </Box>
                           );
                           break;
                         case 'Images':
                           return (
-                            <Box mt={marginUp}>
+                            <Box mt={marginUp} key={`${question} ${index}`}>
                               <Controls.RadioImages
-                                key={index}
                                 id={`q${question.questionId}`}
                                 name={`q${question.questionId}`}
                                 altlabel={question.question}
-                                options={question.randomize ? randomizeOptions(index) : question.options}
+                                options={
+                                  question.randomize
+                                    ? randomizeOptions(index)
+                                    : question.options
+                                }
+                                previewImages={previewImages}
                               />
                             </Box>
                           );
                           break;
                         case 'Rating':
                           return (
-                            <Box mt={marginUp}>
+                            <Box mt={marginUp} key={`${question} ${index}`}>
                               <Controls.Rating
-                                key={index}
                                 id={`q${question.questionId}`}
                                 name={`q${question.questionId}`}
                                 altlabel={question.question}
@@ -248,9 +267,8 @@ const FormSubmission = props => {
                           break;
                         case 'Switch':
                           return (
-                            <Box mt={marginUp}>
+                            <Box mt={marginUp} key={`${question} ${index}`}>
                               <Controls.Switch
-                                key={index}
                                 id={`q${question.questionId}`}
                                 name={`q${question.questionId}`}
                                 altlabel={question.question}
@@ -261,31 +279,32 @@ const FormSubmission = props => {
                           break;
                         case 'Text Input':
                           return (
-                            <Box mt={marginUp}>
+                            <Box mt={marginUp} key={`${question} ${index}`}>
                               <Controls.TextField
-                                key={index}
                                 id={`q${question.questionId}`}
                                 name={`q${question.questionId}`}
                                 altlabel={question.question}
-                                type="text"
-                                placeholder="Type your answer"
+                                type='text'
+                                placeholder='Type your answer'
                               />
                             </Box>
                           );
                           break;
                         default:
                           return (
-                            <Box key={index} mb={1}>
-                              <Alert severity="error">Please select an answer type for this question</Alert>
+                            <Box key={`${question} ${index}`} mb={1}>
+                              <Alert severity='error'>
+                                Please select an answer type for this question
+                              </Alert>
                             </Box>
                           );
                       }
                     })}
-                    {displaySubmitButton ? (
+                    {displaySubmitButton && (
                       <Box mt={marginUp}>
-                        <Controls.Button type="submit" text="Submit" />
+                        <Controls.Button type='submit' text='Submit' />
                       </Box>
-                    ) : null}
+                    )}
                   </Grid>
                 </Grid>
               </Form>
@@ -293,16 +312,14 @@ const FormSubmission = props => {
           </Card>
         </Grid>
       </Grid>
-      <Notification
-        notify={notify}
-        setNotify={setNotify}
-      />
-    </React.Fragment>
+      <Notification notify={notify} setNotify={setNotify} />
+    </>
   );
 };
 
 FormSubmission.propTypes = {
   formDesign: PropTypes.object,
+  previewImages: PropTypes.object,
   displaySubmitButton: PropTypes.bool,
 };
 

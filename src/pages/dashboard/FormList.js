@@ -113,7 +113,7 @@ const FormList = () => {
     try {
       await API.graphql(graphqlOperation(
         updateForm,
-        { input: {id: formId, ...updateFields} }
+        { input: { id: formId, ...updateFields } }
       ));
       setNotify({
         isOpen: true,
@@ -174,6 +174,7 @@ const FormList = () => {
     try {
       const fileList = await Storage.list('');
       setFormImageFiles(fileList);
+      console.log('getS3FileList', fileList)
     } catch (error) {
       console.log('error on fetching file list', error);
     }
@@ -272,6 +273,7 @@ const FormList = () => {
           <FormCreate
             selectedForm={selectedForm}
             handleListRefresh={handleListRefresh}
+
           />
         </Box>
       </Container>

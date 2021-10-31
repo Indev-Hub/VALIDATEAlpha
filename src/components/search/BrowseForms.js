@@ -126,18 +126,8 @@ const BrowseForms = (props) => {
               mx:1
             }}
           >
-            <Typography
-              variant="h7"
-              whiteSpace="nowrap"
-              overflow="hidden"
-              textOverflow="ellipsis"
-              sx={{
-                pb: 2,
-                color: 'text.primary',
-                fontWeight: 500
-              }}
-            >
-              {form.company ? form.company.name : 'DELETE THIS FORM'}
+            <Typography>
+              {form.company ? form.company.name : 'NO COMPANY'}
             </Typography>
           </Link>
         </Box>
