@@ -22,9 +22,10 @@ const useStyles = makeStyles(theme => ({
     pointerEvents: 'none',
   },
   paper: {
-    padding: theme.spacing(1),
-    backgroundColor: '#d3d3d3',
-    width: '25%',
+    padding: theme.spacing(2),
+    backgroundColor: 'background.default',
+    fontSize: 12,
+    width: '25%'
   },
   // Chip styling for tags
   chip: {
@@ -69,7 +70,14 @@ const BrowseForms = (props) => {
   }  
 
   return (
-    <Card style={{ height: '100%' }}>
+    <Card
+      sx={{
+        height: '100%',
+        backgroundColor: 'background.paperPersist',
+        border: 8,
+        borderColor: 'background.paperPersist'
+        // padding:2
+      }}>
       <Box
         style={{
           backgroundColor: 'black',
@@ -84,8 +92,8 @@ const BrowseForms = (props) => {
               <>
                 <Chip
                   sx={{
-                    color: 'white',
-                    backgroundColor: 'blue',
+                    color: 'text.contrastPersist',
+                    backgroundColor: 'standard.primary',
                     fontSize: '9.5px',
                     fontWeight: 500,
                     textTransform: 'uppercase',
@@ -103,13 +111,16 @@ const BrowseForms = (props) => {
         </Box>
       </Box>
       <Box
-        sx={{ p:2 }}
+        sx={{
+          backgroundColor: 'background.paperPersist',
+          p:2
+        }}
       >
         <Box>
           <Typography
             variant="h5"
             sx={{
-              color: 'text.primary',
+              color: 'text.primaryPersist',
               fontWeight: 500
             }}
           >{form.title}
@@ -121,7 +132,7 @@ const BrowseForms = (props) => {
             textOverflow="ellipsis"
             sx={{
               pb: 2,
-              color: 'text.primary',
+              color: 'text.primaryPersist',
               fontWeight: 500
             }}
           >
@@ -140,6 +151,7 @@ const BrowseForms = (props) => {
         >
           <Typography
             className={classes.singleLine}
+            color="text.primaryPersist"
             lineHeight={'1.2em'}
             height={'2em'}
           >
@@ -154,22 +166,22 @@ const BrowseForms = (props) => {
             open={open}
             anchorEl={anchorEl}
             anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'left',
+              vertical: 'center',
+              horizontal: 'center',
             }}
             transformOrigin={{
-              vertical: 'top',
-              horizontal: 'left',
+              vertical: 'center',
+              horizontal: 'center',
             }}
             onClose={handlePopoverClose}
             disableRestoreFocus
           >
-            <Typography fontSize='1.2em'>{form.description}</Typography>
+            <Typography fontSize='1.2em' fontWeight='500'>{form.description}</Typography>
           </Popover>
         </Box>
-        <Divider sx={{ color: 'background.dark', mt:4 }} />
+        <Divider sx={{ backgroundColor: 'background.contrastPersist', mt:4 }} />
         <Box align="center" sx={{ mt:-1.3, mb:4}}>
-          <Typography variant="h8" sx={{ color: 'text.light', backgroundColor: 'background.dark', px: 2, py: .5, borderRadius: 2 }}>
+          <Typography variant="h8" sx={{ color: 'text.contrastPersist', backgroundColor: 'background.contrastPersist', px: 2, py: .5, borderRadius: 2 }}>
             Submissions: {countSubmissions}
           </Typography>
         </Box>

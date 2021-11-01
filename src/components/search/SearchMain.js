@@ -66,20 +66,25 @@ const SearchMain = () => {
   return (
     <>
       <Container
+        className="Search Container"
         sx={{
           display: 'flex',
-          justifycontent: 'center',
+          justifyContent: 'center',
+          justifyItems: 'center',
           padding: '20px',
-          width: 'auto',
-          margin: 'auto'
+          // width: 'auto',
+          // margin: 'auto'
         }}
       >
         <Box
+          className="Search Box"
           sx={{
             display: 'flex',
-            justifycontent: 'center',
-            width:'auto',
-            margin:'auto'
+            justifyContent: 'center',
+            justifyItems: 'center',
+            width: '100%'
+            // width:'auto',
+            // margin:'auto'
           }}
         >
           <SearchField
@@ -92,17 +97,25 @@ const SearchMain = () => {
           />
         </Box>
       </Container>
-      <Card
+      {/* <Card
         sx={{
           mb: 5,
           pt: 3,
           mr: "auto",
           ml: "auto",
-          backgroundColor: "black",
+          // backgroundColor: "black",
           border: 2,
           borderColor: "white",
           zIndex: 1
-        }}>
+        }}> */}
+      <Box sx=
+        {{
+          display: 'flex',
+          justifyContent: 'center',
+          justifyItems: 'center',
+          align: 'center' 
+        }}
+      >
         {
           availableTags.map(tag => {
             return (
@@ -113,14 +126,13 @@ const SearchMain = () => {
                 className={tag}
                 value={tag}
                 sx={{
-                  ml: 5,
-                  mr: 5,
+                  mx: 1,
                   mb: 3,
                   p: 2,
-                  width: 100,
-                  borderColor: "white",
-                  zIndex: 2,
-                  color: "white"
+                  // width: 100,
+                  // borderColor: "white",
+                  zIndex: 2
+                  // color: "white"
                 }}
                 variant="outlined"
                 color="primary"
@@ -140,25 +152,25 @@ const SearchMain = () => {
                 className={tag}
                 value={tag}
                 sx={{
-                  ml: 5,
-                  mr: 5,
+                  mx: 1,
                   mb: 3,
                   p: 2,
                   zIndex: 2,
-                  backgroundColor: 'white',
-                  color: 'black',
+                  backgroundColor: 'standard.primary',
+                  color: 'white',
                   '&: hover': {
-                    color: 'black',
+                    color: 'white',
                     cursor: 'pointer'
                   }
                 }}
                 onDelete={() => removeTag(tag)}
-                deleteIcon={<HighlightOffTwoTone/>}
+                deleteIcon={<HighlightOffTwoTone style={{ color:'white' }} />}
               />
             )
           })
         }
-      </Card>
+      </Box>
+      {/* </Card> */}
       <Grid 
         container 
         spacing={2} 

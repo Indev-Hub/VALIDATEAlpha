@@ -11,6 +11,8 @@ import { ArrowCircleDown } from "@material-ui/icons";
 // import FormCheckbox from '../form/FormCheckbox';
 import SearchMain from 'src/components/search/SearchMain';
 import Logo from "../../images/VALIDATE PunchOut.png";
+import Pinstripe from '../../assets/Pinstripe_Diagonal_Pattern_clip_art_hight.png'
+import HomeTop from "./HomeTop";
 // import HomeLanding from "./HomeLanding";
 // import CreateFormDesign from '../form/CreateFormDesign';
 // import UserList from '../user/UserList';
@@ -50,80 +52,18 @@ const HomeHero = (props) => {
   return (
     <Box
       sx={{
-        backgroundColor: "black",
+        // backgroundColor: "black",
         pt: 0,
-        overflow: "hidden",
+        minHeight: 'calc(100vh - 160px)',
+        overflow: 'hidden',
       }}
       {...props}
     >
-      <Container
-        maxWidth="false"
-        sx={{
-          backgroundColor: "black",
-          height: "100vh",
-          alignItems: "center",
-          display: "block",
-          flexDirection: "column",
-          justifyContent: "center",
-          // px: {
-          //   md: '130px !important'
-          // }
-        }}
-      >
-        <Box
-          sx={{
-            backgroundImage: loop,
-            backgroundColor: "black",
-            alignItems: "center",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            marginTop: "25vh",
-            border: "20px solid black",
-          }}
-        >
-          <img src={Logo} alt="Logo" width="100%" border="20" />
-        </Box>
-        <Box
-          sx={{
-            backgroundColor: "black",
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <Link
-            href="#HomeLanding"
-            color="textSecondary"
-            textAlign="center"
-            sx={{
-              "&:hover": {
-                textDecoration: "none",
-              },
-            }}
-          >
-            <Button
-              variant="contained"
-              sx={{
-                color: "#fff",
-                backgroundColor: "#000",
-                border: "2px solid #fff",
-                "&:hover": {
-                  color: "#000",
-                  backgroundColor: "#fff",
-                  textDecoration: "none",
-                  border: "2px solid #000",
-                },
-              }}
-            >
-              In Development Now
-            </Button>
-          </Link>
-        </Box>
-      </Container>
+      <HomeTop />
       <Container
         maxWidth="100%"
         sx={{
-          backgroundColor: "black",
+          // backgroundColor: "black",
           alignItems: "center",
           display: "flex",
           flexDirection: "column",

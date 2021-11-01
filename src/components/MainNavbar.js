@@ -49,7 +49,7 @@ const MainNavbar = (props) => {
 
   return (
     <AppBar
-      elevation={0}
+      elevation={4}
       sx={{
         backgroundColor: 'background.paper',
         color: 'text.secondary'
@@ -81,7 +81,7 @@ const MainNavbar = (props) => {
         </Hidden>
         <Box sx={{ flexGrow: 1 }} />
         <Hidden mdDown>
-          <Link
+          {/* <Link
             color="textSecondary"
             component={RouterLink}
             to="/browse"
@@ -104,7 +104,7 @@ const MainNavbar = (props) => {
             }}
           >
             Documentation
-          </Link>
+          </Link> */}
       { isAuthenticated === false ? (
             <Link
               color="text.reverse"
@@ -120,7 +120,7 @@ const MainNavbar = (props) => {
           )}
         </Hidden>
       </Toolbar>
-      <Divider />
+      {/* <Divider /> */}
     </AppBar>
   );
 };

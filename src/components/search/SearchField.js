@@ -61,15 +61,15 @@ const SearchField = (props) => {
       <Box
         sx={{
           m: 1,
-          maxWidth: '100%',
-          minWidth: 400,
+          // maxWidth: '100%',
+          // minWidth: 400,
+          width: '100%',
           display: 'flex',
           justifycontent: 'center'
         }}
       >
         <TextField
           sx={{
-            maxWidth: '100%',
             display: 'flex',
             color: 'white'
           }}

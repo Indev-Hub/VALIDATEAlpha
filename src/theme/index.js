@@ -90,6 +90,19 @@ const baseOptions = {
   }
 };
 
+const persist = {
+  background: {
+    default: '#f4f5f7',
+    paper: '#ffffff',
+    contrast: '#000000'
+  },
+  text: {
+    primary: '#172b4d',
+    secondary: '#6b778c',
+    contrast: '#ffffff'
+  },
+};
+
 const themesOptions = {
   [THEMES.LIGHT]: {
     components: {
@@ -111,7 +124,10 @@ const themesOptions = {
       background: {
         default: '#f4f5f7',
         paper: '#ffffff',
-        dark: '#000000'
+        contrast: '#000000',
+        defaultPersist: persist.background.default,
+        paperPersist: persist.background.paper,
+        contrastPersist: persist.background.contrast
       },
       error: {
         contrastText: '#ffffff',
@@ -122,25 +138,29 @@ const themesOptions = {
         contrastText: '#ffffff',
         main: '#000000'
       },
-      success: {
-        contrastText: '#ffffff',
-        main: '#4caf50'
+      text: {
+        primary: '#172b4d',
+        secondary: '#6b778c',
+        contrast: '#ffffff',
+        primaryPersist: persist.text.primary,
+        secondaryPersist: persist.text.secondary,
+        contrastPersist: persist.text.contrast
       },
       standard: {
         primary: '#f50057',
         secondary: '#000000'
       },
-      text: {
-        primary: '#172b4d',
-        secondary: '#6b778c',
-        dark: '#000000',
-        light: '#ffffff'
+      success: {
+        contrastText: '#ffffff',
+        main: '#4caf50'
       },
       warning: {
         contrastText: '#ffffff',
         main: '#ff9800'
-      }
-    },
+      },
+      border: {
+        thick: 0
+      }    },
     shadows: lightShadows
   },
   [THEMES.DARK]: {
@@ -155,9 +175,12 @@ const themesOptions = {
     },
     palette: {
       background: {
-        default: '#171c24',
-        paper: '#222b36',
-        dark: '#888'
+        default: '#111',
+        paper: '#000',
+        contrast: '#fff',
+        defaultPersist: persist.background.default,
+        paperPersist: persist.background.paper,
+        contrastPersist: persist.background.contrast
       },
       divider: 'rgba(145, 158, 171, 0.24)',
       error: {
@@ -169,17 +192,29 @@ const themesOptions = {
         contrastText: '#ffffff',
         main: '#688eff'
       },
+      text: {
+        primary: '#fff',
+        secondary: '#919eab',
+        contrast: '#000',
+        primaryPersist: persist.text.primary,
+        secondaryPersist: persist.text.secondary,
+        contrastPersist: persist.text.contrast
+      },
+      standard: {
+        primary: '#f50057',
+        secondary: '#000000'
+      },
       success: {
         contrastText: '#ffffff',
         main: '#4caf50'
       },
-      text: {
-        primary: '#ffffff',
-        secondary: '#919eab'
-      },
+
       warning: {
         contrastText: '#ffffff',
         main: '#ff9800'
+      },
+      border: {
+        thick: 8
       }
     },
     shadows: darkShadows

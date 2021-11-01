@@ -17,7 +17,7 @@ import Logo from '../images/IconBlack.png';
 const Footer = (props) => (
   <Box
     sx={{
-      backgroundColor: 'background.dark'
+      backgroundColor: 'background.contrastPersist'
     }}
     {...props}
   >
@@ -35,7 +35,7 @@ const Footer = (props) => (
           <img src={Logo} alt="VALIDATE Logo" width="50px" />
         </Box>
         <Typography
-          color="text.light"
+          color="text.contrastPersist"
           variant="caption"
           textAlign="center"
           width="100%"
