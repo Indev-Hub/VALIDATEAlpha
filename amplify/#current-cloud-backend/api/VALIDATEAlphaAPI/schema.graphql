@@ -39,18 +39,19 @@ type FormSubmission @model @key(name: "byForm", fields: ["formID"]) {
 type Demographics @model {
   id: ID!
   userID: ID!
-  firstName: String
-  lastName: String
   birthday: String
-  sex: String
-  gender: String
-  household: String
-  maritalStatus: String
+  children: String
   city: String
-  state: String
   country: String
-  income: String
-  homeowner: String
   education: String
+  ethnicity: String
+  gender: String
+  homeowner: String
+  household: String
+  income: String
+  maritalStatus: String
+  pets: [String]
   profession: String
+  sex: String
+  state: String
 }

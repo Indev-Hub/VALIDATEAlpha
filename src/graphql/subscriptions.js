@@ -22,20 +22,21 @@ export const onCreateUser = /* GraphQL */ `
       demographics {
         id
         userID
-        firstName
-        lastName
         birthday
-        sex
-        gender
-        household
-        maritalStatus
+        children
         city
-        state
         country
-        income
-        homeowner
         education
+        ethnicity
+        gender
+        homeowner
+        household
+        income
+        maritalStatus
+        pets
         profession
+        sex
+        state
         createdAt
         updatedAt
       }
@@ -65,20 +66,21 @@ export const onUpdateUser = /* GraphQL */ `
       demographics {
         id
         userID
-        firstName
-        lastName
         birthday
-        sex
-        gender
-        household
-        maritalStatus
+        children
         city
-        state
         country
-        income
-        homeowner
         education
+        ethnicity
+        gender
+        homeowner
+        household
+        income
+        maritalStatus
+        pets
         profession
+        sex
+        state
         createdAt
         updatedAt
       }
@@ -108,20 +110,21 @@ export const onDeleteUser = /* GraphQL */ `
       demographics {
         id
         userID
-        firstName
-        lastName
         birthday
-        sex
-        gender
-        household
-        maritalStatus
+        children
         city
-        state
         country
-        income
-        homeowner
         education
+        ethnicity
+        gender
+        homeowner
+        household
+        income
+        maritalStatus
+        pets
         profession
+        sex
+        state
         createdAt
         updatedAt
       }
@@ -146,20 +149,21 @@ export const onCreateCompany = /* GraphQL */ `
         demographics {
           id
           userID
-          firstName
-          lastName
           birthday
-          sex
-          gender
-          household
-          maritalStatus
+          children
           city
-          state
           country
-          income
-          homeowner
           education
+          ethnicity
+          gender
+          homeowner
+          household
+          income
+          maritalStatus
+          pets
           profession
+          sex
+          state
           createdAt
           updatedAt
         }
@@ -214,20 +218,21 @@ export const onUpdateCompany = /* GraphQL */ `
         demographics {
           id
           userID
-          firstName
-          lastName
           birthday
-          sex
-          gender
-          household
-          maritalStatus
+          children
           city
-          state
           country
-          income
-          homeowner
           education
+          ethnicity
+          gender
+          homeowner
+          household
+          income
+          maritalStatus
+          pets
           profession
+          sex
+          state
           createdAt
           updatedAt
         }
@@ -282,20 +287,21 @@ export const onDeleteCompany = /* GraphQL */ `
         demographics {
           id
           userID
-          firstName
-          lastName
           birthday
-          sex
-          gender
-          household
-          maritalStatus
+          children
           city
-          state
           country
-          income
-          homeowner
           education
+          ethnicity
+          gender
+          homeowner
+          household
+          income
+          maritalStatus
+          pets
           profession
+          sex
+          state
           createdAt
           updatedAt
         }
@@ -549,20 +555,21 @@ export const onCreateDemographics = /* GraphQL */ `
     onCreateDemographics {
       id
       userID
-      firstName
-      lastName
       birthday
-      sex
-      gender
-      household
-      maritalStatus
+      children
       city
-      state
       country
-      income
-      homeowner
       education
+      ethnicity
+      gender
+      homeowner
+      household
+      income
+      maritalStatus
+      pets
       profession
+      sex
+      state
       createdAt
       updatedAt
     }
@@ -573,20 +580,21 @@ export const onUpdateDemographics = /* GraphQL */ `
     onUpdateDemographics {
       id
       userID
-      firstName
-      lastName
       birthday
-      sex
-      gender
-      household
-      maritalStatus
+      children
       city
-      state
       country
-      income
-      homeowner
       education
+      ethnicity
+      gender
+      homeowner
+      household
+      income
+      maritalStatus
+      pets
       profession
+      sex
+      state
       createdAt
       updatedAt
     }
@@ -597,20 +605,21 @@ export const onDeleteDemographics = /* GraphQL */ `
     onDeleteDemographics {
       id
       userID
-      firstName
-      lastName
       birthday
-      sex
-      gender
-      household
-      maritalStatus
+      children
       city
-      state
       country
-      income
-      homeowner
       education
+      ethnicity
+      gender
+      homeowner
+      household
+      income
+      maritalStatus
+      pets
       profession
+      sex
+      state
       createdAt
       updatedAt
     }

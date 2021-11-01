@@ -93,7 +93,7 @@ const AccountPopover = () => {
             color="textSecondary"
             variant="subtitle2"
           >
-            Indev
+            VALIDATE
           </Typography>
         </Box>
         <Divider />
@@ -111,7 +111,7 @@ const AccountPopover = () => {
                   color="textPrimary"
                   variant="subtitle2"
                 >
-                  Profile
+                  Account
                 </Typography>
               )}
             />

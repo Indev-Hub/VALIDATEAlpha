@@ -101,6 +101,8 @@ const Contact = Loadable(lazy(() => import('./pages/Contact')));
 const Home = Loadable(lazy(() => import('./pages/Home')));
 const Pricing = Loadable(lazy(() => import('./pages/Pricing')));
 const SubmissionFormPage = Loadable(lazy(() => import('./pages/company/SubmissionFormPage')));
+const CompanyDisplayPage = Loadable(lazy(() => import('./pages/company/CompanyDisplayPage')));
+const ProfileDisplayPage = Loadable(lazy(() => import('./pages/profile/ProfileDisplayPage')));
 const FormSubmissionWidget = Loadable(lazy(() => import('./pages/widgets/FormSubmissionWidget')));
 const FormAnalytics = Loadable(lazy(() => import('./pages/dashboard/FormAnalytics')));
 const UploadMultiplePreview = Loadable(lazy(() => import('./components/dashboard/forms/UploadMultiplePreview')));
@@ -429,6 +431,14 @@ const routes = [
       {
         path: 'form/:formId',
         element: <SubmissionFormPage />
+      },
+      {
+        path: 'company/:companyId',
+        element: <CompanyDisplayPage />
+      },
+      {
+        path: 'profile/:profileId',
+        element: <ProfileDisplayPage />
       },
       {
         path: 'browse',
