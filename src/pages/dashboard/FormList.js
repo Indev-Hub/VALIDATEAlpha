@@ -74,7 +74,7 @@ const FormList = () => {
       const formList = formData.data.listForms.items;
       if (userCompanies) {
         const filteredList = formList
-          .filter(form => userCompanies.includes(form.companyName));
+          .filter(form => userCompanies.includes(form.company ? form.company.name: "NO COMPANY"));
         setForms(filteredList);
       }
     } catch (err) {
