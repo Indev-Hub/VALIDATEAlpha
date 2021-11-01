@@ -1,59 +1,82 @@
-import React from 'react';
-import { AmplifyS3Image } from "@aws-amplify/ui-react";
+import React, { useEffect, useState } from 'react';
 import {
-  Box,
-  FormControl,
-  FormControlLabel,
-  FormHelperText,
-  FormLabel,
-  Radio,
-  RadioGroup as MuiRadioGroup,
-  Typography
+  FormControl, FormControlLabel, FormHelperText, Grid, 
+  Radio, RadioGroup as MuiRadioGroup, Typography,
 } from '@material-ui/core';
+import { Storage } from 'aws-amplify';
 import { useField, useFormikContext } from 'formik';
 
-const RadioImages = ({
-  name,
-  options,
-  ...other
-}) => {
+const RadioImages = (props) => {
+  const { name, options, previewImages, ...other } = props;
+  const [imageFileKeyAndBlob, setImageFileKeyAndBlob] = useState({});
+
+  // Use formik to manage form controls
   const { setFieldValue } = useFormikContext();
   const [field, meta] = useField(name);
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     const { value } = e.target;
     setFieldValue(name, value);
-  }
+  };
 
   const config = {
     ...field,
-    onChange: handleChange
-  }
+    onChange: handleChange,
+  };
 
   if (meta && meta.touched && meta.error) {
     config.error = true;
   }
 
+  // Get blob from S3 for non-preview forms and set fileKey/blob pair in state
+  const getS3Image = async (fileKey) => {
+    try {
+      const image = await Storage.get(fileKey, { download: true });
+      setImageFileKeyAndBlob((prevState) => ({
+        ...prevState,
+        [fileKey]: URL.createObjectURL(image.Body),
+      }));
+    } catch (error) {
+      console.log('Error fetching S3 image', error);
+    }
+  };
+
+  // Set fileKey/blob object pairs in state on mount
+  useEffect(() => {
+    // If previewing an image during form creation
+    if (previewImages) {
+      Object.values(previewImages).forEach((imageSet) => {
+        imageSet.forEach((nestedSet) => {
+          setImageFileKeyAndBlob((prevState) => ({
+            ...prevState,
+            [nestedSet[0]]: nestedSet[2],
+          }));
+        });
+      });
+    } else {
+      // If rendering a full form for submission
+      options.forEach((option) => {
+        getS3Image(option);
+      });
+    }
+  }, []);
+
   return (
-    <div className="form-group">
-      <FormControl component="fieldset">
-        {/* <FormLabel component="legend">{other.label}</FormLabel> */}
+    <div className='form-group'>
+      <FormControl component='fieldset'>
         <Typography>{other.altlabel}</Typography>
         <MuiRadioGroup {...config}>
-          {options.map((option, index) => {
-            const id = `${option.id}opt${index + 1}`;
-            return (
-              <Box display="column" align="center" mb={2}>
-                <AmplifyS3Image imgKey={option} />
-                <FormControlLabel
-                  key={id}
-                  value={option}
-                  control={<Radio />}
-                >
-                </FormControlLabel>
-              </Box>
-            )
-          })}
+          <Grid container spacing={3} mt={2}>
+            {options.map((option) => (
+                <Grid key={option} item align='center' xs={6}>
+                  <img src={imageFileKeyAndBlob[option]} width='100%' alt='' />
+                  <FormControlLabel
+                    value={option}
+                    control={<Radio />}
+                  ></FormControlLabel>
+                </Grid>
+            ))}
+          </Grid>
         </MuiRadioGroup>
       </FormControl>
       {meta.touched && meta.error ? (

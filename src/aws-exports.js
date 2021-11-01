@@ -10,6 +10,15 @@ const awsmobile = {
     "oauth": {
         "domain": "validate-registration.auth.us-west-2.amazoncognito.com"
     },
+    "aws_cognito_login_mechanisms": [
+        "PREFERRED_USERNAME"
+    ],
+    "aws_cognito_signup_attributes": [],
+    "aws_cognito_mfa_types": [],
+    "aws_cognito_password_protection_settings": {
+        "passwordPolicyCharacters": []
+    },
+    "aws_cognito_verification_mechanisms": [],
     "aws_appsync_graphqlEndpoint": "https://el45zb6obrdrhkjrag6nqdvdk4.appsync-api.us-west-2.amazonaws.com/graphql",
     "aws_appsync_region": "us-west-2",
     "aws_appsync_authenticationType": "AMAZON_COGNITO_USER_POOLS",
