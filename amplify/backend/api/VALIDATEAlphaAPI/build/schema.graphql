@@ -47,20 +47,21 @@ type FormSubmission {
 type Demographics {
   id: ID!
   userID: ID!
-  firstName: String
-  lastName: String
   birthday: String
-  sex: String
-  gender: String
-  household: String
-  maritalStatus: String
+  children: String
   city: String
-  state: String
   country: String
-  income: String
-  homeowner: String
   education: String
+  ethnicity: String
+  gender: String
+  homeowner: String
+  household: String
+  income: String
+  maritalStatus: String
+  pets: [String]
   profession: String
+  sex: String
+  state: String
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
 }
@@ -399,20 +400,21 @@ type ModelDemographicsConnection {
 input ModelDemographicsFilterInput {
   id: ModelIDInput
   userID: ModelIDInput
-  firstName: ModelStringInput
-  lastName: ModelStringInput
   birthday: ModelStringInput
-  sex: ModelStringInput
-  gender: ModelStringInput
-  household: ModelStringInput
-  maritalStatus: ModelStringInput
+  children: ModelStringInput
   city: ModelStringInput
-  state: ModelStringInput
   country: ModelStringInput
-  income: ModelStringInput
-  homeowner: ModelStringInput
   education: ModelStringInput
+  ethnicity: ModelStringInput
+  gender: ModelStringInput
+  homeowner: ModelStringInput
+  household: ModelStringInput
+  income: ModelStringInput
+  maritalStatus: ModelStringInput
+  pets: ModelStringInput
   profession: ModelStringInput
+  sex: ModelStringInput
+  state: ModelStringInput
   and: [ModelDemographicsFilterInput]
   or: [ModelDemographicsFilterInput]
   not: ModelDemographicsFilterInput
@@ -421,39 +423,41 @@ input ModelDemographicsFilterInput {
 input CreateDemographicsInput {
   id: ID
   userID: ID!
-  firstName: String
-  lastName: String
   birthday: String
-  sex: String
-  gender: String
-  household: String
-  maritalStatus: String
+  children: String
   city: String
-  state: String
   country: String
-  income: String
-  homeowner: String
   education: String
+  ethnicity: String
+  gender: String
+  homeowner: String
+  household: String
+  income: String
+  maritalStatus: String
+  pets: [String]
   profession: String
+  sex: String
+  state: String
 }
 
 input UpdateDemographicsInput {
   id: ID!
   userID: ID
-  firstName: String
-  lastName: String
   birthday: String
-  sex: String
-  gender: String
-  household: String
-  maritalStatus: String
+  children: String
   city: String
-  state: String
   country: String
-  income: String
-  homeowner: String
   education: String
+  ethnicity: String
+  gender: String
+  homeowner: String
+  household: String
+  income: String
+  maritalStatus: String
+  pets: [String]
   profession: String
+  sex: String
+  state: String
 }
 
 input DeleteDemographicsInput {
@@ -462,20 +466,21 @@ input DeleteDemographicsInput {
 
 input ModelDemographicsConditionInput {
   userID: ModelIDInput
-  firstName: ModelStringInput
-  lastName: ModelStringInput
   birthday: ModelStringInput
-  sex: ModelStringInput
-  gender: ModelStringInput
-  household: ModelStringInput
-  maritalStatus: ModelStringInput
+  children: ModelStringInput
   city: ModelStringInput
-  state: ModelStringInput
   country: ModelStringInput
-  income: ModelStringInput
-  homeowner: ModelStringInput
   education: ModelStringInput
+  ethnicity: ModelStringInput
+  gender: ModelStringInput
+  homeowner: ModelStringInput
+  household: ModelStringInput
+  income: ModelStringInput
+  maritalStatus: ModelStringInput
+  pets: ModelStringInput
   profession: ModelStringInput
+  sex: ModelStringInput
+  state: ModelStringInput
   and: [ModelDemographicsConditionInput]
   or: [ModelDemographicsConditionInput]
   not: ModelDemographicsConditionInput
