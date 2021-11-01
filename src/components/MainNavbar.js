@@ -8,7 +8,8 @@ import {
   Hidden,
   IconButton,
   Link,
-  Toolbar
+  Toolbar,
+  Typography
 } from '@material-ui/core';
 import Amplify, { Auth } from 'aws-amplify';
 import {
@@ -105,19 +106,34 @@ const MainNavbar = (props) => {
           >
             Documentation
           </Link> */}
-      { isAuthenticated === false ? (
-            <Link
-              color="text.reverse"
-              component={RouterLink}
-              to="/authentication/login"
-              underline="none"
-              variant="body1"
-            >
-              Login
-            </Link>
-          ) : (
-            <AccountPopover />
-          )}
+          { isAuthenticated === false ? (
+            <>
+              <Button
+                href="/authentication/register"
+                variant="contained"
+                sx={{
+                  py:.2,
+                  px:2,
+                  mr:2,
+                  fontWeight:500
+                }}
+              >
+                Register
+              </Button>
+              <Link
+                color="text.primary"
+                component={RouterLink}
+                to="/authentication/login"
+                underline="none"
+                variant="body1"
+              >
+                <Typography fontWeight="600">Login</Typography>
+              </Link>
+            </>
+            ) : (
+              <AccountPopover />
+            )
+          }
         </Hidden>
       </Toolbar>
       {/* <Divider /> */}
