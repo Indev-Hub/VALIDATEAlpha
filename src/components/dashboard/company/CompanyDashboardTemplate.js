@@ -1,15 +1,48 @@
 import React, { useState } from 'react'
-import { Accordion, AccordionDetails, AccordionSummary, Box, Grid, Typography } from '@material-ui/core';
-import { Edit, ExpandMore } from '@material-ui/icons';
+import { Accordion, AccordionDetails, AccordionSummary, Box, IconButton, Grid, Typography } from '@material-ui/core';
+import { Delete, Edit, ExpandMore } from '@material-ui/icons';
+import { API, graphqlOperation, Storage } from 'aws-amplify';
+import { deleteCompany } from '../../../graphql/mutations'
+import DeleteIcon from '@material-ui/icons/Delete';
+import Notification from '../../../components/form/Notification';
+
 
 const CompanyDashboardTemplate = (props) => {
   const { company } = props;
   const [expanded, setExpanded] = useState(false);
   const [edit, setEdit] = useState(false);
+  const [notify, setNotify] = useState({
+    isOpen: false,
+    message: '',
+    type: ''
+  });
+  const [confirmDialog, setConfirmDialog] = useState({
+    isOpen: false,
+    title: '',
+    subtitle: ''
+  })
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
+
+  const companyDelete = async (id) => {
+    try {
+      await API.graphql(graphqlOperation(deleteCompany, {input: { id: id }}));
+      setNotify({
+        isOpen: true,
+        message: 'Deleted Successfully',
+        type: 'success'
+      });
+    } catch (error) {
+      setNotify({
+        isOpen: true,
+        message: `Failed to Delete ${error}`,
+        type: 'error'
+      });
+      console.log('error deleting company', error)
+    }
+  }
 
   return (
     <div>
@@ -38,6 +71,12 @@ const CompanyDashboardTemplate = (props) => {
             </Grid>
             <Grid item>
               <Edit />
+              <IconButton />
+                <DeleteIcon onClick={() => companyDelete(company.id)}/>
+              <Notification
+          notify={notify}
+          setNotify={setNotify}
+        />
             </Grid>
           </Grid>
         </AccordionDetails>
