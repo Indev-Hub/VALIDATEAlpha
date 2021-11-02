@@ -166,8 +166,8 @@ const FormCreate = props => {
 
       s3Upload();
 
-      // Refresh if submitted from TestList page (i.e., starting from duplicate)
-      // or redirect to TestList page if submitted from TestCreate route
+      // Refresh if submitted from FormList page (i.e., starting from duplicate)
+      // or redirect to FormList page if submitted from form-create route
       selectedForm ?
         setTimeout(() => handleListRefresh(), 1200)
         : setTimeout(() => navigate('/dashboard/company/forms'), 1200);

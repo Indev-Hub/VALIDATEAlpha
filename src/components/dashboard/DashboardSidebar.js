@@ -149,7 +149,7 @@ const sections = [
       },
       {
         title: 'Add Form',
-        path: '/dashboard/test-create',
+        path: '/dashboard/form-create',
         icon: <Plus fontSize="small" />
       },
 
