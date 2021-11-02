@@ -3,8 +3,8 @@ import { Link as RouterLink } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {
-  Avatar, Box, Button, Card, Checkbox, Divider, Grid, IconButton, 
-  InputAdornment, Link, Tab, Table, TableBody, TableCell, TableHead, 
+  Box, Button, Card, Checkbox, Divider, Grid, IconButton, InputAdornment,
+  Link, Tab, Table, TableBody, TableCell, TableHead,
   TablePagination, TableRow, Tabs, TextField, Tooltip
 } from '@material-ui/core';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
@@ -12,7 +12,6 @@ import HttpIcon from '@material-ui/icons/Http';
 import LaunchIcon from '@material-ui/icons/Launch';
 import PublicTwoToneIcon from '@material-ui/icons/PublicTwoTone';
 import VpnLockTwoToneIcon from '@material-ui/icons/VpnLockTwoTone';
-// import getInitials from '../../../utils/getInitials';
 import Scrollbar from '../../Scrollbar';
 import SearchIcon from '../../../icons/Search';
 
@@ -413,15 +412,6 @@ const CompanyFormsTable = (props) => {
                           display: 'flex'
                         }}
                       >
-                        {/* <Avatar
-                          src={form.avatar}
-                          sx={{
-                            height: 42,
-                            width: 42
-                          }}
-                        >
-                          {getInitials(form.title)}
-                        </Avatar> */}
                         {form.isPrivate ?
                           <VpnLockTwoToneIcon fontSize="large" />
                           : <PublicTwoToneIcon fontSize="large" />
