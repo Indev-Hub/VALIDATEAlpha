@@ -63,10 +63,10 @@ const FormQuestions = (props) => {
     const updatedQuestionsState = [...questionsState]; // make copy
     // Remove any images from questionsState and formImages if switching to 
     // and from image aswer types
-    if (updatedQuestionsState[qstidx].type === "Images"
-      || e.target.value === "Images") {
+    if (updatedQuestionsState[qstidx].type === 'Images'
+      || e.target.value === 'Images') {
       const updatedFilesState = { ...formImages }; // make copy
-      updatedQuestionsState[qstidx].options = [""];
+      updatedQuestionsState[qstidx].options = [''];
       delete updatedFilesState[qstidx];
       setFormImages(updatedFilesState);
     }

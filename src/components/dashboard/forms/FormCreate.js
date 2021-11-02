@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Alert, AlertTitle, Box, Button, Paper, Typography
+  Alert, AlertTitle, Box, Button, Dialog, IconButton, Tooltip, Typography
 } from '@material-ui/core';
+import { Close } from '@material-ui/icons';
 import { API, graphqlOperation, Storage } from 'aws-amplify';
 import { Formik, Form } from 'formik';
 import PropTypes from 'prop-types';
@@ -114,9 +115,14 @@ const FormCreate = props => {
   //           PREVIEW FORM           //
   //==================================//
   const [formPreview, setFormPreview] = useState(null);
+
   const previewForm = () => {
     const formDesign = createFormDesignDataSet();
     setFormPreview(formDesign);
+  };
+
+  const handlePreviewClose = () => {
+    setFormPreview(null);
   };
 
   //==================================//
@@ -284,15 +290,28 @@ const FormCreate = props => {
       </Formik>
       {formPreview && (
         detailsState.companyID ? (
-          <Paper elevation={3} sx={{ mt: 2 }}>
-            <Box p={4}>
-              <FormSubmission
-                formDesign={formPreview}
-                previewImages={formImages}
-                displaySubmitButton={false}
-              />
+          <Dialog 
+            open={formPreview}
+            fullWidth='true'
+            maxWidth='lg'
+            onClose={handlePreviewClose}
+          >
+            <Box textAlign='right' p={2}>
+              <Tooltip title='Close Preview'>
+                <IconButton
+                  type='button'
+                  onClick={handlePreviewClose}
+                >
+                  <Close />
+                </IconButton>
+              </Tooltip>
             </Box>
-          </Paper>
+            <FormSubmission
+              formDesign={formPreview}
+              previewImages={formImages}
+              displaySubmitButton={false}
+            />
+          </Dialog>
         ) : (
           <Alert severity='error' sx={{ mt: 3, px: 10 }}>
             <AlertTitle variant='h5'>Error creating form preview</AlertTitle>
