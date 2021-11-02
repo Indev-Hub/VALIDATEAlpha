@@ -57,7 +57,7 @@ const CustomerList = Loadable(lazy(() => import('./pages/dashboard/CustomerList'
 const CompanyCreate = Loadable(lazy(() => import('./pages/dashboard/CompanyCreate')));
 const CompanyPage = Loadable(lazy(() => import('./pages/dashboard/CompanyPage')));
 const Finance = Loadable(lazy(() => import('./pages/dashboard/Finance')));
-const FormCollection = Loadable(lazy(() => import('./pages/dashboard/FormCollection')));
+// const FormCollection = Loadable(lazy(() => import('./pages/dashboard/FormCollection')));
 const FormCreatePage = Loadable(lazy(() => import('./pages/dashboard/FormCreatePage')));
 const InvoiceDetails = Loadable(lazy(() => import('./pages/dashboard/InvoiceDetails')));
 const InvoiceList = Loadable(lazy(() => import('./pages/dashboard/InvoiceList')));
