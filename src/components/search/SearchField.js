@@ -15,10 +15,11 @@ const SearchField = (props) => {
     setString,
     forms,
     setSelectedForms,
-    tagsToFilter
+    tagsToFilter,
+    matchCase,
   } = props;
 
-  const applyFilters = (forms, stringQuery, tagsToFilter) => forms.filter((form) => {
+  const applyFilters = (forms, stringQuery, tagsToFilter, matchCase) => forms.filter((form) => {
     let matches = true;
 
     if (stringQuery) {
@@ -37,20 +38,23 @@ const SearchField = (props) => {
       }
     };
     
-    if(tagsToFilter){
-      if (!tagsToFilter.every(tag => form.tags.includes(tag))) {
+    // Checks if matchCase if truthiness to filter by all tags, or some of the tags
+    if(tagsToFilter.length !== 0){
+      if (!tagsToFilter.every(tag => form.tags.includes(tag)) && !matchCase) {
+        matches = false;
+      } else if (!tagsToFilter.some(tag => form.tags.includes(tag)) && matchCase){
         matches = false;
       };
-    }
-
+    } 
+      
     return matches;
   });
 
   useEffect(() => {
-    setSelectedForms(applyFilters(forms, stringQuery, tagsToFilter));
+    setSelectedForms(applyFilters(forms, stringQuery, tagsToFilter, matchCase));
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[stringQuery, tagsToFilter])
+  },[stringQuery, tagsToFilter, matchCase])
 
   const handleStringChange = (event) => {
     setString(event.target.value);
@@ -96,7 +100,8 @@ SearchField.propTypes = {
   setString: PropTypes.func,
   forms: PropTypes.array,
   setSelectedForms: PropTypes.func,
-  tagsToFilter: PropTypes.array
+  tagsToFilter: PropTypes.array,
+  matchCase: PropTypes.bool,
 };
 
 export default SearchField;
