@@ -34,6 +34,7 @@ const CompanyDashboardTemplate = (props) => {
         message: 'Deleted Successfully',
         type: 'success'
       });
+      window.location.reload(false);
     } catch (error) {
       setNotify({
         isOpen: true,
