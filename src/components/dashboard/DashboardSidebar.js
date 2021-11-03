@@ -212,31 +212,11 @@ const DashboardSidebar = (props) => {
         ]
       },
       {
-        items: [
-          {
-            title: 'ANALYTICS',
-            // icon: <ClipboardList fontSize="small" />,
-            path: '/dashboard/validation'
-          }
-        ]
-      }
-      //     {
-      //       title: 'Invoices',
-      //       path: '/dashboard/invoices',
-      //       icon: <ReceiptIcon fontSize="small" />,
-      //       children: [
-      //         {
-      //           title: 'List',
-      //           path: '/dashboard/invoices'
-      //         },
-      //         {
-      //           title: 'Details',
-      //           path: '/dashboard/invoices/1'
-      //         }
-      //       ]
-      //     }
-      //   ]
-      // },
+        title: 'Add Form',
+        path: '/dashboard/form-create',
+        icon: <Plus fontSize="small" />
+      },
+
       // {
       //   title: 'Platforms',
       //   items: [

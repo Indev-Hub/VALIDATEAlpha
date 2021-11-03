@@ -1,16 +1,16 @@
 import { useEffect } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { Box, Breadcrumbs, Button, Container, Grid, Link, Typography } from '@material-ui/core';
-// import { CreateCustomForm } from '../../components/dashboard/forms';
+import {
+  Box, Breadcrumbs, Button, Container, Grid, Link, Typography
+} from '@material-ui/core';
 import useSettings from '../../hooks/useSettings';
 import ArrowLeftIcon from '../../icons/ArrowLeft';
 import ChevronRightIcon from '../../icons/ChevronRight';
 import gtm from '../../lib/gtm';
 import FormCreate from '../../components/dashboard/forms/FormCreate';
-import FormList from 'src/components/dashboard/forms/FormList';
 
-const TestCreate = () => {
+const FormCreatePage = () => {
   const { settings } = useSettings();
 
   useEffect(() => {
@@ -20,7 +20,7 @@ const TestCreate = () => {
   return (
     <>
       <Helmet>
-        <title>Dashboard: Test Create | VALIDATE</title>
+        <title>Dashboard: Form Create | VALIDATE</title>
       </Helmet>
       <Box
         sx={{
@@ -88,7 +88,6 @@ const TestCreate = () => {
           </Grid>
           <Box sx={{ mt: 3 }}>
             <FormCreate />
-            {/* <FormList /> */}
           </Box>
         </Container>
       </Box>
@@ -96,4 +95,4 @@ const TestCreate = () => {
   );
 };
 
-export default TestCreate;
+export default FormCreatePage;
