@@ -114,7 +114,7 @@ export const AuthProvider = (props) => {
           id: user.attributes.sub,
           avatar: '/static/mock-images/avatars/avatar-jane_rotanson.png',
           email: user.attributes.email,
-          name: 'Jane Rotanson',
+          name: user.username,
           plan: 'Premium'
         }
       }
