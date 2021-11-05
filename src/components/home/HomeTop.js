@@ -73,7 +73,7 @@ const HomeTop = () => {
       }}
       minHeight="400px"
     >
-      <Box className="container" sx={{ }}>
+      <Box className="container" sx={{ height:'400px' }}>
         <Box className="navStyle" sx={{ display:'flex', justifyContent:'center', backgroundColor:'rgb(255, 255, 255, .95)' }}>
           <Box className="navBar" sx={{ width:'700px' }}>
             <AppBar position="static" elevation={0} sx={{ backgroundColor: 'transparent' }}>
@@ -85,7 +85,7 @@ const HomeTop = () => {
                 variant="fullWidth"
                 aria-label="full width tabs example"
               >
-                <Tab label="STAGE 1" {...tabContent(0)} />
+                <Tab label="STAGE 1" fontColor="red" {...tabContent(0)} />
                 <Tab label="STAGE 2" {...tabContent(1)} />
                 <Tab label="STAGE 3" {...tabContent(2)} />
                 <Tab label="STAGE 4" {...tabContent(3)} />
@@ -93,19 +93,21 @@ const HomeTop = () => {
             </AppBar>
           </Box>
         </Box>
-        <Box>
+        <Box className="Swipeable Box" sx={{ height:'100%' }}>
           <SwipeableViews
+            className="Swipeable Views"
             axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
             index={value}
             onChangeIndex={handleChangeIndex}
+            style={{
+              height:'100%',
+            }}
           >
-            <TabPanel value={value} index={0}>
-              <Grid container sx={{ justifyContent:'center', justifyItems:'center' }}>
-                <Grid container xs={12}>
-                  <Grid item xs={12}>
+            <TabPanel className="Tab Panel" value={value} index={0}>
+              <Grid container className="Grid Container Tab Panel" sx={{ justifyContent:'center', justifyItems:'center', height:'100%' }}>
+                  <Grid className="Grid Item Tab Panel" item sx={{  }} xs={12}>
                     <HomeTopSection1 />
                   </Grid>
-                </Grid>
               </Grid>
             </TabPanel>
             <TabPanel value={value} index={1}>

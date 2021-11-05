@@ -190,7 +190,7 @@ const themesOptions = {
       mode: 'dark',
       primary: {
         contrastText: '#ffffff',
-        main: '#688eff'
+        main: '#000'
       },
       text: {
         primary: '#fff',

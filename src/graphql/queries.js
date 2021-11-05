@@ -22,20 +22,21 @@ export const getUser = /* GraphQL */ `
       demographics {
         id
         userID
-        firstName
-        lastName
         birthday
-        sex
-        gender
-        household
-        maritalStatus
+        children
         city
-        state
         country
-        income
-        homeowner
         education
+        ethnicity
+        gender
+        homeowner
+        household
+        income
+        maritalStatus
+        pets
         profession
+        sex
+        state
         createdAt
         updatedAt
       }
@@ -61,20 +62,21 @@ export const listUsers = /* GraphQL */ `
         demographics {
           id
           userID
-          firstName
-          lastName
           birthday
-          sex
-          gender
-          household
-          maritalStatus
+          children
           city
-          state
           country
-          income
-          homeowner
           education
+          ethnicity
+          gender
+          homeowner
+          household
+          income
+          maritalStatus
+          pets
           profession
+          sex
+          state
           createdAt
           updatedAt
         }
@@ -101,20 +103,21 @@ export const getCompany = /* GraphQL */ `
         demographics {
           id
           userID
-          firstName
-          lastName
           birthday
-          sex
-          gender
-          household
-          maritalStatus
+          children
           city
-          state
           country
-          income
-          homeowner
           education
+          ethnicity
+          gender
+          homeowner
+          household
+          income
+          maritalStatus
+          pets
           profession
+          sex
+          state
           createdAt
           updatedAt
         }
@@ -323,20 +326,21 @@ export const getDemographics = /* GraphQL */ `
     getDemographics(id: $id) {
       id
       userID
-      firstName
-      lastName
       birthday
-      sex
-      gender
-      household
-      maritalStatus
+      children
       city
-      state
       country
-      income
-      homeowner
       education
+      ethnicity
+      gender
+      homeowner
+      household
+      income
+      maritalStatus
+      pets
       profession
+      sex
+      state
       createdAt
       updatedAt
     }
@@ -352,20 +356,21 @@ export const listDemographicss = /* GraphQL */ `
       items {
         id
         userID
-        firstName
-        lastName
         birthday
-        sex
-        gender
-        household
-        maritalStatus
+        children
         city
-        state
         country
-        income
-        homeowner
         education
+        ethnicity
+        gender
+        homeowner
+        household
+        income
+        maritalStatus
+        pets
         profession
+        sex
+        state
         createdAt
         updatedAt
       }

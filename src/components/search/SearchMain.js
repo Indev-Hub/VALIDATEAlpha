@@ -135,7 +135,7 @@ const SearchMain = () => {
                   // color: "white"
                 }}
                 variant="outlined"
-                color="primary"
+                color="default"
                 clickable
                 onClick={() => addTag(tag)}
               />

@@ -29,6 +29,7 @@
         "IdentityPoolId": "us-west-2:df34f322-a2f9-4c34-9f0b-54cdcac02610",
         "IdentityPoolName": "validateIdPool"
       },
+      "lastPushTimeStamp": "2021-06-29T10:51:23.412Z",
       "frontendAuthConfig": {
         "loginMechanisms": [
           "PREFERRED_USERNAME"
@@ -39,8 +40,7 @@
         },
         "mfaTypes": [],
         "verificationMechanisms": []
-      },
-      "lastPushTimeStamp": "2021-06-29T10:51:23.412Z"
+      }
     }
   },
   "api": {
@@ -60,7 +60,7 @@
         "GraphQLAPIIdOutput": "najad4q5bjfzrmh24fnoac7wd4",
         "GraphQLAPIEndpointOutput": "https://el45zb6obrdrhkjrag6nqdvdk4.appsync-api.us-west-2.amazonaws.com/graphql"
       },
-      "lastPushTimeStamp": "2021-11-01T19:17:24.904Z",
+      "lastPushTimeStamp": "2021-11-01T01:15:07.939Z",
       "providerMetadata": {
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-validatealpha-feat-33808-deployment/amplify-cfn-templates/api/cloudformation-template.json",
         "logicalId": "apivalidateAlphaAPI"
@@ -76,7 +76,7 @@
         "BucketName": "form-content33808-feat",
         "Region": "us-west-2"
       },
-      "lastPushTimeStamp": "2021-11-01T19:17:24.908Z",
+      "lastPushTimeStamp": "2021-11-01T01:15:04.737Z",
       "providerMetadata": {
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-validatealpha-feat-33808-deployment/amplify-cfn-templates/storage/s3-cloudformation-template.json",
         "logicalId": "storageFormContent"
