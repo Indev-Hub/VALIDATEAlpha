@@ -7,6 +7,7 @@ import CompanyOptionForm from './CompanyOptionForm';
 import useAuth from 'src/hooks/useAuth';
 import { API, graphqlOperation } from 'aws-amplify';
 import { createCompany, updateUser } from 'src/graphql/mutations';
+import { useNavigate } from 'react-router-dom'
 
 const CompanyCreateWizard = (props) => {
   const [activeStep, setActiveStep] = useState(0);
@@ -19,6 +20,8 @@ const CompanyCreateWizard = (props) => {
     description: '',
     tags: [] 
   });
+
+  const navigate = useNavigate();
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -58,7 +61,6 @@ const CompanyCreateWizard = (props) => {
       // Create new company
       const newCompany = await API.graphql(graphqlOperation(createCompany, { input: CreateCompanyInput }));
       console.log('newCompany:', newCompany)
-  
       return newCompany.data.createCompany;
     }
   
@@ -71,14 +73,15 @@ const CompanyCreateWizard = (props) => {
         // Data input for updateUser call
         const UpdateUserInput = {
           id: user.id,
-          userCompanyId: response.id
+          // userCompanyId: response.id This line caused the user update error. Not sure if it's going to lead to problems being gone.
         }
   
         // Updates the User table to include the newly created Channel. Only one company is allowed per user
         // This will overwrite a company if it exists in the user.company field
         const upUser = await API.graphql(graphqlOperation(updateUser, { input: UpdateUserInput }))
-        console.log('User Updated!', upUser) 
-  
+        console.log('User Updated!', upUser)
+        navigate('/dashboard/company')
+        window.location.reload(false);
       } catch (error) {
           console.log('error on user update:', error);
       }
@@ -154,7 +157,7 @@ const CompanyCreateWizard = (props) => {
                   <Button
                     color="primary"
                     component={RouterLink}
-                    to="/dashboard/projects/1"
+                    to="/dashboard/company"
                     variant="contained"
                   >
                     View project
