@@ -71,9 +71,12 @@ const CompanyDashboardTemplate = (props) => {
               <Typography>{company.description}</Typography>
             </Grid>
             <Grid item>
-              <Edit />
-              <IconButton />
+              <IconButton>
+                <Edit />
+              </IconButton>
+              <IconButton>
                 <DeleteIcon onClick={() => companyDelete(company.id)}/>
+              </IconButton>
               <Notification
           notify={notify}
           setNotify={setNotify}
