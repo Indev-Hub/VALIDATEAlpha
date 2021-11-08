@@ -47,55 +47,54 @@ const DashboardSidebar = (props) => {
     getUserCompanies();
   }, [])
 
-  const createSections = (companies) => {
-    return [
-      {
-        title: 'General',
-        items: [
-          {
-            title: 'Overview',
-            path: '/dashboard',
-          },
-          {
-            title: 'Account',
-            path: '/dashboard/account',
-          },
-          {
-            title: 'Profile',
-            path: '/dashboard/profile',
-          }
-        ]
-      },
-      {
-        title: 'Company',
-        items: [
-          isCompaniesLoaded &&
-          {
-            title: companies.length > 0 ? 'Company' : 'Add Company',
-            path: companies.length > 0 ? '/dashboard/company' : '/dashboard/company/new',
-            icon: companies.length > 0 ? null : <Plus fontSize="small" />
-          },
-          {
-            title: 'Form Collection',
-            path: '/dashboard/company/forms',
-          },
-          {
-            title: 'Add Form',
-            path: '/dashboard/form-create',
-            icon: <Plus fontSize="small" />
-          },
-        ]
-      },
-      {
-        items: [
-          {
-            title: 'ANALYTICS',
-            path: '/dashboard/validation'
-          }
-        ]
-      }
-    ];
-  }
+  const sections = [
+    {
+      title: 'General',
+      items: [
+        {
+          title: 'Overview',
+          path: '/dashboard',
+        },
+        {
+          title: 'Account',
+          path: '/dashboard/account',
+        },
+        {
+          title: 'Profile',
+          path: '/dashboard/profile',
+        }
+      ]
+    },
+    {
+      title: 'Company',
+      items: [
+        isCompaniesLoaded &&
+        {
+          title: userCompanies.length > 0 ? 'Company' : 'Add Company',
+          path: userCompanies.length > 0 ? '/dashboard/company' : '/dashboard/company/new',
+          icon: userCompanies.length > 0 ? null : <Plus fontSize="small" />
+        },
+        {
+          title: 'Form Collection',
+          path: '/dashboard/company/forms',
+        },
+        {
+          title: 'Add Form',
+          path: '/dashboard/form-create',
+          icon: <Plus fontSize="small" />
+        },
+      ]
+    },
+    {
+      items: [
+        {
+          title: 'ANALYTICS',
+          path: '/dashboard/validation'
+        }
+      ]
+    }
+  ];
+
 
   useEffect(() => {
     if (openMobile && onMobileClose) {
@@ -177,7 +176,7 @@ const DashboardSidebar = (props) => {
         </Box>
         <Divider />
         <Box sx={{ p: 2 }}>
-          {createSections(userCompanies).map((section, idx) => (
+          {sections.map((section, idx) => (
             <NavSection
               key={idx}
               pathname={location.pathname}
