@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
-import { API, graphqlOperation, Storage } from 'aws-amplify';
+import { API } from 'aws-amplify';
 import PropTypes from 'prop-types';
 import {
   Avatar,
@@ -16,8 +16,7 @@ import { Plus } from '../../icons';
 import Logo from '../Logo';
 import NavSection from '../NavSection';
 import Scrollbar from '../Scrollbar';
-import { getUser } from 'src/graphql/queries';
-
+import { getUser } from '../../graphql/queries';
 
 const DashboardSidebar = (props) => {
   const { onMobileClose, openMobile } = props;
@@ -47,11 +46,9 @@ const DashboardSidebar = (props) => {
   useEffect(() => {
     getUserCompanies();
   }, [])
-  
-  const createSections = (companies) => {
 
-  
-  return [
+  const createSections = (companies) => {
+    return [
       {
         title: 'General',
         items: [

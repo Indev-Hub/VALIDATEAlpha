@@ -1,11 +1,21 @@
 import React, { useState } from 'react'
-import { Accordion, AccordionDetails, AccordionSummary, Box, IconButton, Grid, Typography } from '@material-ui/core';
+import { 
+  Accordion,
+  AccordionDetails, 
+  AccordionSummary, 
+  Box, 
+  Button, 
+  IconButton, 
+  Grid, 
+  Typography,
+  Tooltip
+} from '@material-ui/core';
 import { Delete, Edit, ExpandMore } from '@material-ui/icons';
 import { API, graphqlOperation, Storage } from 'aws-amplify';
-import { deleteCompany } from '../../../graphql/mutations'
+import { deleteCompany, updateDemographics } from '../../../graphql/mutations'
 import DeleteIcon from '@material-ui/icons/Delete';
 import Notification from '../../../components/form/Notification';
-
+import ConfirmDialog from '../../../components/form/ConfirmDialog';
 
 const CompanyDashboardTemplate = (props) => {
   const { company } = props;
@@ -34,7 +44,6 @@ const CompanyDashboardTemplate = (props) => {
         message: 'Deleted Successfully',
         type: 'success'
       });
-      window.location.reload(false);
     } catch (error) {
       setNotify({
         isOpen: true,
@@ -43,6 +52,15 @@ const CompanyDashboardTemplate = (props) => {
       });
       console.log('error deleting company', error)
     }
+  }
+
+  const handleCompanyDelete = () => {
+    companyDelete(company.id);
+    setConfirmDialog({
+      ...confirmDialog,
+      isOpen: false
+    });
+    setTimeout(() => window.location.reload(false), 600);
   }
 
   return (
@@ -74,10 +92,24 @@ const CompanyDashboardTemplate = (props) => {
               <IconButton>
                 <Edit />
               </IconButton>
-              <IconButton>
-                <DeleteIcon onClick={() => companyDelete(company.id)}/>
-              </IconButton>
-              <Notification
+              <Tooltip title="Delete Company">
+                <IconButton>
+                  <DeleteIcon onClick={() => {
+                    setConfirmDialog({
+                      isOpen: true,
+                      title: 'Delete company',
+                      subtitle: `Are you sure you want to delete this 
+                      company? It will be permanently removed, and access
+                      to forms associated with the company will be lost.`,
+                      // text is accurate to current build but should be updated
+                      // when relational database functionality is changed
+                      buttonText: 'Delete',
+                      onConfirm: handleCompanyDelete,
+                    })
+                  }} />
+                </IconButton>
+              </Tooltip>
+        <Notification
           notify={notify}
           setNotify={setNotify}
         />
@@ -85,6 +117,12 @@ const CompanyDashboardTemplate = (props) => {
           </Grid>
         </AccordionDetails>
       </Accordion>
+      {confirmDialog.isOpen && (
+        <ConfirmDialog
+          confirmDialog={confirmDialog}
+          setConfirmDialog={setConfirmDialog}
+        />
+      )}
     </div>
   )
 }
