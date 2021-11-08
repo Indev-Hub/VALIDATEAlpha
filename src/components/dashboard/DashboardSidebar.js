@@ -24,6 +24,7 @@ const DashboardSidebar = (props) => {
   const location = useLocation();
   const { user } = useAuth();
   const [userCompanies, setUserCompanies] = useState([]);
+  const [isCompaniesLoaded, setIsCompaniesLoaded] = useState(false);
 
   const getUserCompanies = async () => {
     try {
@@ -37,6 +38,7 @@ const DashboardSidebar = (props) => {
         companyNames.push(company.name)
       })
       setUserCompanies(companyNames);
+      setIsCompaniesLoaded(!isCompaniesLoaded)
     } catch (error) {
       console.log('error on fetching user companies', error);
     }
@@ -70,6 +72,7 @@ const DashboardSidebar = (props) => {
       {
         title: 'Company',
         items: [
+          isCompaniesLoaded &&
           {
             title: companies.length > 0 ? 'Company' : 'Add Company',
             path: companies.length > 0 ? '/dashboard/company' : '/dashboard/company/new',
