@@ -14,7 +14,7 @@ import { API, graphqlOperation } from 'aws-amplify';
 import BrowseForms from './BrowseForms';
 import SearchField from './SearchField';
 import { TAGS } from '../dashboard/forms/FormConstants.js';
-import {HighlightOffTwoTone} from '@material-ui/icons'; 
+import { HighlightOffTwoTone } from '@material-ui/icons'; 
 
 
 const SearchMain = () => {
@@ -64,20 +64,11 @@ const SearchMain = () => {
   const addTag = (tag) => {
     setTagsToFilter([...tagsToFilter, tag]);
   };
-
   
   const removeTag = (tag) => {
     const newTags = tagsToFilter.filter(e => e !== tag);
     setTagsToFilter(newTags)
   };
-
-  const switchMatchCase = () => {
-    let newMatchCase = matchCase;
-    newMatchCase ?
-    newMatchCase = false 
-    : newMatchCase = true;
-    setMatchCase(newMatchCase);
-  }
 
   return (
     <>
@@ -106,7 +97,6 @@ const SearchMain = () => {
             setSelectedForms={setSelectedForms} 
             tagsToFilter={tagsToFilter}
             matchCase={matchCase}
-            switchMatchCase={switchMatchCase}
           />
         </Box>
       </Container>
@@ -126,7 +116,7 @@ const SearchMain = () => {
             mb: 2
           }}
           labelPlacement="top" 
-          control={<Switch onClick={()=> switchMatchCase()}/>} 
+          control={<Switch onClick={() => setMatchCase(!matchCase)}/>} 
           label={matchCase ? 'Some Tags' : 'All Tags'}
           />
         {
