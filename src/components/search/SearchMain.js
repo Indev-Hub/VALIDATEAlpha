@@ -52,7 +52,7 @@ const SearchMain = () => {
     } catch (error) {
       console.log('error on fetching submission', error);
     }
-  };
+  }
 
   useEffect(() => {
     const postFilteredTags = TAGS.filter(tag => !tagsToFilter.includes(tag));
