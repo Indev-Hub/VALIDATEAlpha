@@ -1,25 +1,24 @@
-import React, { useState, useEffect } from 'react'
-import { 
-  Grid, 
-  Link, 
-  Box, 
-  Container, 
-  Card, 
-  Chip, 
-  Switch,
-  FormControlLabel
+import React, { useEffect, useState } from 'react';
+import {
+  Box,
+  Card,
+  Chip,
+  Container,
+  FormControlLabel,
+  Grid,
+  Link,
+  Switch
 } from '@material-ui/core';
-import { listForms, listFormSubmissions } from 'src/graphql/queries';
+import { HighlightOffTwoTone } from '@material-ui/icons';
 import { API, graphqlOperation } from 'aws-amplify';
+import { listForms, listFormSubmissions } from '../../graphql/queries';
+import { TAGS } from '../dashboard/forms/FormConstants.js';
 import BrowseForms from './BrowseForms';
 import SearchField from './SearchField';
-import { TAGS } from '../dashboard/forms/FormConstants.js';
-import { HighlightOffTwoTone } from '@material-ui/icons'; 
-
 
 const SearchMain = () => {
   const [forms, setForms] = useState([]);
-  const [string, setString ] = useState('');
+  const [string, setString] = useState('');
   const [selectedForms, setSelectedForms] = useState([]);
   const [availableTags, setAvailableTags] = useState([]);
   const [tagsToFilter, setTagsToFilter] = useState([]);
@@ -57,9 +56,8 @@ const SearchMain = () => {
   useEffect(() => {
     const postFilteredTags = TAGS.filter(tag => !tagsToFilter.includes(tag));
     setAvailableTags(postFilteredTags);
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tagsToFilter])
+  }, [tagsToFilter]);
 
   const addTag = (tag) => {
     setTagsToFilter([...tagsToFilter, tag]);
@@ -67,7 +65,7 @@ const SearchMain = () => {
   
   const removeTag = (tag) => {
     const newTags = tagsToFilter.filter(e => e !== tag);
-    setTagsToFilter(newTags)
+    setTagsToFilter(newTags);
   };
 
   return (
@@ -112,12 +110,16 @@ const SearchMain = () => {
           zIndex: 1
         }}>
           <FormControlLabel 
-          sx={{
-            mb: 2
-          }}
-          labelPlacement="top" 
-          control={<Switch onClick={() => setMatchCase(!matchCase)}/>} 
-          label={matchCase ? 'Some Tags' : 'All Tags'}
+            sx={{
+              mb: 2,
+              color: 'white'
+            }}
+            labelPlacement="top" 
+            control={
+            <Switch
+              onClick={() => setMatchCase(!matchCase)}
+              />} 
+            label={matchCase ? 'Some Tags' : 'All Tags'}
           />
         {
           availableTags.map(tag => {
@@ -199,7 +201,11 @@ const SearchMain = () => {
                     }
                   }}
                 >
-                  <BrowseForms form={form} submissions={submissions} index={index} />
+                  <BrowseForms 
+                    form={form} 
+                    submissions={submissions} 
+                    index={index} 
+                  />
                 </Link>
               </Grid>
             )

@@ -5,9 +5,7 @@ import {
   InputAdornment,
 } from "@material-ui/core";
 import PropTypes from 'prop-types';
-import SearchIcon from 'src/icons/Search';
-
-
+import SearchIcon from '../../icons/Search';
 
 const SearchField = (props) => {
   const {
@@ -38,12 +36,13 @@ const SearchField = (props) => {
       }
     };
     
-    // Checks if matchCase if truthiness to filter by all tags, or some of the tags
+    // Check matchCase for truthiness to filter by all/some tags
     if(tagsToFilter.length !== 0){
       if (!tagsToFilter.every(tag => form.tags.includes(tag)) && !matchCase) {
         matches = false;
-      } else if (!tagsToFilter.some(tag => form.tags.includes(tag)) && matchCase){
-        matches = false;
+      } else if (!tagsToFilter.some(tag => form.tags.includes(tag)) 
+        && matchCase){
+          matches = false;
       };
     } 
       
@@ -52,8 +51,7 @@ const SearchField = (props) => {
 
   useEffect(() => {
     setSelectedForms(applyFilters(forms, stringQuery, tagsToFilter, matchCase));
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   },[stringQuery, tagsToFilter, matchCase])
 
   const handleStringChange = (event) => {
