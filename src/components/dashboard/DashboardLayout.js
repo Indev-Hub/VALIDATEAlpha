@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import React, { useState } from 'react';
 import { experimentalStyled } from '@material-ui/core/styles';
+import { Outlet } from 'react-router-dom';
 import DashboardNavbar from './DashboardNavbar';
 import DashboardSidebar from './DashboardSidebar';
 
@@ -9,7 +9,7 @@ const DashboardLayoutRoot = experimentalStyled('div')(({ theme }) => ({
   display: 'flex',
   height: '100%',
   overflow: 'hidden',
-  width: '100%'
+  width: '100%',
 }));
 
 const DashboardLayoutWrapper = experimentalStyled('div')(({ theme }) => ({
@@ -18,14 +18,14 @@ const DashboardLayoutWrapper = experimentalStyled('div')(({ theme }) => ({
   overflow: 'hidden',
   paddingTop: '64px',
   [theme.breakpoints.up('lg')]: {
-    paddingLeft: '280px'
-  }
+    paddingLeft: '280px',
+  },
 }));
 
 const DashboardLayoutContainer = experimentalStyled('div')({
   display: 'flex',
   flex: '1 1 auto',
-  overflow: 'hidden'
+  overflow: 'hidden',
 });
 
 const DashboardLayoutContent = experimentalStyled('div')({
@@ -33,7 +33,7 @@ const DashboardLayoutContent = experimentalStyled('div')({
   height: '100%',
   overflow: 'auto',
   position: 'relative',
-  WebkitOverflowScrolling: 'touch'
+  WebkitOverflowScrolling: 'touch',
 });
 
 const DashboardLayout = () => {
@@ -41,7 +41,9 @@ const DashboardLayout = () => {
 
   return (
     <DashboardLayoutRoot>
-      <DashboardNavbar onSidebarMobileOpen={() => setIsSidebarMobileOpen(true)} />
+      <DashboardNavbar
+        onSidebarMobileOpen={() => setIsSidebarMobileOpen(true)}
+      />
       <DashboardSidebar
         onMobileClose={() => setIsSidebarMobileOpen(false)}
         openMobile={isSidebarMobileOpen}

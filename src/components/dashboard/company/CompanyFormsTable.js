@@ -1,7 +1,4 @@
-import { useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
-import PropTypes from 'prop-types';
+import React, { useState } from 'react';
 import {
   Box, Button, Card, Checkbox, Divider, Grid, IconButton, InputAdornment,
   Link, Tab, Table, TableBody, TableCell, TableHead,
@@ -12,28 +9,30 @@ import HttpIcon from '@material-ui/icons/Http';
 import LaunchIcon from '@material-ui/icons/Launch';
 import PublicTwoToneIcon from '@material-ui/icons/PublicTwoTone';
 import VpnLockTwoToneIcon from '@material-ui/icons/VpnLockTwoTone';
-import Scrollbar from '../../Scrollbar';
+import PropTypes from 'prop-types';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import SearchIcon from '../../../icons/Search';
+import Scrollbar from '../../Scrollbar';
 
 // The following are rendered as sort options and used to set sort state
 const sortOptions = [
   {
     label: 'Last update (newest)',
-    value: 'updatedAt|desc'
+    value: 'updatedAt|desc',
   },
   {
     label: 'Last update (oldest)',
-    value: 'updatedAt|asc'
+    value: 'updatedAt|asc',
   },
 ];
 
 // Filter forms list based on search query or 'filters' object for tabs
-const applyFilters = (forms, query, filters, showPrivate) => forms
-  .filter((form) => {
+const applyFilters = (forms, query, filters, showPrivate) =>
+  forms.filter((form) => {
     let matches = true;
 
     if (query) {
-      // The 'properties' variable determines the fields that are searched 
+      // The 'properties' variable determines the fields that are searched
       const properties = ['title', 'description'];
       let containsQuery = false;
 
@@ -61,13 +60,13 @@ const applyFilters = (forms, query, filters, showPrivate) => forms
       if (form.isPrivate) {
         matches = false;
       }
-    };
+    }
 
     return matches;
   });
 
-const applyPagination = (forms, page, limit) => forms
-  .slice(page * limit, page * limit + limit);
+const applyPagination = (forms, page, limit) =>
+  forms.slice(page * limit, page * limit + limit);
 
 const descendingComparator = (a, b, orderBy) => {
   if (b[orderBy] < a[orderBy]) {
@@ -81,9 +80,10 @@ const descendingComparator = (a, b, orderBy) => {
   return 0;
 };
 
-const getComparator = (order, orderBy) => (order === 'desc'
-  ? (a, b) => descendingComparator(a, b, orderBy)
-  : (a, b) => -descendingComparator(a, b, orderBy));
+const getComparator = (order, orderBy) =>
+  order === 'desc'
+    ? (a, b) => descendingComparator(a, b, orderBy)
+    : (a, b) => -descendingComparator(a, b, orderBy);
 
 const applySort = (forms, sort) => {
   const [orderBy, order] = sort.split('|');
@@ -129,7 +129,7 @@ const CompanyFormsTable = (props) => {
   const [filters, setFilters] = useState({
     hasAcceptedMarketing: null,
     isProspect: null,
-    isReturning: null
+    isReturning: null,
   });
   const [showPrivate, setShowPrivate] = useState(true);
 
@@ -153,32 +153,33 @@ const CompanyFormsTable = (props) => {
   };
 
   const handleSelectAllForms = (event) => {
-    setSelectedForms(event.target.checked
-      ? forms.map((form) => form.id)
-      : []);
+    setSelectedForms(event.target.checked ? forms.map((form) => form.id) : []);
   };
 
   const handleSelectOneForm = (_event, formId) => {
     if (!selectedForms.includes(formId)) {
       setSelectedForms((prevSelected) => [...prevSelected, formId]);
     } else {
-      setSelectedForms((prevSelected) => prevSelected
-        .filter((id) => id !== formId));
+      setSelectedForms((prevSelected) =>
+        prevSelected.filter((id) => id !== formId)
+      );
     }
   };
 
   const handleDeleteSelectedForms = () => {
-    selectedForms.forEach(formId => {
-      handleFormDelete(formId)
+    selectedForms.forEach((formId) => {
+      handleFormDelete(formId);
     });
   };
 
   // Change Public/Private status to add/remove a form from home page
   const handleMakePublicPrivate = () => {
-    const checkedForms = forms.filter(form => selectedForms.includes(form.id));
-    checkedForms.forEach(form => {
+    const checkedForms = forms.filter((form) =>
+      selectedForms.includes(form.id)
+    );
+    checkedForms.forEach((form) => {
       const updateFields = {
-        isPrivate: !form.isPrivate
+        isPrivate: !form.isPrivate,
       };
       handleFormUpdate(form.id, updateFields);
     });
@@ -197,56 +198,48 @@ const CompanyFormsTable = (props) => {
   const sortedForms = applySort(filteredForms, sort);
   const paginatedForms = applyPagination(sortedForms, page, limit);
   const enableBulkActions = selectedForms.length > 0;
-  const selectedSomeForms = selectedForms.length > 0
-    && selectedForms.length < forms.length;
+  const selectedSomeForms =
+    selectedForms.length > 0 && selectedForms.length < forms.length;
   const selectedAllForms = selectedForms.length === forms.length;
 
   return (
     <Card {...other}>
-      <Grid container display="flex">
+      <Grid container display='flex'>
         <Grid item xs={9}>
           <Tabs
-            indicatorColor="primary"
+            indicatorColor='primary'
             onChange={handleTabsChange}
-            scrollButtons="auto"
-            textColor="primary"
+            scrollButtons='auto'
+            textColor='primary'
             value={currentTab}
-            variant="scrollable"
+            variant='scrollable'
           >
-            <Tab
-              key="all"
-              label="All"
-              value="all"
-            />
+            <Tab key='all' label='All' value='all' />
             {Object.keys(
-              forms.reduce(
-                (acc, it) => (acc[it.company.name] = it, acc), []
-              )).map((comp) => (
-                <Tab
-                  key={comp}
-                  label={comp}
-                  value={comp}
-                />
-              ))}
+              forms.reduce((acc, it) => ((acc[it.company.name] = it), acc), [])
+            ).map((comp) => (
+              <Tab key={comp} label={comp} value={comp} />
+            ))}
           </Tabs>
         </Grid>
         <Grid
-          item xs={3}
+          item
+          xs={3}
           container
-          direction="column"
-          alignItems="flex-end"
-          justify="flex-end"
+          direction='column'
+          alignItems='flex-end'
+          justify='flex-end'
           sx={{
-            paddingTop: "6px",
-            paddingRight: "16px",
-            color: "primary"
+            paddingTop: '6px',
+            paddingRight: '16px',
+            color: 'primary',
           }}
         >
           <Button
             onClick={() => setShowPrivate(!showPrivate)}
-            color="primary"
+            color='primary'
             sx={{ ml: 2 }}
-            variant="outlined"
+            variant='outlined'
           >
             {showPrivate ? 'Hide Private Forms' : 'Show All Forms'}
           </Button>
@@ -259,51 +252,48 @@ const CompanyFormsTable = (props) => {
           display: 'flex',
           flexWrap: 'wrap',
           m: -1,
-          p: 2
+          p: 2,
         }}
       >
         <Box
           sx={{
             m: 1,
             maxWidth: '100%',
-            width: 500
+            width: 500,
           }}
         >
           <TextField
             fullWidth
             InputProps={{
               startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon fontSize="small" />
+                <InputAdornment position='start'>
+                  <SearchIcon fontSize='small' />
                 </InputAdornment>
-              )
+              ),
             }}
             onChange={handleQueryChange}
-            placeholder="Search forms"
+            placeholder='Search forms'
             value={query}
-            variant="outlined"
+            variant='outlined'
           />
         </Box>
         <Box
           sx={{
             m: 1,
-            width: 240
+            width: 240,
           }}
         >
           <TextField
-            label="Sort By"
-            name="sort"
+            label='Sort By'
+            name='sort'
             onChange={handleSortChange}
             select
             SelectProps={{ native: true }}
             value={sort}
-            variant="outlined"
+            variant='outlined'
           >
             {sortOptions.map((option) => (
-              <option
-                key={option.value}
-                value={option.value}
-              >
+              <option key={option.value} value={option.value}>
                 {option.label}
               </option>
             ))}
@@ -319,19 +309,19 @@ const CompanyFormsTable = (props) => {
               position: 'absolute',
               px: '4px',
               width: '100%',
-              zIndex: 2
+              zIndex: 2,
             }}
           >
             <Checkbox
               checked={selectedAllForms}
-              color="primary"
+              color='primary'
               indeterminate={selectedSomeForms}
               onChange={handleSelectAllForms}
             />
             <Button
-              color="primary"
+              color='primary'
               sx={{ ml: 2 }}
-              variant="outlined"
+              variant='outlined'
               onClick={() => {
                 setConfirmDialog({
                   isOpen: true,
@@ -342,15 +332,15 @@ const CompanyFormsTable = (props) => {
                   cannot be undone.`,
                   buttonText: 'Delete',
                   onConfirm: handleDeleteSelectedForms,
-                })
+                });
               }}
             >
               Delete
             </Button>
             <Button
-              color="primary"
+              color='primary'
               sx={{ ml: 2 }}
-              variant="outlined"
+              variant='outlined'
               onClick={handleMakePublicPrivate}
             >
               Make Public/Private
@@ -363,45 +353,33 @@ const CompanyFormsTable = (props) => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell padding="checkbox">
+                <TableCell padding='checkbox'>
                   <Checkbox
                     checked={selectedAllForms}
-                    color="primary"
+                    color='primary'
                     indeterminate={selectedSomeForms}
                     onChange={handleSelectAllForms}
                   />
                 </TableCell>
-                <TableCell>
-                  Name
-                </TableCell>
-                <TableCell>
-                  Company
-                </TableCell>
-                <TableCell>
-                  Description
-                </TableCell>
-                <TableCell align="center">
-                  Responses
-                </TableCell>
-                <TableCell align="center">
-                  Form Actions
-                </TableCell>
+                <TableCell>Name</TableCell>
+                <TableCell>Company</TableCell>
+                <TableCell>Description</TableCell>
+                <TableCell align='center'>Responses</TableCell>
+                <TableCell align='center'>Form Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {paginatedForms.map(form => {
+              {paginatedForms.map((form) => {
                 const isFormSelected = selectedForms.includes(form.id);
                 return (
-                  <TableRow
-                    hover
-                    key={form.id}
-                    selected={isFormSelected}
-                  >
-                    <TableCell padding="checkbox">
+                  <TableRow hover key={form.id} selected={isFormSelected}>
+                    <TableCell padding='checkbox'>
                       <Checkbox
                         checked={isFormSelected}
-                        color="primary"
-                        onChange={(event) => handleSelectOneForm(event, form.id)}
+                        color='primary'
+                        onChange={(event) =>
+                          handleSelectOneForm(event, form.id)
+                        }
                         value={isFormSelected}
                       />
                     </TableCell>
@@ -409,55 +387,56 @@ const CompanyFormsTable = (props) => {
                       <Box
                         sx={{
                           alignItems: 'center',
-                          display: 'flex'
+                          display: 'flex',
                         }}
                       >
-                        {form.isPrivate ?
-                          <VpnLockTwoToneIcon fontSize="large" />
-                          : <PublicTwoToneIcon fontSize="large" />
-                        }
+                        {form.isPrivate ? (
+                          <VpnLockTwoToneIcon fontSize='large' />
+                        ) : (
+                          <PublicTwoToneIcon fontSize='large' />
+                        )}
                         <Box sx={{ ml: 1 }}>
                           <Link
-                            color="inherit"
+                            color='inherit'
                             component={RouterLink}
                             to={`/dashboard/form-analytics/${form.id}`}
-                            variant="subtitle2"
+                            variant='subtitle2'
                           >
                             {form.title}
                           </Link>
                         </Box>
                       </Box>
                     </TableCell>
-                    <TableCell>
-                      {form.company.name}
-                    </TableCell>
+                    <TableCell>{form.company.name}</TableCell>
                     <TableCell>
                       {`${form.description.substring(0, 60)}
                       ${form.description.length > 60 ? '...' : ''}`}
                     </TableCell>
-                    <TableCell align="center">
+                    <TableCell align='center'>
                       {`${countSubmissions(form.id)}`}
                     </TableCell>
-                    <TableCell align="center">
-                      <Tooltip title="Copy URL">
-                        <IconButton
-                          onClick={() => handleCopyFormUrl(form.id)}>
-                          <HttpIcon fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Go to">
-                        <IconButton
-                          onClick={() => navigate(`/form/${form.id}`)}>
-                          <LaunchIcon fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Duplicate">
-                        <IconButton
-                          onClick={() => handleDuplicateForm(form)}
-                        >
-                          <FileCopyIcon fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
+                    <TableCell align='center'>
+                      <div style={{ whiteSpace: 'nowrap' }}>
+                        <Tooltip title='Copy URL'>
+                          <IconButton
+                            onClick={() => handleCopyFormUrl(form.id)}
+                          >
+                            <HttpIcon fontSize='small' />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title='Go to'>
+                          <IconButton
+                            onClick={() => navigate(`/form/${form.id}`)}
+                          >
+                            <LaunchIcon fontSize='small' />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title='Duplicate'>
+                          <IconButton onClick={() => handleDuplicateForm(form)}>
+                            <FileCopyIcon fontSize='small' />
+                          </IconButton>
+                        </Tooltip>
+                      </div>
                     </TableCell>
                   </TableRow>
                 );
@@ -467,7 +446,7 @@ const CompanyFormsTable = (props) => {
         </Box>
       </Scrollbar>
       <TablePagination
-        component="div"
+        component='div'
         count={filteredForms.length}
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleLimitChange}
@@ -484,7 +463,9 @@ CompanyFormsTable.propTypes = {
   countSubmissions: PropTypes.func,
   setConfirmDialog: PropTypes.func,
   handleFormDelete: PropTypes.func,
+  handleFormUpdate: PropTypes.func,
   handleDuplicateForm: PropTypes.func,
+  handleCopyFormUrl: PropTypes.func,
 };
 
 export default CompanyFormsTable;
