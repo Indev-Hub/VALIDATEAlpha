@@ -1,20 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  Box,
-  IconButton,
-  Grid,
-  Typography,
-  Tooltip,
+  Box, Grid, IconButton, Tooltip, Typography
 } from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
 import { Edit } from '@material-ui/icons';
+import DeleteIcon from '@material-ui/icons/Delete';
 import { API, graphqlOperation } from 'aws-amplify';
-import { deleteCompany } from '../../../graphql/mutations';
-import Notification from '../../../components/form/Notification';
 import ConfirmDialog from '../../../components/form/ConfirmDialog';
+import Notification from '../../../components/form/Notification';
+import { deleteCompany } from '../../../graphql/mutations';
 
 const CompanyDashboardTemplate = (props) => {
   const { company } = props;
@@ -32,7 +28,7 @@ const CompanyDashboardTemplate = (props) => {
     subtitle: '',
   });
 
-  const handleChange = (panel) => (event, isExpanded) => {
+  const handleChange = (panel) => (_event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
 
@@ -111,7 +107,7 @@ const CompanyDashboardTemplate = (props) => {
                         subtitle: `Are you sure you want to delete this 
                         company? It will be permanently removed, and access
                         to forms associated with the company will be lost.`,
-                        // text is accurate to current build but should be updated
+                        // text accurate to current build but should be updated
                         // when relational database functionality is changed
                         buttonText: 'Delete',
                         onConfirm: handleCompanyDelete,

@@ -1,22 +1,16 @@
-import { useEffect, useState } from "react";
-import { Link as RouterLink, useLocation } from "react-router-dom";
-import { API } from "aws-amplify";
-import PropTypes from "prop-types";
+import React, { useEffect, useState } from 'react';
 import {
-  Avatar,
-  Box,
-  Divider,
-  Drawer,
-  Hidden,
-  Link,
-  Typography,
-} from "@material-ui/core";
-import useAuth from "../../hooks/useAuth";
-import { Plus } from "../../icons";
-import Logo from "../Logo";
-import NavSection from "../NavSection";
-import Scrollbar from "../Scrollbar";
-import { getUser } from "../../graphql/queries";
+  Avatar, Box, Divider, Drawer, Hidden, Link, Typography
+} from '@material-ui/core';
+import { API } from 'aws-amplify';
+import PropTypes from 'prop-types';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
+import { getUser } from '../../graphql/queries';
+import useAuth from '../../hooks/useAuth';
+import { Plus } from '../../icons';
+import Logo from '../Logo';
+import NavSection from '../NavSection';
+import Scrollbar from '../Scrollbar';
 
 const DashboardSidebar = (props) => {
   const { onMobileClose, openMobile } = props;
@@ -39,7 +33,7 @@ const DashboardSidebar = (props) => {
       setUserCompanies(companyNames);
       setIsCompaniesLoaded(!isCompaniesLoaded);
     } catch (error) {
-      console.log("error on fetching user companies", error);
+      console.log('error on fetching user companies', error);
     }
   };
 
@@ -49,55 +43,55 @@ const DashboardSidebar = (props) => {
 
   const sections = [
     {
-      title: "General",
+      title: 'General',
       items: [
         {
-          title: "Overview",
-          path: "/dashboard",
+          title: 'Overview',
+          path: '/dashboard',
         },
         {
-          title: "Account",
-          path: "/dashboard/account",
+          title: 'Account',
+          path: '/dashboard/account',
         },
         {
-          title: "Profile",
-          path: "/dashboard/profile",
+          title: 'Profile',
+          path: '/dashboard/profile',
         },
       ],
     },
     {
-      title: "Company",
+      title: 'Company',
       items: [
         isCompaniesLoaded && {
           title: 
             userCompanies.length > 0 
-              ? "Company" 
-              : "Add Company",
+              ? 'Company' 
+              : 'Add Company',
           path:
             userCompanies.length > 0
-              ? "/dashboard/company"
-              : "/dashboard/company/new",
+              ? '/dashboard/company'
+              : '/dashboard/company/new',
           icon: 
             userCompanies.length > 0 
               ? null 
-              : <Plus fontSize="small" />,
+              : <Plus fontSize='small' />,
         },
         {
-          title: "Form Collection",
-          path: "/dashboard/company/forms",
+          title: 'Form Collection',
+          path: '/dashboard/company/forms',
         },
         {
-          title: "Add Form",
-          path: "/dashboard/form-create",
-          icon: <Plus fontSize="small" />,
+          title: 'Add Form',
+          path: '/dashboard/form-create',
+          icon: <Plus fontSize='small' />,
         },
       ],
     },
     {
       items: [
         {
-          title: "ANALYTICS",
-          path: "/dashboard/validation",
+          title: 'ANALYTICS',
+          path: '/dashboard/validation',
         },
       ],
     },
@@ -112,21 +106,21 @@ const DashboardSidebar = (props) => {
   const content = (
     <Box
       sx={{
-        display: "flex",
-        flexDirection: "column",
-        height: "100%",
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
       }}
     >
       <Scrollbar options={{ suppressScrollX: true }}>
         <Hidden lgUp>
           <Box
             sx={{
-              display: "flex",
-              justifyContent: "center",
+              display: 'flex',
+              justifyContent: 'center',
               p: 2,
             }}
           >
-            <RouterLink to="/">
+            <RouterLink to='/'>
               <Logo
                 sx={{
                   height: 40,
@@ -139,31 +133,31 @@ const DashboardSidebar = (props) => {
         <Box sx={{ p: 2 }}>
           <Box
             sx={{
-              alignItems: "center",
-              backgroundColor: "background.default",
+              alignItems: 'center',
+              backgroundColor: 'background.default',
               borderRadius: 1,
-              display: "flex",
-              overflow: "hidden",
+              display: 'flex',
+              overflow: 'hidden',
               p: 2,
             }}
           >
-            <RouterLink to="/dashboard/account">
+            <RouterLink to='/dashboard/account'>
               <Avatar
                 src={user.avatar}
                 sx={{
-                  cursor: "pointer",
+                  cursor: 'pointer',
                   height: 48,
                   width: 48,
                 }}
               />
             </RouterLink>
             <Box sx={{ ml: 2 }}>
-              <Typography color="textPrimary" variant="subtitle2">
+              <Typography color='textPrimary' variant='subtitle2'>
                 {user.name}
               </Typography>
-              <Typography color="textSecondary" variant="body2">
-                Your plan:{" "}
-                <Link color="primary" component={RouterLink} to="/pricing">
+              <Typography color='textSecondary' variant='body2'>
+                Your plan:{' '}
+                <Link color='primary' component={RouterLink} to='/pricing'>
                   {user.plan}
                 </Link>
               </Typography>
@@ -177,7 +171,7 @@ const DashboardSidebar = (props) => {
               key={idx}
               pathname={location.pathname}
               sx={{
-                "& + &": {
+                '& + &': {
                   mt: 3,
                 },
               }}
@@ -194,33 +188,33 @@ const DashboardSidebar = (props) => {
     <>
       <Hidden lgUp>
         <Drawer
-          anchor="left"
+          anchor='left'
           onClose={onMobileClose}
           open={openMobile}
           PaperProps={{
             sx: {
-              backgroundColor: "background.paper",
+              backgroundColor: 'background.paper',
               width: 280,
             },
           }}
-          variant="temporary"
+          variant='temporary'
         >
           {content}
         </Drawer>
       </Hidden>
       <Hidden lgDown>
         <Drawer
-          anchor="left"
+          anchor='left'
           open
           PaperProps={{
             sx: {
-              backgroundColor: "background.paper",
-              height: "calc(100% - 64px) !important",
-              top: "64px !Important",
+              backgroundColor: 'background.paper',
+              height: 'calc(100% - 64px) !important',
+              top: '64px !Important',
               width: 280,
             },
           }}
-          variant="persistent"
+          variant='persistent'
         >
           {content}
         </Drawer>
