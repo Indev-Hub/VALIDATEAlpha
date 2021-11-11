@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Alert, AlertTitle, Box, Button, Paper, Typography
+  Alert, AlertTitle, Box, Button, Dialog, IconButton, Tooltip, Typography
 } from '@material-ui/core';
+import { Close } from '@material-ui/icons';
 import { API, graphqlOperation, Storage } from 'aws-amplify';
 import { Formik, Form } from 'formik';
 import PropTypes from 'prop-types';
@@ -68,14 +69,14 @@ const FormCreate = props => {
     // If duplicating from existing form
     initialQuestions = JSON.parse(selectedForm.validations);
     // Remove any images from image answer types
-    initialQuestions.map(question => {
+    initialQuestions.forEach(question => {
       if (question.type === 'Images') {
         question.options = [''];
-      }
+      };
     });
   } else {
     initialQuestions = [blankQuestion];
-  }
+  };
 
   const [questionsState, setQuestionsState] = useState(initialQuestions);
 
@@ -114,9 +115,14 @@ const FormCreate = props => {
   //           PREVIEW FORM           //
   //==================================//
   const [formPreview, setFormPreview] = useState(null);
+
   const previewForm = () => {
     const formDesign = createFormDesignDataSet();
     setFormPreview(formDesign);
+  };
+
+  const handlePreviewClose = () => {
+    setFormPreview(null);
   };
 
   //==================================//
@@ -166,8 +172,8 @@ const FormCreate = props => {
 
       s3Upload();
 
-      // Refresh if submitted from TestList page (i.e., starting from duplicate)
-      // or redirect to TestList page if submitted from TestCreate route
+      // Refresh if submitted from FormList page (i.e., starting from duplicate)
+      // or redirect to FormList page if submitted from form-create route
       selectedForm ?
         setTimeout(() => handleListRefresh(), 1200)
         : setTimeout(() => navigate('/dashboard/company/forms'), 1200);
@@ -284,15 +290,28 @@ const FormCreate = props => {
       </Formik>
       {formPreview && (
         detailsState.companyID ? (
-          <Paper elevation={3} sx={{ mt: 2 }}>
-            <Box p={4}>
-              <FormSubmission
-                formDesign={formPreview}
-                previewImages={formImages}
-                displaySubmitButton={false}
-              />
+          <Dialog 
+            open={formPreview}
+            fullWidth='true'
+            maxWidth='lg'
+            onClose={handlePreviewClose}
+          >
+            <Box textAlign='right' p={2}>
+              <Tooltip title='Close Preview'>
+                <IconButton
+                  type='button'
+                  onClick={handlePreviewClose}
+                >
+                  <Close />
+                </IconButton>
+              </Tooltip>
             </Box>
-          </Paper>
+            <FormSubmission
+              formDesign={formPreview}
+              previewImages={formImages}
+              displaySubmitButton={false}
+            />
+          </Dialog>
         ) : (
           <Alert severity='error' sx={{ mt: 3, px: 10 }}>
             <AlertTitle variant='h5'>Error creating form preview</AlertTitle>

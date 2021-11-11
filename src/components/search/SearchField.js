@@ -5,9 +5,7 @@ import {
   InputAdornment,
 } from "@material-ui/core";
 import PropTypes from 'prop-types';
-import SearchIcon from 'src/icons/Search';
-
-
+import SearchIcon from '../../icons/Search';
 
 const SearchField = (props) => {
   const {
@@ -15,10 +13,11 @@ const SearchField = (props) => {
     setString,
     forms,
     setSelectedForms,
-    tagsToFilter
+    tagsToFilter,
+    matchCase,
   } = props;
 
-  const applyFilters = (forms, stringQuery, tagsToFilter) => forms.filter((form) => {
+  const applyFilters = (forms, stringQuery, tagsToFilter, matchCase) => forms.filter((form) => {
     let matches = true;
 
     if (stringQuery) {
@@ -37,20 +36,23 @@ const SearchField = (props) => {
       }
     };
     
-    if(tagsToFilter){
-      if (!tagsToFilter.every(tag => form.tags.includes(tag))) {
+    // Check matchCase for truthiness to filter by all/some tags
+    if(tagsToFilter.length !== 0){
+      if (!tagsToFilter.every(tag => form.tags.includes(tag)) && !matchCase) {
         matches = false;
+      } else if (!tagsToFilter.some(tag => form.tags.includes(tag)) 
+        && matchCase){
+          matches = false;
       };
-    }
-
+    } 
+      
     return matches;
   });
 
   useEffect(() => {
-    setSelectedForms(applyFilters(forms, stringQuery, tagsToFilter));
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[stringQuery, tagsToFilter])
+    setSelectedForms(applyFilters(forms, stringQuery, tagsToFilter, matchCase));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[stringQuery, tagsToFilter, matchCase])
 
   const handleStringChange = (event) => {
     setString(event.target.value);
@@ -96,7 +98,8 @@ SearchField.propTypes = {
   setString: PropTypes.func,
   forms: PropTypes.array,
   setSelectedForms: PropTypes.func,
-  tagsToFilter: PropTypes.array
+  tagsToFilter: PropTypes.array,
+  matchCase: PropTypes.bool,
 };
 
 export default SearchField;

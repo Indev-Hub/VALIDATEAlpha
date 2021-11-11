@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
+import { Link as RouterLink } from 'react-router-dom';
 import {
   Box,
   Card,
   Chip,
   Divider,
+  Link,
   Popover,
   Typography
 } from '@material-ui/core';
@@ -114,19 +116,20 @@ const BrowseForms = (props) => {
             }}
           >{form.title}
           </Typography>
-          <Typography
-            variant="h7"
-            whiteSpace="nowrap"
-            overflow="hidden"
-            textOverflow="ellipsis"
+          <Link
+            color="textSecondary"
+            component={RouterLink}
+            to={`/company/${form.company ? form.company.id : 'DELETE THIS FORM'}`}
+            underline="none"
+            variant="body1"
             sx={{
-              pb: 2,
-              color: 'text.primary',
-              fontWeight: 500
+              mx:1
             }}
           >
-            {form.company ? form.company.name : 'NO COMPANY'}
-          </Typography>
+            <Typography>
+              {form.company ? form.company.name : 'NO COMPANY'}
+            </Typography>
+          </Link>
         </Box>
         <Box
           height={40}

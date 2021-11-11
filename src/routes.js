@@ -57,6 +57,8 @@ const CustomerList = Loadable(lazy(() => import('./pages/dashboard/CustomerList'
 const CompanyCreate = Loadable(lazy(() => import('./pages/dashboard/CompanyCreate')));
 const CompanyPage = Loadable(lazy(() => import('./pages/dashboard/CompanyPage')));
 const Finance = Loadable(lazy(() => import('./pages/dashboard/Finance')));
+// const FormCollection = Loadable(lazy(() => import('./pages/dashboard/FormCollection')));
+const FormCreatePage = Loadable(lazy(() => import('./pages/dashboard/FormCreatePage')));
 const InvoiceDetails = Loadable(lazy(() => import('./pages/dashboard/InvoiceDetails')));
 const InvoiceList = Loadable(lazy(() => import('./pages/dashboard/InvoiceList')));
 const Kanban = Loadable(lazy(() => import('./pages/dashboard/Kanban')));
@@ -67,8 +69,6 @@ const Overview = Loadable(lazy(() => import('./pages/dashboard/Overview')));
 const ProductCreate = Loadable(lazy(() => import('./pages/dashboard/ProductCreate')));
 const ProductList = Loadable(lazy(() => import('./pages/dashboard/ProductList')));
 const Profile = Loadable(lazy(() => import('./pages/dashboard/Profile')));
-const FormCollection = Loadable(lazy(() => import('./pages/dashboard/FormCollection')));
-const TestCreate = Loadable(lazy(() => import('./pages/dashboard/TestCreate')));
 // const Tests = Loadable(lazy(() => import('./pages/dashboard/Tests')));
 // const TestsAnalytics = Loadable(lazy(() => import('./pages/dashboard/TestsAnalytics')));
 const Validation = Loadable(lazy(() => import('./pages/dashboard/Validation')));
@@ -97,14 +97,16 @@ const SocialProfile = Loadable(lazy(() => import('./pages/dashboard/SocialProfil
 // Other pages
 
 const Checkout = Loadable(lazy(() => import('./pages/Checkout')));
+const CompanyDisplayPage = Loadable(lazy(() => import('./pages/company/CompanyDisplayPage')));
 const Contact = Loadable(lazy(() => import('./pages/Contact')));
+const FormAnalytics = Loadable(lazy(() => import('./pages/dashboard/FormAnalytics')));
+const FormList = Loadable(lazy(() => import('./pages/dashboard/FormList')));
+const FormSubmissionWidget = Loadable(lazy(() => import('./pages/widgets/FormSubmissionWidget')));
 const Home = Loadable(lazy(() => import('./pages/Home')));
 const Pricing = Loadable(lazy(() => import('./pages/Pricing')));
+const ProfileDisplayPage = Loadable(lazy(() => import('./pages/profile/ProfileDisplayPage')));
 const SubmissionFormPage = Loadable(lazy(() => import('./pages/company/SubmissionFormPage')));
-const FormSubmissionWidget = Loadable(lazy(() => import('./pages/widgets/FormSubmissionWidget')));
-const FormAnalytics = Loadable(lazy(() => import('./pages/dashboard/FormAnalytics')));
-const UploadMultiplePreview = Loadable(lazy(() => import('./components/dashboard/forms/UploadMultiplePreview')));
-const FormList = Loadable(lazy(() => import('./pages/dashboard/FormList')));
+// const UploadMultiplePreview = Loadable(lazy(() => import('./components/dashboard/forms/UploadMultiplePreview')));
 
 const routes = [
   {
@@ -170,10 +172,10 @@ const routes = [
     path: 'contact',
     element: <Contact />
   },
-  {
-    path: 's3-upload',
-    element: <UploadMultiplePreview />
-  },
+  // {
+  //   path: 's3-upload',
+  //   element: <UploadMultiplePreview />
+  // },
   {
     path: 'widget',
     children: [
@@ -204,32 +206,25 @@ const routes = [
         element: <Analytics />
       },
       {
-        path: 'form-analytics/:submissionId',
-        element: <FormAnalytics />
-      },
-      {
-        path: 'test-create',
-        element: <TestCreate />
-      },
-      {
-        path: 'form-collection',
-        element: <FormCollection />
-      },
-      {
-        path: 'validation',
-        element: <Validation />
-      },
-      {
-        path: 'test-create',
-        element: <TestCreate />
-      },
-      {
         path: 'calendar',
         element: <Calendar />
       },
       {
-        path: 'profile',
-        element: <Profile />
+        path: 'chat',
+        children: [
+          {
+            path: '/',
+            element: <Chat />
+          },
+          {
+            path: 'new',
+            element: <Chat />
+          },
+          {
+            path: ':threadKey',
+            element: <Chat />
+          }
+        ]
       },
       {
         path: 'company',
@@ -257,23 +252,6 @@ const routes = [
         ]
       },
       {
-        path: 'chat',
-        children: [
-          {
-            path: '/',
-            element: <Chat />
-          },
-          {
-            path: 'new',
-            element: <Chat />
-          },
-          {
-            path: ':threadKey',
-            element: <Chat />
-          }
-        ]
-      },
-      {
         path: 'customers',
         children: [
           {
@@ -289,6 +267,22 @@ const routes = [
             element: <CustomerEdit />
           }
         ]
+      },
+      {
+        path: 'finance',
+        element: <Finance />
+      },
+      {
+        path: 'form-analytics/:submissionId',
+        element: <FormAnalytics />
+      },
+      // {
+      //   path: 'form-collection',
+      //   element: <FormCollection />
+      // },
+      {
+        path: 'form-create',
+        element: <FormCreatePage />
       },
       {
         path: 'invoices',
@@ -351,10 +345,6 @@ const routes = [
         ]
       },
       {
-        path: 'finance',
-        element: <Finance />
-      },
-      {
         path: 'products',
         children: [
           {
@@ -366,6 +356,10 @@ const routes = [
             element: <ProductCreate />
           }
         ]
+      },
+      {
+        path: 'profile',
+        element: <Profile />
       },
       {
         path: 'projects',
@@ -396,7 +390,11 @@ const routes = [
             element: <SocialProfile />
           }
         ]
-      }
+      },
+      {
+        path: 'validation',
+        element: <Validation />
+      },
     ]
   },
   {
@@ -427,10 +425,6 @@ const routes = [
         element: <Home />
       },
       {
-        path: 'form/:formId',
-        element: <SubmissionFormPage />
-      },
-      {
         path: 'browse',
         element: <BrowseLayout />,
         children: [
@@ -441,10 +435,6 @@ const routes = [
           {
             path: '/buttons',
             element: <BrowseButtons />
-          },
-          {
-            path: '/inputs',
-            element: <BrowseInputs />
           },
           {
             path: '/charts',
@@ -471,8 +461,8 @@ const routes = [
             element: <BrowseForms />
           },
           {
-            path: '/modals',
-            element: <BrowseModals />
+            path: '/inputs',
+            element: <BrowseInputs />
           },
           {
             path: '/lists/grouped-lists',
@@ -481,6 +471,10 @@ const routes = [
           {
             path: '/lists/grid-lists',
             element: <BrowseGridLists />
+          },
+          {
+            path: '/modals',
+            element: <BrowseModals />
           },
           {
             path: '/typography',
@@ -493,8 +487,20 @@ const routes = [
         element: <Checkout />
       },
       {
+        path: 'company/:companyId',
+        element: <CompanyDisplayPage />
+      },
+      {
+        path: 'form/:formId',
+        element: <SubmissionFormPage />
+      },
+      {
         path: 'pricing',
         element: <Pricing />
+      },
+      {
+        path: 'profile/:profileId',
+        element: <ProfileDisplayPage />
       },
       {
         path: '401',

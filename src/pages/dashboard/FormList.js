@@ -74,7 +74,7 @@ const FormList = () => {
       const formList = formData.data.listForms.items;
       if (userCompanies) {
         const filteredList = formList
-          .filter(form => userCompanies.includes(form.companyName));
+          .filter(form => userCompanies.includes(form.company ? form.company.name: "NO COMPANY"));
         setForms(filteredList);
       }
     } catch (err) {
@@ -174,7 +174,6 @@ const FormList = () => {
     try {
       const fileList = await Storage.list('');
       setFormImageFiles(fileList);
-      console.log('getS3FileList', fileList)
     } catch (error) {
       console.log('error on fetching file list', error);
     }
@@ -363,7 +362,7 @@ const FormList = () => {
                     sx={{ m: 1 }}
                     variant="contained"
                     component={RouterLink}
-                    to="/dashboard/test-create"
+                    to="/dashboard/form-create"
                   >
                     Add Form
                   </Button>
@@ -391,12 +390,12 @@ const FormList = () => {
         />
 
         {/* Prompt user to confirm before deleting form */}
-        {confirmDialog.isOpen ? (
+        {confirmDialog.isOpen && (
           <ConfirmDialog
             confirmDialog={confirmDialog}
             setConfirmDialog={setConfirmDialog}
           />
-        ) : null}
+        )}
       </>
     );
   }

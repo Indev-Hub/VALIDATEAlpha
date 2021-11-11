@@ -1,21 +1,28 @@
-import React, { useState, useEffect } from 'react'
-import { Grid, Link, Box, Container, Card, Chip } from '@material-ui/core';
-import { listForms, listFormSubmissions } from 'src/graphql/queries';
+import React, { useEffect, useState } from 'react';
+import {
+  Box,
+  Card,
+  Chip,
+  Container,
+  FormControlLabel,
+  Grid,
+  Link,
+  Switch
+} from '@material-ui/core';
+import { HighlightOffTwoTone } from '@material-ui/icons';
 import { API, graphqlOperation } from 'aws-amplify';
+import { listForms, listFormSubmissions } from '../../graphql/queries';
+import { TAGS } from '../dashboard/forms/FormConstants.js';
 import BrowseForms from './BrowseForms';
 import SearchField from './SearchField';
-import { TAGS } from '../dashboard/forms/FormConstants.js';
-import {HighlightOffTwoTone} from '@material-ui/icons'; 
-
 
 const SearchMain = () => {
   const [forms, setForms] = useState([]);
-  const [string, setString ] = useState('');
+  const [string, setString] = useState('');
   const [selectedForms, setSelectedForms] = useState([]);
   const [availableTags, setAvailableTags] = useState([]);
   const [tagsToFilter, setTagsToFilter] = useState([]);
-  
-
+  const [matchCase, setMatchCase] = useState(false);
 
   useEffect(() => {
     fetchForms();
@@ -23,13 +30,13 @@ const SearchMain = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-
   const fetchForms = async () => {
     try {
       const formData = await API.graphql(graphqlOperation(listForms));
       const formList = formData.data.listForms.items;
       setForms(formList);
-      setSelectedForms(formList);    } catch (error) {
+      setSelectedForms(formList);    
+    } catch (error) {
       console.log('error on fetching forms', error);
     }
   }
@@ -44,23 +51,21 @@ const SearchMain = () => {
     } catch (error) {
       console.log('error on fetching submission', error);
     }
-  };
+  }
 
   useEffect(() => {
     const postFilteredTags = TAGS.filter(tag => !tagsToFilter.includes(tag));
     setAvailableTags(postFilteredTags);
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tagsToFilter])
+  }, [tagsToFilter]);
 
   const addTag = (tag) => {
     setTagsToFilter([...tagsToFilter, tag]);
   };
-
   
   const removeTag = (tag) => {
     const newTags = tagsToFilter.filter(e => e !== tag);
-    setTagsToFilter(newTags)
+    setTagsToFilter(newTags);
   };
 
   return (
@@ -89,6 +94,7 @@ const SearchMain = () => {
             selectedForms={selectedForms}
             setSelectedForms={setSelectedForms} 
             tagsToFilter={tagsToFilter}
+            matchCase={matchCase}
           />
         </Box>
       </Container>
@@ -103,6 +109,18 @@ const SearchMain = () => {
           borderColor: "white",
           zIndex: 1
         }}>
+          <FormControlLabel 
+            sx={{
+              mb: 2,
+              color: 'white'
+            }}
+            labelPlacement="top" 
+            control={
+            <Switch
+              onClick={() => setMatchCase(!matchCase)}
+              />} 
+            label={matchCase ? 'Some Tags' : 'All Tags'}
+          />
         {
           availableTags.map(tag => {
             return (
@@ -183,7 +201,11 @@ const SearchMain = () => {
                     }
                   }}
                 >
-                  <BrowseForms form={form} submissions={submissions} index={index} />
+                  <BrowseForms 
+                    form={form} 
+                    submissions={submissions} 
+                    index={index} 
+                  />
                 </Link>
               </Grid>
             )
