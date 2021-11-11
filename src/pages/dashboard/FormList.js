@@ -9,7 +9,7 @@ import { API, graphqlOperation, Storage } from 'aws-amplify';
 import {
   deleteForm, deleteFormSubmission, updateForm
 } from '../../graphql/mutations';
-import { getUser, listForms, listFormSubmissions } from '../../graphql/queries';
+import { listForms, listFormSubmissions } from '../../graphql/queries';
 import useAuth from '../../hooks/useAuth';
 import useSettings from '../../hooks/useSettings';
 import gtm from '../../lib/gtm';
@@ -46,15 +46,12 @@ const FormList = () => {
   // Get user data from DynamoDB to access associated company info
   const getUserCompanies = async () => {
     try {
-      const fetchedUserData = await API.graphql({
-        query: getUser,
-        variables: { id: user.id }
-      });
-      const companies = fetchedUserData.data.getUser.companies.items;
+      const companies = user.userTable.companies.items;
       const companyNames = [];
       companies.forEach(company => {
         companyNames.push(company.name)
       })
+      
       setUserCompanies(companyNames);
     } catch (error) {
       console.log('error on fetching user companies', error);
@@ -74,7 +71,7 @@ const FormList = () => {
       const formList = formData.data.listForms.items;
       if (userCompanies) {
         const filteredList = formList
-          .filter(form => userCompanies.includes(form.company ? form.company.name: "NO COMPANY"));
+          .filter(form => userCompanies.includes(form.companyName));
         setForms(filteredList);
       }
     } catch (err) {
@@ -174,6 +171,7 @@ const FormList = () => {
     try {
       const fileList = await Storage.list('');
       setFormImageFiles(fileList);
+      console.log('getS3FileList', fileList)
     } catch (error) {
       console.log('error on fetching file list', error);
     }
@@ -362,7 +360,7 @@ const FormList = () => {
                     sx={{ m: 1 }}
                     variant="contained"
                     component={RouterLink}
-                    to="/dashboard/form-create"
+                    to="/dashboard/test-create"
                   >
                     Add Form
                   </Button>
@@ -390,12 +388,12 @@ const FormList = () => {
         />
 
         {/* Prompt user to confirm before deleting form */}
-        {confirmDialog.isOpen && (
+        {confirmDialog.isOpen ? (
           <ConfirmDialog
             confirmDialog={confirmDialog}
             setConfirmDialog={setConfirmDialog}
           />
-        )}
+        ) : null}
       </>
     );
   }
