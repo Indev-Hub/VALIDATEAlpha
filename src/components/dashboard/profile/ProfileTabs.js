@@ -82,6 +82,13 @@ function ProfileTabs() {
     education: '',
     profession: ''
   })
+  
+  // Get user attributes
+  const { user } = useAuth();
+  const userData = user.userTable;
+  // console.log('user', user);
+  // const [userData, setUserData] = useState();
+
   // console.log('profile data:', profileData);
   const [value, setValue] = React.useState(0);
 
@@ -96,36 +103,31 @@ function ProfileTabs() {
     });
   };
 
-  // Set state for User table
-  const [userData, setUserData] = useState();
-
   // Check if User table is loaded
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Get user attributes
-  const { user } = useAuth();
-  // console.log('user', user);
+
 
   // Load User table data
   useEffect(() => {
-    getUserTable();
+    // getUserTable();
     getProfile();
     console.log('user table:', userData)
   }, [])
 
   // API call to get User table data
-  const getUserTable = async () => {
-    try {
-      const userData = await API.graphql(graphqlOperation(getUser, { id: user.id }));
-      const userList = userData.data.getUser;
-      setUserData(userList);
-      setIsLoading(false);
-      console.log('list', userList);
-      console.log('user sub', user.id)
-    } catch (error) {
-      console.log('error on fetching user table', error);
-    }
-  };
+  // const getUserTable = async () => {
+  //   try {
+  //     const userData = await API.graphql(graphqlOperation(getUser, { id: user.id }));
+  //     const userList = userData.data.getUser;
+  //     setUserData(userList);
+  //     setIsLoading(false);
+  //     console.log('list', userList);
+  //     console.log('user sub', user.id)
+  //   } catch (error) {
+  //     console.log('error on fetching user table', error);
+  //   }
+  // };
 
   const updateProfile = async () => {
     try {
@@ -220,7 +222,7 @@ function ProfileTabs() {
 
   return (
     <>
-      {!isLoading ? (
+      {
         userData.demographics ? (
           <>
             <AppBar position="static">
@@ -280,9 +282,7 @@ function ProfileTabs() {
             </Grid>
           </Grid>
         )
-      ) : (
-        <Typography>Loading Profile...</Typography>
-      )}
+      }
       
     </>
   );
