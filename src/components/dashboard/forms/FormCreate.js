@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { createForm } from '../../../graphql/mutations';
-import { getUser } from '../../../graphql/queries';
+// import { getUser } from '../../../graphql/queries';
 import useAuth from '../../../hooks/useAuth';
 import FormDetails from './FormDetails';
 import FormQuestions from './FormQuestions';
@@ -19,6 +19,7 @@ import Notification from '../../form/Notification';
 const FormCreate = props => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const userData = user.userTable;
 
   // This is used if duplicating from existing form in TestList
   const { selectedForm = null, handleListRefresh } = props;
@@ -222,26 +223,26 @@ const FormCreate = props => {
   //==================================//
 
   // Set state for User table
-  const [userData, setUserData] = useState();
+  // const [userData, setUserData] = useState();
 
-  // Load User table data
-  useEffect(() => {
-    getUserTable();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // // Load User table data
+  // useEffect(() => {
+  //   getUserTable();
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
-  // API call to get User table data
-  const getUserTable = async () => {
-    try {
-      const userData = await API.graphql(
-        graphqlOperation(getUser, { id: user.id })
-      );
-      const userList = userData.data.getUser;
-      setUserData(userList);
-    } catch (error) {
-      console.log('error on fetching user table', error);
-    }
-  };
+  // // API call to get User table data
+  // const getUserTable = async () => {
+  //   try {
+  //     const userData = await API.graphql(
+  //       graphqlOperation(getUser, { id: user.id })
+  //     );
+  //     const userList = userData.data.getUser;
+  //     setUserData(userList);
+  //   } catch (error) {
+  //     console.log('error on fetching user table', error);
+  //   }
+  // };
 
   // Get company name from selected companyId, '' if none
   const getCompanyName = () => {

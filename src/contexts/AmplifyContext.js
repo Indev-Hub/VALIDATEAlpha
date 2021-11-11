@@ -1,9 +1,39 @@
+/* eslint-disable */
 import { createContext, useEffect, useReducer } from 'react';
 import PropTypes from 'prop-types';
-import Amplify, { Auth } from 'aws-amplify';
+import Amplify, { API, Auth, graphqlOperation } from 'aws-amplify';
 import { amplifyConfig } from '../config';
+import { getUser } from 'src/graphql/queries';
 
 Amplify.configure(amplifyConfig);
+
+async function getUserObject(){
+  const user = await Auth.currentAuthenticatedUser();
+  return user;
+}
+
+async function getUserInfo(){
+  try {
+    // console.log(getUser());
+    const userVariable = await getUserObject();
+    const userContent = await API.graphql(graphqlOperation(getUser, {id: userVariable.attributes.sub}));
+    const userData = userContent.data.getUser;
+    return userData
+
+    // Above logic is retrieving the user data.
+
+
+    // const userList = await userData.data.getUser;
+    // console.log(userList)
+    // setUserInfo(userList);
+    // sessionStorage.setItem('userInfo', JSON.stringify(userList));
+    // console.log('user setItem successful');
+    // // error getting user is not defined
+    // console.log('list', userList);
+  } catch (error) {
+    console.log('error on fetching videos', error);
+  }
+}
 
 const initialState = {
   isAuthenticated: false,
@@ -67,7 +97,7 @@ export const AuthProvider = (props) => {
     const initialize = async () => {
       try {
         const user = await Auth.currentAuthenticatedUser();
-
+        const userData = await getUserInfo();
         // Here you should extract the complete user profile to make it
         // available in your entire app.
         // The auth state only provides basic information.
@@ -81,7 +111,8 @@ export const AuthProvider = (props) => {
               avatar: '/static/mock-images/avatars/avatar-jane_rotanson.png',
               email: user.attributes.email,
               name: user.username,
-              plan: 'Premium'
+              plan: 'Premium',
+              userTable: userData
             }
           }
         });
@@ -114,7 +145,7 @@ export const AuthProvider = (props) => {
           id: user.attributes.sub,
           avatar: '/static/mock-images/avatars/avatar-jane_rotanson.png',
           email: user.attributes.email,
-          name: user.username,
+          name: 'Jane Rotanson',
           plan: 'Premium'
         }
       }
@@ -128,9 +159,10 @@ export const AuthProvider = (props) => {
     });
   };
 
-  const register = async (email, password) => {
+  const register = async (username, email, password) => {
     await Auth.signUp({
-      username: email,
+      username: username,
+      // email: email,
       password,
       attributes: { email }
     });

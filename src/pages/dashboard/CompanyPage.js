@@ -21,30 +21,39 @@ const CompanyPage = () => {
   }, []);
 
   // Set state for User table
-  const [userData, setUserData] = useState();
-  const [companyData, setCompanyData] = useState([]);
+  const userData = user.userTable;
+  const companyData = user.userTable.companies.items;
+
+  // ===== START NO LONGER NEEDED. KEPT ONLY FOR REFERENCE =====
+
+
+  // const [userData, setUserData] = useState();
+  // const [companyData, setCompanyData] = useState([]);
 
   // Load User table data
-  useEffect(() => {
-    getUserTable();
-  }, []);
+  // useEffect(() => {
+  //   getUserTable();
+  // }, []);
 
   // API call to get User table data
-  const getUserTable = async () => {
-    try {
-      const fetchedData = await API.graphql(
-        graphqlOperation(getUser, { id: user.id })
-      );
-      const userList = fetchedData.data.getUser;
-      const companyList = fetchedData.data.getUser.companies.items;
-      setUserData(userList);
-      setCompanyData(companyList);
-      console.log('user info', userList);
-      console.log('company info', companyList);
-    } catch (error) {
-      console.log('error on fetching user table', error);
-    }
-  };
+  // const getUserTable = async () => {
+  //   try {
+  //     const fetchedData = await API.graphql(
+  //       graphqlOperation(getUser, { id: user.id })
+  //     );
+  //     const userList = fetchedData.data.getUser;
+  //     const companyList = fetchedData.data.getUser.companies.items;
+  //     setUserData(userList);
+  //     setCompanyData(companyList);
+  //     console.log('user info', userList);
+  //     console.log('company info', companyList);
+  //   } catch (error) {
+  //     console.log('error on fetching user table', error);
+  //   }
+  // };
+
+  // ===== END NO LONGER NEEDED. KEPT ONLY FOR REFERENCE =====
+
 
   return (
     <>
