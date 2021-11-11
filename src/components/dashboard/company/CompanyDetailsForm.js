@@ -216,7 +216,7 @@ const CompanyDetailsForm = (props) => {
               <Button
                 color="primary"
                 onClick={submit}
-                disabled={isSubmitting}
+                disabled={isSubmitting || errors.name || errors.description}
                 type="submit"
                 variant="contained"
               >
