@@ -37,7 +37,7 @@ const CompanyDetailsForm = (props) => {
             .required('Required'),
           description: Yup
             .string()
-            .max(500),
+            .max(500, 'Must be fewer than 500 characters'),
           tags: Yup.array()
         })}
       onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
@@ -45,6 +45,7 @@ const CompanyDetailsForm = (props) => {
           // Call API to store step data in server session
           // It is important to have it on server to be able to reuse it if user
           // decides to continue later.
+          await handleCompanyChange(values.name, values.description, values.tags)
           setStatus({ success: true });
           setSubmitting(false);
 
@@ -96,8 +97,13 @@ const CompanyDetailsForm = (props) => {
                   label="Company Name"
                   name="name"
                   onBlur={handleBlur}
-                  onChange={handleCompanyChange}
-                  value={companyData.name}
+                  // onChange={handleCompanyChange}
+                  // value={companyData.name}
+                  onChange={(e) => {
+                    handleChange(e)
+                    handleCompanyChange(e)
+                  }}
+                  value={values.name}
                   variant="outlined"
                 />
                 <TextField
@@ -110,8 +116,13 @@ const CompanyDetailsForm = (props) => {
                   // rows="2"
                   maxRows="4"
                   onBlur={handleBlur}
-                  onChange={handleCompanyChange}
-                  value={companyData.description}
+                  onChange={(e) => {
+                    handleChange(e)
+                    handleCompanyChange(e)
+                  }}
+                  value={values.description}
+                  // onChange={handleCompanyChange}
+                  // value={companyData.description}
                   variant="outlined"
                   sx={{
                     mt:2
