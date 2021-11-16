@@ -1,9 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  Box, Grid, IconButton, Tooltip, Typography
+  Box,
+  Chip,
+  Grid,
+  IconButton,
+  Tooltip,
+  Typography,
 } from '@material-ui/core';
 import { Edit } from '@material-ui/icons';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -27,6 +32,12 @@ const CompanyDashboardTemplate = (props) => {
     title: '',
     subtitle: '',
   });
+
+  useEffect (() => {
+    console.log(company)
+  }, [])
+
+  const tags = JSON.parse(company.tags);
 
   const handleChange = (panel) => (_event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
@@ -92,6 +103,37 @@ const CompanyDashboardTemplate = (props) => {
                 Description
               </Typography>
               <Typography>{company.description}</Typography>
+            </Grid>
+            <Grid item>
+            <Typography
+                variant='h7'
+                fontWeight={600}
+                sx={{ textTransform: 'uppercase' }}
+              >
+                Tags
+              </Typography>
+              <Typography>
+                {tags[0] !== ''
+                  ? tags.map((tag, _index) => (
+                      <>
+                        <Chip
+                          sx={{
+                            color: 'white',
+                            backgroundColor: 'blue',
+                            fontSize: '9.5px',
+                            fontWeight: 500,
+                            textTransform: 'uppercase',
+                            letterSpacing: '.5px',
+                            px: 1,
+                            mx: 0.25,
+                          }}
+                          size='small'
+                          label={tag}
+                        />
+                      </>
+                    ))
+                  : null}
+              </Typography>
             </Grid>
             <Grid item>
               <IconButton>
