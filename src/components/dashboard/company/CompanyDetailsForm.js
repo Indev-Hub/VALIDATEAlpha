@@ -15,7 +15,7 @@ import {
 } from '@material-ui/core';
 import { HighlightOffTwoTone } from '@material-ui/icons';
 import PlusIcon from '../../../icons/Plus';
-import { TAGS } from '../forms/FormConstants.js';
+import { TAGS } from './CompanyConstants.js';
 
 const CompanyDetailsForm = (props) => {
   const {
@@ -27,7 +27,6 @@ const CompanyDetailsForm = (props) => {
     setCompanyData,
     ...other
   } = props;
-  const [tag, setTag] = useState('');
   const [availableTags, setAvailableTags] = useState([]);
   const [tagsToAdd, setTagsToAdd] = useState([]);
 
@@ -75,7 +74,6 @@ const CompanyDetailsForm = (props) => {
             values.description,
             values.tags
           );
-          console.log('tags ' + values.tags);
           setStatus({ success: true });
           setSubmitting(false);
           debugger;
