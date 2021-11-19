@@ -79,7 +79,6 @@ const CompanyCreateWizard = (props) => {
         // Updates the User table to include the newly created Channel. Only one company is allowed per user
         // This will overwrite a company if it exists in the user.company field
         const upUser = await API.graphql(graphqlOperation(updateUser, { input: UpdateUserInput }))
-        console.log('User Updated!', upUser)
         navigate('/dashboard/company')
         window.location.reload(false);
       } catch (error) {
