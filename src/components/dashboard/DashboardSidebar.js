@@ -16,30 +16,14 @@ const DashboardSidebar = (props) => {
   const { onMobileClose, openMobile } = props;
   const location = useLocation();
   const { user } = useAuth();
+  const userData = user.userTable;
   const [userCompanies, setUserCompanies] = useState([]);
   const [isCompaniesLoaded, setIsCompaniesLoaded] = useState(false);
 
-  const getUserCompanies = async () => {
-    try {
-      const fetchedUserData = await API.graphql({
-        query: getUser,
-        variables: { id: user.id },
-      });
-      const companies = fetchedUserData.data.getUser.companies.items;
-      const companyNames = [];
-      companies.forEach((company) => {
-        companyNames.push(company.name);
-      });
-      setUserCompanies(companyNames);
-      setIsCompaniesLoaded(!isCompaniesLoaded);
-    } catch (error) {
-      console.log('error on fetching user companies', error);
-    }
-  };
-
   useEffect(() => {
-    getUserCompanies();
-  }, []);
+    setUserCompanies(userData.companies.items)
+    setIsCompaniesLoaded(!isCompaniesLoaded)
+  }, [user]);
 
   const sections = [
     {
