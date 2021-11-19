@@ -2,19 +2,15 @@ import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import * as Yup from 'yup';
 import { Formik, FieldArray } from 'formik';
-import MobileDatePicker from '@material-ui/lab/MobileDatePicker';
 import {
   Box,
   Button,
   Card,
   Chip,
   FormHelperText,
-  IconButton,
   TextField,
   Typography,
 } from '@material-ui/core';
-import { HighlightOffTwoTone } from '@material-ui/icons';
-import PlusIcon from '../../../icons/Plus';
 import { TAGS } from './CompanyConstants.js';
 
 const CompanyDetailsForm = (props) => {
@@ -31,8 +27,8 @@ const CompanyDetailsForm = (props) => {
   const [tagsToAdd, setTagsToAdd] = useState([]);
 
   useEffect(() => {
-    const postAddedTags = TAGS.filter((tag) => !tagsToAdd.includes(tag));
-    setAvailableTags(postAddedTags);
+    const addedTags = TAGS.filter((tag) => !tagsToAdd.includes(tag));
+    setAvailableTags(addedTags);
     setCompanyData({
       ...companyData,
       tags: tagsToAdd,
@@ -53,7 +49,7 @@ const CompanyDetailsForm = (props) => {
       initialValues={{
         name: '',
         description: '',
-        tags: ['Full-Time'],
+        tags: [],
         submit: null,
       }}
       validationSchema={Yup.object().shape({
@@ -94,8 +90,6 @@ const CompanyDetailsForm = (props) => {
         handleChange,
         handleSubmit,
         isSubmitting,
-        setFieldValue,
-        setFieldTouched,
         touched,
         values,
       }) => (
@@ -130,7 +124,6 @@ const CompanyDetailsForm = (props) => {
                 label='Company Description'
                 name='description'
                 multiline='true'
-                // rows='2'
                 maxRows='4'
                 onBlur={handleBlur}
                 onChange={(e) => {
@@ -204,7 +197,10 @@ const CompanyDetailsForm = (props) => {
                             },
                           }}
                           clickable
-                          onClick={() => removeTag(tag)}
+                          onClick={() => {
+                            removeTag(tag);
+                            remove(tag);
+                          }}
                         />
                       );
                     })}
