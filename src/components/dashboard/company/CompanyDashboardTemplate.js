@@ -33,10 +33,6 @@ const CompanyDashboardTemplate = (props) => {
     subtitle: '',
   });
 
-  useEffect (() => {
-    console.log(company)
-  }, [])
-
   const tags = JSON.parse(company.tags);
 
   const handleChange = (panel) => (_event, isExpanded) => {
