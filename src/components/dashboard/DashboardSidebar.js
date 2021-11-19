@@ -2,10 +2,8 @@ import React, { useEffect, useState } from 'react';
 import {
   Avatar, Box, Divider, Drawer, Hidden, Link, Typography
 } from '@material-ui/core';
-import { API } from 'aws-amplify';
 import PropTypes from 'prop-types';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
-import { getUser } from '../../graphql/queries';
 import useAuth from '../../hooks/useAuth';
 import { Plus } from '../../icons';
 import Logo from '../Logo';
@@ -16,14 +14,7 @@ const DashboardSidebar = (props) => {
   const { onMobileClose, openMobile } = props;
   const location = useLocation();
   const { user } = useAuth();
-  const userData = user.userTable;
-  const [userCompanies, setUserCompanies] = useState([]);
-  const [isCompaniesLoaded, setIsCompaniesLoaded] = useState(false);
-
-  useEffect(() => {
-    setUserCompanies(userData.companies.items)
-    setIsCompaniesLoaded(!isCompaniesLoaded)
-  }, [user]);
+  const userCompanies = user.userTable.companies.items
 
   const sections = [
     {
@@ -46,7 +37,7 @@ const DashboardSidebar = (props) => {
     {
       title: 'Company',
       items: [
-        isCompaniesLoaded && {
+          userCompanies && {
           title: 
             userCompanies.length > 0 
               ? 'Company' 
