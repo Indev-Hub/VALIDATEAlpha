@@ -15,20 +15,23 @@ import gtm from '../../lib/gtm';
 const CompanyPage = () => {
   const { settings } = useSettings();
   const { user } = useAuth();
+  const [companiesList, setCompaniesList] = useState([])
+  const userPlanDummyVariable = false;
 
   useEffect(() => {
+    setCompaniesList(user.userTable.companies.items)
     gtm.push({ event: 'page_view' });
   }, []);
 
   // Set state for User table
-  const userData = user.userTable;
-  const companyData = user.userTable.companies.items;
+  // const userData = user.userTable;
+  // const companiesList = user.userTable.companies.items;
 
   // ===== START NO LONGER NEEDED. KEPT ONLY FOR REFERENCE =====
 
 
   // const [userData, setUserData] = useState();
-  // const [companyData, setCompanyData] = useState([]);
+  // const [companiesList, setCompaniesList] = useState([]);
 
   // Load User table data
   // useEffect(() => {
@@ -44,7 +47,7 @@ const CompanyPage = () => {
   //     const userList = fetchedData.data.getUser;
   //     const companyList = fetchedData.data.getUser.companies.items;
   //     setUserData(userList);
-  //     setCompanyData(companyList);
+  //     setCompaniesList(companyList);
   //     console.log('user info', userList);
   //     console.log('company info', companyList);
   //   } catch (error) {
@@ -100,8 +103,9 @@ const CompanyPage = () => {
           <Box sx={{ mt: 3 }}>
             {/* <Card sx={{ p:3 }}> */}
             <Grid container p={4} xs={12}>
-              {companyData !== null || undefined ? (
-                companyData.map((company) => (
+              {/* {companiesList !== null || undefined ? ( */}
+              {companiesList.length > 0 ? (
+                companiesList.map((company) => (
                   <Grid item xs={12} mb={2}>
                     <CompanyDashboardTemplate company={company} />
                   </Grid>
@@ -121,10 +125,10 @@ const CompanyPage = () => {
                     xs={6}
                     align='center'
                   >
-                    <Typography variant='h4'>
+                    <Typography color='textPrimary' variant='h4'>
                       You have not added a company yet.
                     </Typography>
-                    <Typography variant='h6'>
+                    <Typography color='textSecondary' variant='h6'>
                       The first step to creating forms is to create the company
                       that they will be attached to.
                     </Typography>
@@ -142,7 +146,18 @@ const CompanyPage = () => {
                   </Grid>
                 </Grid>
               )}
-              {console.log('company info', companyData)}
+              {companiesList.length > 0 && user.plan === "Premium" && <Button
+                      variant='contained'
+                      color='primary'
+                      component={RouterLink}
+                      to='/dashboard/company/new'
+                      sx={{
+                        mt: 2,
+                      }}
+                    >
+                      Add Company
+                    </Button>
+              }
             </Grid>
             {/* </Card> */}
           </Box>
