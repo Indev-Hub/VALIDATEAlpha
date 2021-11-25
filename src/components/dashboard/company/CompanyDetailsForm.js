@@ -29,7 +29,6 @@ const CompanyDetailsForm = (props) => {
   const [availableTags, setAvailableTags] = useState([]);
   const [tagsToAdd, setTagsToAdd] = useState([]);
   const { user } = useAuth();
-  const userPlanDummyVariable = false;
 
   useEffect(() => {
     const addedTags = TAGS.filter((tag) => !tagsToAdd.includes(tag));

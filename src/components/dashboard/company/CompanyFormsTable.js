@@ -216,7 +216,8 @@ const CompanyFormsTable = (props) => {
           >
             <Tab key='all' label='All' value='all' />
             {Object.keys(
-              forms.reduce((acc, it) => ((acc[it.company.name] = it), acc), [])
+              // forms.reduce((acc, it) => ((acc[it.company.name] = it), acc), [])
+              forms.reduce((acc, it) => ((acc = it), acc), [])
             ).map((comp) => (
               <Tab key={comp} label={comp} value={comp} />
             ))}
