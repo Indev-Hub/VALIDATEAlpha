@@ -1,17 +1,20 @@
-import { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import * as Yup from 'yup';
-import { Formik, FieldArray } from 'formik';
+import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import * as Yup from "yup";
+import { Formik, FieldArray } from "formik";
+import { Link as RouterLink } from "react-router-dom";
 import {
   Box,
   Button,
   Card,
   Chip,
   FormHelperText,
+  Grid,
   TextField,
   Typography,
-} from '@material-ui/core';
-import { TAGS } from './CompanyConstants.js';
+} from "@material-ui/core";
+import { TAGS } from "./CompanyConstants.js";
+import useAuth from "../../../hooks/useAuth";
 
 const CompanyDetailsForm = (props) => {
   const {
@@ -25,6 +28,7 @@ const CompanyDetailsForm = (props) => {
   } = props;
   const [availableTags, setAvailableTags] = useState([]);
   const [tagsToAdd, setTagsToAdd] = useState([]);
+  const { user } = useAuth();
 
   useEffect(() => {
     const addedTags = TAGS.filter((tag) => !tagsToAdd.includes(tag));
@@ -35,6 +39,8 @@ const CompanyDetailsForm = (props) => {
     });
   }, [tagsToAdd]);
 
+  useEffect(() => console.log(user), []);
+
   const addTag = (tag) => {
     setTagsToAdd([...tagsToAdd, tag]);
   };
@@ -44,20 +50,65 @@ const CompanyDetailsForm = (props) => {
     setTagsToAdd(newTags);
   };
 
-  return (
+  return user.userTable.companies.items.length > 0 && user.plan != "Premium" ? (
+    <Box
+      sx={{
+        alignItems: "center",
+        backgroundColor: "background.default",
+        borderRadius: 1,
+        display: "flex",
+        overflow: "hidden",
+        p: 2,
+      }}
+    >
+      <Grid
+        container
+        height="50vh"
+        display="column"
+        justifyContent="center"
+        alignContent="center"
+      >
+        <Grid
+          item
+          justifyContent="center"
+          alignContent="center"
+          xs={6}
+          align="center"
+        >
+          <Typography color="textPrimary" variant="h4">
+            You need a Premium account to create more than one company.
+          </Typography>
+          <Typography color="textSecondary" variant="h6">
+            You can upgrade to Premium on the billing tab of your account page.
+          </Typography>
+          <Button
+            variant="contained"
+            color="secondary"
+            component={RouterLink}
+            to="/dashboard/account"
+            sx={{
+              mt: 2,
+            }}
+          >
+            Account
+          </Button>
+        </Grid>
+      </Grid>
+    </Box>
+  ) : (
     <Formik
       initialValues={{
-        name: '',
-        description: '',
+        name: "",
+        description: "",
         tags: [],
         submit: null,
       }}
       validationSchema={Yup.object().shape({
         name: Yup.string()
-          .min(3, 'Must be at least 3 characters')
+          .min(3, "Must be at least 3 characters")
           .max(255)
-          .required('Required'),
-        description: Yup.string().max(500, 'Must be fewer than 500 characters'),
+          .required("Required"),
+        description: Yup.string().max(500, "Must be fewer than 500 characters"),
         tags: Yup.array(),
       })}
       onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
@@ -95,10 +146,10 @@ const CompanyDetailsForm = (props) => {
       }) => (
         <form onSubmit={handleSubmit} {...other}>
           <Card sx={{ p: 3 }}>
-            <Typography color='textPrimary' variant='h6'>
+            <Typography color="textPrimary" variant="h6">
               Company details
             </Typography>
-            <Typography color='textSecondary' variant='body1'>
+            <Typography color="textSecondary" variant="body1">
               We just need some basic information to add your company. Don't
               worry, you can always edit this information later on, too.
             </Typography>
@@ -107,48 +158,46 @@ const CompanyDetailsForm = (props) => {
                 error={Boolean(touched.name && errors.name)}
                 fullWidth
                 helperText={touched.name && errors.name}
-                label='Company Name'
-                name='name'
+                label="Company Name"
+                name="name"
                 onBlur={handleBlur}
                 onChange={(e) => {
                   handleChange(e);
                   handleCompanyChange(e);
                 }}
                 value={values.name}
-                variant='outlined'
+                variant="outlined"
               />
               <TextField
                 error={Boolean(touched.description && errors.description)}
                 fullWidth
                 helperText={touched.description && errors.description}
-                label='Company Description'
-                name='description'
-                multiline='true'
-                maxRows='4'
+                label="Company Description"
+                name="description"
+                multiline="true"
+                maxRows="4"
                 onBlur={handleBlur}
                 onChange={(e) => {
                   handleChange(e);
                   handleCompanyChange(e);
                 }}
                 value={values.description}
-                variant='outlined'
+                variant="outlined"
                 sx={{
                   mt: 2,
                 }}
               />
-              <Typography color='textPrimary' variant='h6'>
+              <Typography color="textPrimary" variant="h6">
                 Choose tags:
               </Typography>
-              <FieldArray name='tags'>
+              <FieldArray name="tags">
                 {({ push, remove }) => (
-                  <Box
-                    sx={{ mt: 2 }}
-                  >
+                  <Box sx={{ mt: 2 }}>
                     {availableTags.map((tags) => {
                       return (
                         <Chip
                           label={tags}
-                          type='text'
+                          type="text"
                           id={tags}
                           className={tags}
                           value={tags}
@@ -158,12 +207,12 @@ const CompanyDetailsForm = (props) => {
                             mb: 3,
                             p: 2,
                             width: 150,
-                            borderColor: 'white',
+                            borderColor: "white",
                             zIndex: 2,
-                            color: 'white',
+                            color: "white",
                           }}
-                          variant='outlined'
-                          color='primary'
+                          variant="outlined"
+                          color="primary"
                           clickable
                           onClick={(e) => {
                             addTag(tags);
@@ -172,14 +221,14 @@ const CompanyDetailsForm = (props) => {
                         />
                       );
                     })}
-                    <Typography color='textPrimary' variant='h6'>
+                    <Typography color="textPrimary" variant="h6">
                       Chosen tags:
                     </Typography>
                     {tagsToAdd.map((tag) => {
                       return (
                         <Chip
                           label={tag}
-                          type='text'
+                          type="text"
                           id={tag}
                           className={tag}
                           value={tag}
@@ -189,11 +238,11 @@ const CompanyDetailsForm = (props) => {
                             mb: 3,
                             p: 2,
                             zIndex: 2,
-                            backgroundColor: 'white',
-                            color: 'black',
-                            '&: hover': {
-                              color: 'black',
-                              cursor: 'pointer',
+                            backgroundColor: "white",
+                            color: "black",
+                            "&: hover": {
+                              color: "black",
+                              cursor: "pointer",
                             },
                           }}
                           clickable
@@ -215,27 +264,27 @@ const CompanyDetailsForm = (props) => {
             </Box>
             <Box
               sx={{
-                display: 'flex',
+                display: "flex",
                 mt: 6,
               }}
             >
               {onBack && (
                 <Button
-                  color='primary'
+                  color="primary"
                   onClick={onBack}
-                  size='large'
-                  variant='text'
+                  size="large"
+                  variant="text"
                 >
                   Previous
                 </Button>
               )}
               <Box sx={{ flexGrow: 1 }} />
               <Button
-                color='primary'
+                color="primary"
                 onClick={submit}
                 disabled={isSubmitting || errors.name || errors.description}
-                type='submit'
-                variant='contained'
+                type="submit"
+                variant="contained"
               >
                 Create Company
               </Button>

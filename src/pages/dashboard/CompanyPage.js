@@ -1,34 +1,41 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
-  Box, Breadcrumbs, Button, Container, Grid, Link, Typography
-} from '@material-ui/core';
-import { API, graphqlOperation } from 'aws-amplify';
-import { Helmet } from 'react-helmet-async';
-import { Link as RouterLink } from 'react-router-dom';
-import CompanyDashboardTemplate from '../../components/dashboard/company/CompanyDashboardTemplate';
-import { getUser } from '../../graphql/queries';
-import useAuth from '../../hooks/useAuth';
-import useSettings from '../../hooks/useSettings';
-import ChevronRightIcon from '../../icons/ChevronRight';
-import gtm from '../../lib/gtm';
+  Box,
+  Breadcrumbs,
+  Button,
+  Container,
+  Grid,
+  Link,
+  Typography,
+} from "@material-ui/core";
+import { API, graphqlOperation } from "aws-amplify";
+import { Helmet } from "react-helmet-async";
+import { Link as RouterLink } from "react-router-dom";
+import CompanyDashboardTemplate from "../../components/dashboard/company/CompanyDashboardTemplate";
+import { getUser } from "../../graphql/queries";
+import useAuth from "../../hooks/useAuth";
+import useSettings from "../../hooks/useSettings";
+import ChevronRightIcon from "../../icons/ChevronRight";
+import gtm from "../../lib/gtm";
 
 const CompanyPage = () => {
   const { settings } = useSettings();
   const { user } = useAuth();
+  const [companiesList, setCompaniesList] = useState([]);
 
   useEffect(() => {
-    gtm.push({ event: 'page_view' });
+    setCompaniesList(user.userTable.companies.items);
+    gtm.push({ event: "page_view" });
   }, []);
 
   // Set state for User table
-  const userData = user.userTable;
-  const companyData = user.userTable.companies.items;
+  // const userData = user.userTable;
+  // const companiesList = user.userTable.companies.items;
 
   // ===== START NO LONGER NEEDED. KEPT ONLY FOR REFERENCE =====
 
-
   // const [userData, setUserData] = useState();
-  // const [companyData, setCompanyData] = useState([]);
+  // const [companiesList, setCompaniesList] = useState([]);
 
   // Load User table data
   // useEffect(() => {
@@ -44,7 +51,7 @@ const CompanyPage = () => {
   //     const userList = fetchedData.data.getUser;
   //     const companyList = fetchedData.data.getUser.companies.items;
   //     setUserData(userList);
-  //     setCompanyData(companyList);
+  //     setCompaniesList(companyList);
   //     console.log('user info', userList);
   //     console.log('company info', companyList);
   //   } catch (error) {
@@ -54,7 +61,6 @@ const CompanyPage = () => {
 
   // ===== END NO LONGER NEEDED. KEPT ONLY FOR REFERENCE =====
 
-
   return (
     <>
       <Helmet>
@@ -62,36 +68,36 @@ const CompanyPage = () => {
       </Helmet>
       <Box
         sx={{
-          backgroundColor: 'background.default',
-          minHeight: '100%',
+          backgroundColor: "background.default",
+          minHeight: "100%",
           py: 8,
         }}
       >
-        <Container maxWidth={settings.compact ? 'xl' : false}>
+        <Container maxWidth={settings.compact ? "xl" : false}>
           <Grid
-            alignItems='center'
+            alignItems="center"
             container
-            justifyContent='space-between'
+            justifyContent="space-between"
             spacing={3}
           >
             <Grid item>
-              <Typography color='textPrimary' variant='h5'>
+              <Typography color="textPrimary" variant="h5">
                 Company
               </Typography>
               <Breadcrumbs
-                aria-label='breadcrumb'
-                separator={<ChevronRightIcon fontSize='small' />}
+                aria-label="breadcrumb"
+                separator={<ChevronRightIcon fontSize="small" />}
                 sx={{ mt: 1 }}
               >
                 <Link
-                  color='textPrimary'
+                  color="textPrimary"
                   component={RouterLink}
-                  to='/dashboard'
-                  variant='subtitle2'
+                  to="/dashboard"
+                  variant="subtitle2"
                 >
                   Dashboard
                 </Link>
-                <Typography color='textSecondary' variant='subtitle2'>
+                <Typography color="textSecondary" variant="subtitle2">
                   Company
                 </Typography>
               </Breadcrumbs>
@@ -100,8 +106,9 @@ const CompanyPage = () => {
           <Box sx={{ mt: 3 }}>
             {/* <Card sx={{ p:3 }}> */}
             <Grid container p={4} xs={12}>
-              {companyData !== null || undefined ? (
-                companyData.map((company) => (
+              {/* {companiesList !== null || undefined ? ( */}
+              {companiesList.length > 0 ? (
+                companiesList.map((company) => (
                   <Grid item xs={12} mb={2}>
                     <CompanyDashboardTemplate company={company} />
                   </Grid>
@@ -109,30 +116,30 @@ const CompanyPage = () => {
               ) : (
                 <Grid
                   container
-                  height='50vh'
-                  display='column'
-                  justifyContent='center'
-                  alignContent='center'
+                  height="50vh"
+                  display="column"
+                  justifyContent="center"
+                  alignContent="center"
                 >
                   <Grid
                     item
-                    justifyContent='center'
-                    alignContent='center'
+                    justifyContent="center"
+                    alignContent="center"
                     xs={6}
-                    align='center'
+                    align="center"
                   >
-                    <Typography variant='h4'>
+                    <Typography color="textPrimary" variant="h4">
                       You have not added a company yet.
                     </Typography>
-                    <Typography variant='h6'>
+                    <Typography color="textSecondary" variant="h6">
                       The first step to creating forms is to create the company
                       that they will be attached to.
                     </Typography>
                     <Button
-                      variant='contained'
-                      color='secondary'
+                      variant="contained"
+                      color="secondary"
                       component={RouterLink}
-                      to='/dashboard/company/new'
+                      to="/dashboard/company/new"
                       sx={{
                         mt: 2,
                       }}
@@ -142,7 +149,19 @@ const CompanyPage = () => {
                   </Grid>
                 </Grid>
               )}
-              {console.log('company info', companyData)}
+              {companiesList.length > 0 && user.plan === "Premium" && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  component={RouterLink}
+                  to="/dashboard/company/new"
+                  sx={{
+                    mt: 2,
+                  }}
+                >
+                  Add Company
+                </Button>
+              )}
             </Grid>
             {/* </Card> */}
           </Box>
