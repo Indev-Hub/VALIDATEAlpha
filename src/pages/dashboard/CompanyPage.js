@@ -105,7 +105,7 @@ const CompanyPage = () => {
           </Grid>
           <Box sx={{ mt: 3 }}>
             {/* <Card sx={{ p:3 }}> */}
-            <Grid container p={4} xs={12}>
+            <Grid container p={0} xs={12}>
               {/* {companiesList !== null || undefined ? ( */}
               {companiesList.length > 0 ? (
                 companiesList.map((company) => (
